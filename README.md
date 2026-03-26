@@ -1,167 +1,112 @@
-# Personal Reference Site para GitHub Pages
+# Personal Reference Site for GitHub Pages
 
-Este repositorio es un sitio estático de referencia en HTML/CSS/JS para proyectos personales, boletines e historias. Ideal para desplegar en GitHub Pages sin backend.
+Este repositorio contiene un sitio web estático en HTML/CSS/JS para proyectos personales, boletines e historias. Está optimizado para GitHub Pages y no requiere backend.
 
-## 📁 Estructura principal
+## 📌 Descripción
 
-- archivos raíz:
-  - `index.html` (inicio)
-  - `style.css` (estilos globales)
-  - `script.js` (interactividad y navegación responsiva)
-  - `global.js` (funciones adicionales opcionales)
-- `projects/`: páginas de sección y contenido de proyectos
+- Página principal: `index.html`
+- Estilos globales: `style.css`
+- JavaScript: `script.js`, `global.js`
+- Secciones de contenido: `projects/` con subcarpetas (`boletines/`, `cronica_huracan/`, `fran-cis-coh/`, etc.)
+
+## 🧭 Table of Contents
+
+1. [Estructura del repositorio](#estructura-del-repositorio)
+2. [Instalación y prueba local](#instalación-y-prueba-local)
+3. [Uso](#uso)
+4. [GitHub Pages](#github-pages)
+5. [Wiki del proyecto](#wiki-del-proyecto)
+6. [Contribuir](#contribuir)
+7. [Licencia](#licencia)
+8. [Contacto](#contacto)
+
+## 📁 Estructura del repositorio
+
+- `/index.html`
+- `/style.css`
+- `/script.js`
+- `/global.js`
+- `/projects/`
   - `boletines.html`, `novelas.html`, `franciscoh.html`
-  - subcarpetas con páginas de contenido (`boletines/`, `cronica_huracan/`, `fran-cis-coh/`, etc.)
+  - `boletines/` (boletin-001.html ... boletin-especial.html)
+  - `cronica_huracan/` (cronica.html, novela_1.html, novela_2.html, sinopsis.html)
+  - `fran-cis-coh/` (disenhos.html, reglamento.html, etc.)
+  - `/src/` (boletines, disenhos)
 
-> Mantén las rutas relativas correctas (`../`) al usar archivos desde subdirectorios.
+> Nota: Mantén rutas relativas correctas desde subcarpetas usando `../`.
 
-## 🧪 Prueba local rápida
+## 🧪 Instalación y prueba local
 
-1. Abre `index.html` en un navegador o usa servidor local.
-2. Verifica navegación, enlaces y carga de recursos.
-3. En subcarpetas, comprueba que `script.js` y `style.css` se carguen con rutas relativas.
+1. Abre `index.html` en tu navegador.
+2. O usa un servidor local:
+   - Python 3: `python -m http.server 8000`
+   - Node.js: `npm install -g serve` y `serve .`
+3. Verifica que la navegación funcione y no haya errores de 404 en la consola.
 
-Servidor local opcional:
-- Python 3: `python -m http.server 8000`
-- Node.js: `serve .`
+## 🚀 Uso
 
-## 🚀 Despliegue en GitHub Pages
+- Edita HTML dentro de `projects/` para agregar contenido.
+- Mantén `style.css` y `script.js` para estilos e interactividad global.
+- Comprueba rutas y dependencias en cada página nueva.
 
-1. Subir al repo (`git add .`, `git commit`, `git push`).
-2. En GitHub: Settings → Pages → Source: main / root.
-3. Esperar actualización y verificar URL.
+## 🌐 GitHub Pages
 
-- Sitio de usuario: `https://yourusername.github.io/`
-- Sitio de proyecto: `https://yourusername.github.io/repo-name/`
+### Configuración rápida
+1. Ve a `Settings > Pages`.
+2. Selecciona rama `main` y carpeta `/ (root)`.
+3. Pulsa `Save`.
+4. Después de 1-2 minutos, tu sitio estará en `http://fran.matorras.com`.
 
-## 🔍 Buenas prácticas
+### Verificación
+- Asegúrate de que `index.html` se muestre correctamente.
+- Prueba rutas a subdirectorios y archivos estáticos (CSS/JS) desde páginas internas.
 
-- Rutas de recursos deben revisarse en cada página y subcarpeta.
-- Evita referencias a archivos inexistentes.
-- Usa un solo punto de entrada (`index.html`) para pruebas iniciales.
+## 📚 Wiki del proyecto
 
-## ℹ️ Nota
+GitHub wiki es una herramienta para documentación enriquecida y colaborativa. Sigue el flujo de la documentación oficial:
 
-Este README está diseñado para ser breve y práctico: estructura general + pruebas básicas + despliegue. El contenido detallado de cada página se gestiona directamente en los archivos HTML dentro de `projects/` y subcarpetas.
----
+Wiki still in development... 
+1. En GitHub, abre `Wiki` en la barra superior del repositorio.
+2. Crea una página principal `Home` con:
+   - Propósito del proyecto
+   - Estructura de alto nivel
+   - Guía rápida de rutas y páginas relevantes
+3. Crear páginas adicionales:
+   - `Instalación`
+   - `Estructura`
+   - `Contribuir`
+   - `Boletines` (Detalle de cada subsitio)
+   - `Historias` (Cronica huracan, novela, etc.)
+4. Usa Markdown escalonado (`#`, `##`, `###`) y enlaces relativos de wiki para navegación.
+5. El wiki se guarda como repositorio git separado (https://github.com/franmatorras/webpage.wiki.git), así puedes clonar/editar localmente:
+   - `git clone https://github.com/franmatorras/webpage.wiki.git`
+   - `git checkout -b docs/improvement`
+   - `git add .` y `git commit -m "Actualizar documentación wiki"`
+   - `git push origin docs/improvement`
 
-## 🔍 Cambios frecuentes que revisar antes de deploy
+> Consejo: Actualiza el README con un enlace directo al wiki: `https://github.com/franmatorras/webpage/wiki`.
 
-- Rutas de recursos en archivos dentro de carpetas (usa `../` según ubicación).
-- Existencia de todos los activos referenciados (`images/`, JS, CSS).
-- El sitemap/indice si lo usas manualmente.
-- Quitar comentarios personales o scripts de depuración temporales.
+## ✅ Buenas prácticas y checklist antes de deploy
 
----
+- [ ] Asegúrate de que las rutas en subcarpetas usen `../` cuando sea necesario.
+- [ ] Todos los recursos referenciados (CSS, JS, imágenes) existen.
+- [ ] Evita comentarios de debug y scripts temporales expuestos.
+- [ ] Valida con HTML/CSS lint si es posible.
 
-## ℹ️ Nota de pruebas automatizadas
+## 🤝 Contribuir
 
-Este proyecto es un sitio estático simple sin tests automatizados configurados. Para añadir pruebas, puedes usar:
+- Crea un issue antes de cambios mayores.
+- Usa branches con nombre claro: `feature/boletin-012`.
+- Envía PR con descripción y pasos de prueba.
 
-- Cypress / Playwright para pruebas E2E de UI
-- ESLint / Stylelint para validación de calidad de código
-- GitHub Actions para automatizar build/test/despliegue
+## 📝 Licencia
 
----
+Este proyecto no tiene licencia especificada. Añade `LICENSE` si quieres permitir duplicación/uso.
 
-## ✅ Checklist rápido (Test + Deploy)
+## 📬 Contacto
 
-- [ ] `index.html` abre sin 404
-- [ ] `style.css` aplica estilos
-- [ ] `script.js` carga sin errores en consola
-- [ ] Enlace `projects/boletines.html` funciona
-- [ ] En GitHub Pages, `index.html` responde en URL final
-- [ ] Fundamentos responsive están en mobile/desktop
-
-### 2. Previsualización con Texto (para Historias)
-
-```html
-<div class="card">
-    <div class="card-header">
-        <h3>Título de la Historia</h3>
-        <span class="card-date">22 Mar 2026</span>
-    </div>
-    <div class="card-preview-text">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit...
-    </div>
-    <p>Descripción breve...</p>
-    <a href="enlace.html">Leer Completo</a>
-</div>
-```
-
-El texto es **automáticamente scrolleable** si excede 120px de altura.
-
----
-
-## 🎨 Configurar Imagen de Fondo
-
-### En HTML
-
-Agrega la clase `has-bg-image` al `<body>`:
-
-```html
-<body class="has-bg-image">
-```
-
-### En CSS
-
-En `style.css`, la sección `body.has-bg-image` ya está lista. Solo coloca tu imagen en la raíz:
-
-```css
-body.has-bg-image {
-    background: linear-gradient(rgba(245, 249, 247, 0.85), rgba(232, 243, 240, 0.85)), 
-                url('background.png');
-    background-attachment: fixed;
-    background-size: cover;
-    background-position: center;
-}
-```
-
-**Reemplaza** `background.png` con tu imagen. El degradado (0.85 = 85% opacidad) oscurece la imagen para mejorar legibilidad.
-
----
-
-## ☰ Navegación Collapsible
-
-La navegación se oculta automáticamente en pantallas menores de 768px y muestra un botón con símbolo **☰**.
-
-### Cómo Funciona
-
-1. **`script.js`** detecta clics en el botón **☰**
-2. Abre/cierra la navegación con animación suave
-3. Se cierra automáticamente al hacer clic en un enlace
-
-**No requiere configuración adicional** — funciona automáticamente en todas las páginas que incluyan `<script src="../script.js"></script>`.
-
----
-
-## 💾 Desplegar en GitHub Pages
-
-### 1. Crear o Configurar Repositorio
-
-**Opción A: Sitio de usuario**
-```bash
-# Nombra el repo: yourusername.github.io
-# El sitio estará disponible en: https://yourusername.github.io/
-```
-
-**Opción B: Repositorio normal**
-```bash
-# En Settings → Pages → Source: main branch /root
-# El sitio estará disponible en: https://yourusername.github.io/repo-name/
-```
-
-### 2. Subir Archivos
-
-```bash
-git add .
-git commit -m "Inicial: sitio de referencia personal"
-git push origin main
-```
-
-### 3. Esperar
-
-GitHub Pages actualiza en 1-2 minutos. Visita tu URL y ¡listo!
+- Autor: Fran M.
+- Repositorio: https://github.com/franmatorras/webpage
 
 ---
 

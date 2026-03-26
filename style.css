@@ -28,7 +28,7 @@ body {
     min-height: 100vh;
     margin: 0;
     /* This puts the image on the body itself */
-    background: linear-gradient(rgba(245, 249, 247, 0.8), rgba(245, 249, 247, 0.8)), 
+    background: linear-gradient(rgba(245, 249, 247, 0.1), rgba(245, 249, 247, 0.1)), 
                 url('src/ruta_ason.jpeg');
     background-size: cover;
     background-position: top center;
@@ -42,7 +42,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(rgba(245, 249, 247, 0.8), rgba(245, 249, 247, 0.8)), url('src/autor_fantasia.jpg');
+  background: linear-gradient(rgba(245, 249, 247, 0.5), rgba(245, 249, 247, 0.5)), url('src/autor_fantasia.jpg');
   background-size: cover;
   background-position: center;
   z-index: -1;
@@ -55,7 +55,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(rgba(245, 249, 247, 0.8), rgba(245, 249, 247, 0.8)), url('src/fondo_boletin.jpg');
+  background: linear-gradient(rgba(245, 249, 247, 0.5), rgba(245, 249, 247, 0.5)), url('src/fondo_boletin.jpg');
   background-size: cover;
   background-position: center;
   z-index: -1;
@@ -68,7 +68,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(rgba(245, 249, 247, 0.8), rgba(245, 249, 247, 0.8)), url('src/fondo_cartas.jpg');
+  background: linear-gradient(rgba(245, 249, 247, 0.5), rgba(245, 249, 247, 0.5)), url('src/fondo_cartas.jpg');
   background-size: cover;
   background-position: center;
   z-index: -1;
