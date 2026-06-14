@@ -553,3 +553,447 @@ footer {
 .card-disenho a {
     align-self: flex-start;
 }
+
+/* ===== LECTURAS PAGE STYLES ===== */
+
+/* Cover Image for Lecturas */
+.cover-image-lecturas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(245, 249, 247, 0.5), rgba(245, 249, 247, 0.5)), url('src/ruta_ason.jpeg');
+    background-size: cover;
+    background-position: center;
+    z-index: -1;
+}
+
+/* Tabs Container */
+.tabs-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin: 2rem 0 0.5rem 0;
+    flex-wrap: wrap;
+}
+
+.tabs-container {
+    display: flex;
+    gap: 1rem;
+    margin: 0;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--accent-green);
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+/* Tab Button Styles */
+.tab-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--primary-green);
+    color: #fff;
+    border: none;
+    padding: 0.75rem 1.25rem;
+    border-radius: 999px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.tab-button:hover {
+    opacity: 0.95;
+    transform: translateY(-1px);
+}
+
+.tab-button.active {
+    background: var(--accent-green);
+    color: var(--text-dark);
+    box-shadow: 0 4px 12px rgba(109, 181, 160, 0.3);
+}
+
+/* Help Icon in Tabs */
+.tab-help {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    font-weight: bold;
+    font-size: 0.85rem;
+    cursor: help;
+    position: relative;
+    transition: background 0.3s ease;
+    margin-left: 0.25rem;
+}
+
+.tab-button.active .tab-help {
+    background: rgba(45, 94, 78, 0.2);
+}
+
+.tab-button:hover .tab-help {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+/* Tooltip for Help Icons */
+.tab-help::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 130%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--text-dark);
+    color: #fff;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 1000;
+    pointer-events: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.tab-help::before {
+    content: '';
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid var(--text-dark);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.tab-help:hover::after,
+.tab-help:focus::after {
+    opacity: 1;
+    visibility: visible;
+    bottom: 140%;
+}
+
+.tab-help:hover::before,
+.tab-help:focus::before {
+    opacity: 1;
+    visibility: visible;
+    bottom: 130%;
+}
+
+.btn-collapse-all {
+    background: var(--light-green);
+    color: #fff;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    height: 44px;
+    white-space: nowrap;
+}
+
+.btn-collapse-all:hover {
+    background: var(--primary-green);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(45, 94, 78, 0.3);
+}
+
+.tab-content {
+    margin: 0.5rem 0 2rem 0;
+}
+
+/* Table Content Wrapper */
+.tab-content {
+    margin: 2rem 0;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 8px 24px rgba(45, 94, 78, 0.12);
+    overflow-x: visible;
+    overflow-y: visible;
+    border: 1px solid rgba(74, 143, 122, 0.2);
+}
+
+/* Table Styles */
+.table-wrapper {
+    overflow-x: auto;
+    overflow-y: visible;
+    margin-top: 0;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+table thead {
+    background: var(--light-green);
+    color: #fff;
+}
+
+table th {
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 2px solid var(--accent-green);
+}
+
+table th.status-header {
+    width: 54px;
+    text-align: center;
+}
+
+table td {
+    padding: 1rem;
+    border-bottom: 1px solid rgba(74, 143, 122, 0.2);
+    vertical-align: middle;
+}
+
+table td.status-cell {
+    width: 54px;
+    text-align: center;
+    padding-right: 0.5rem;
+}
+
+.table-help {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    font-weight: 700;
+    border: 1px solid rgba(255,255,255,0.3);
+    cursor: help;
+}
+
+.table-help::after {
+    content: attr(title);
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--text-dark);
+    color: #fff;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+.table-help:last-child::after {
+    left: auto;
+    right: 0;
+    transform: translateX(0);
+}
+
+.table-help:hover::after,
+.table-help:focus::after {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(-4px);
+}
+
+
+.status-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    font-weight: bold;
+    color: #fff;
+    background: rgba(255,255,255,0.15);
+}
+
+.status-icon:empty {
+    visibility: hidden;
+}
+
+.status-icon[title="Abandonada"] {
+    background: #e74c3c;
+}
+
+.status-icon[title="En pausa"] {
+    background: #f1c40f;
+    color: #2c3e50;
+}
+
+.book-row td:first-child {
+    position: relative;
+}
+
+.book-row td:first-child::after {
+    content: '⯈';
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(45, 94, 78, 0.65);
+    font-size: 1rem;
+}
+
+.book-row[aria-expanded="true"] td:first-child::after {
+    content: '⯆';
+}
+
+table tbody tr {
+    transition: all 0.3s ease;
+}
+
+/* Book Row Styles */
+.book-row {
+    position: relative;
+}
+
+.book-row.has-details {
+    cursor: pointer;
+}
+
+.book-row.has-details:hover {
+    background: rgba(109, 181, 160, 0.1);
+}
+
+.book-row td {
+    padding: 1rem;
+}
+
+.book-title {
+    font-weight: 600;
+    color: var(--primary-green);
+    margin-bottom: 0.25rem;
+}
+
+.book-author {
+    color: var(--text-dark);
+    font-size: 0.95rem;
+}
+
+.book-year {
+    color: #999;
+    font-size: 0.9rem;
+}
+
+.expand-toggle {
+    display: none;
+}
+
+/* Expandable Row Styles */
+.expandable-row {
+    display: none;
+}
+
+.expandable-row.expanded {
+    display: table-row;
+    background: var(--bg-light);
+}
+
+.expandable-row td {
+    padding: 1rem;
+    background: var(--bg-light);
+    border-top: 2px solid var(--accent-green);
+}
+
+.expandable-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.expandable-section {
+    display: flex;
+    flex-direction: column;
+}
+
+.expandable-section-title {
+    font-weight: 600;
+    color: var(--primary-green);
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.expandable-section-content {
+    color: var(--text-dark);
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+/* Month/Year Group Headers */
+.month-year-row {
+    background: rgba(74, 143, 122, 0.1);
+    font-weight: 600;
+    color: var(--primary-green);
+    border-bottom: 2px solid var(--accent-green);
+}
+
+.month-year-row td {
+    padding: 0.75rem 1rem;
+    border-bottom: 2px solid var(--accent-green);
+}
+
+/* Responsive for Tables */
+@media (max-width: 768px) {
+    .tabs-container {
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .tab-button {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .tab-help {
+        width: 18px;
+        height: 18px;
+        font-size: 0.8rem;
+    }
+
+    table {
+        font-size: 0.9rem;
+    }
+
+    table th,
+    table td {
+        padding: 0.75rem 0.5rem;
+    }
+
+    .expandable-content {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .book-row:hover {
+        background: rgba(109, 181, 160, 0.05);
+    }
+
+    .table-controls {
+        justify-content: center;
+    }
+}

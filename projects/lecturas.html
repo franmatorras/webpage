@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecturas</title>
+    <link rel="stylesheet" href="../style.css">
+    <script src="/global.js"></script>
+</head>
+<body>
+    <div class="cover-image-lecturas"></div>
+    <header>
+        <h1>Lecturas</h1>
+        <button class="nav-toggle" aria-label="Toggle navigation">☰</button>
+        <nav>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="boletines.html">Boletines</a></li>
+                <li><a href="novelas.html">Crónica de un Huracán</a></li>
+                <li><a href="franciscoh.html">Fran cis coh!</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <h2>Mis Lecturas</h2>
+        <h3>(Pendiente de completar)</h3>
+        
+        <!-- Tabs Container -->
+        <div class="tabs-header-row">
+            <div class="tabs-container">
+                <div class="tab-button active" data-status="en_marcha">
+                    En marcha
+                    <span class="tab-help" aria-label="Libros que estoy leyendo actualmente" title="Libros que estoy leyendo actualmente">?</span>
+                </div>
+            <div class="tab-button" data-status="programadas">
+                Programadas
+                <span class="tab-help" aria-label="Libros que pienso leer próximamente" title="Libros que pienso leer próximamente">?</span>
+            </div>
+            <div class="tab-button" data-status="terminadas">
+                Terminadas
+                <span class="tab-help" aria-label="Libros que ya he leído" title="Libros que ya he leído">?</span>
+            </div>
+            <div class="tab-button" data-status="en_lista">
+                En la lista
+                <span class="tab-help" aria-label="Libros que me gustaría leer algún día" title="Libros que me gustaría leer algún día">?</span>
+            </div>
+            <div class="tab-button" data-status="canceladas_pausadas">
+                Abandonadas/Pausadas
+                <span class="tab-help" aria-label="Libros abandonados o pausados" title="Libros abandonados o pausados">?</span>
+            </div>
+        </div>
+        <button id="collapse-all-btn" class="btn-collapse-all">Colapsar todas</button>
+        </div>
+
+        <!-- Tab Content -->
+        <div class="tab-content" id="tab-content">
+            <!-- Table will be rendered here by JavaScript -->
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Fran Matorras</p>
+    </footer>
+
+    <script src="../script.js"></script>
+    <script src="js/lecturas.js"></script>
+</body>
+</html>
