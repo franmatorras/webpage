@@ -1,0 +1,808 @@
+/* ============================================================
+   INFANCIA — hoja de estilos independiente.
+   Esta página no carga style.css: todo lo que necesita está aquí.
+
+   Índice:
+     1. Base y modos
+     2. Botón de cambio de versión
+     3. Modo 2000: banner
+     4. Modo 2000: layout de tres columnas
+     5. Modo 2000: componentes (cajas, listas, tablas, contador, chapas)
+     6. Modo alternativo (homenaje)
+     7. Animaciones
+     8. Responsive y reduced-motion
+   ============================================================ */
+
+/* ---------- 1. Base y modos ---------- */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Times New Roman", Times, serif;
+    font-size: 16px;
+    color: #000;
+    /* Fondo "tileado" hecho con gradientes: sin imágenes externas */
+    background-color: #000e4a;
+    background-image:
+        radial-gradient(circle at 10px 10px, rgba(255, 255, 255, 0.35) 1px, transparent 1.6px),
+        radial-gradient(circle at 34px 26px, rgba(255, 255, 0, 0.45) 1.2px, transparent 2px),
+        repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.25) 0 8px, rgba(255, 255, 255, 0.04) 8px 16px);
+    background-size: 48px 48px, 48px 48px, 32px 32px;
+}
+
+.sprite-defs {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+}
+
+/* Un único interruptor: la clase del <body> decide qué mitad se ve */
+.mode-2000s .mrx-stage,
+.mode-mrx .retro-page {
+    display: none;
+}
+
+.mode-mrx {
+    background: #2b2b3a;
+}
+
+/* ---------- 2. Botón de cambio de versión ---------- */
+
+.mode-toggle {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 50;
+    font-family: "Comic Sans MS", "Trebuchet MS", cursive, sans-serif;
+    font-size: 0.8rem;
+    font-weight: bold;
+    padding: 8px 14px;
+    color: #000;
+    background: #ffe600;
+    border: 3px outset #fff9a8;
+    cursor: pointer;
+    box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.5);
+}
+
+.mode-toggle:hover {
+    background: #fff36b;
+}
+
+.mode-toggle:active {
+    border-style: inset;
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+}
+
+/* Aviso "En proceso": ocupa el sitio del botón de cambio de versión
+   mientras la versión original está desactivada */
+.wip-badge {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 50;
+    margin: 0;
+    font-family: "Comic Sans MS", "Trebuchet MS", cursive, sans-serif;
+    font-size: 0.8rem;
+    font-weight: bold;
+    padding: 8px 14px;
+    color: #000;
+    background: #ffe600;
+    border: 3px outset #fff9a8;
+    box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.5);
+}
+
+/* ---------- 3. Modo 2000: banner ---------- */
+
+.retro-page {
+    max-width: 1100px;
+    margin: 0 auto;
+    /* El padding superior deja hueco al botón fijo de cambio de versión */
+    padding: 58px 10px 30px;
+}
+
+.retro-banner {
+    background: #000;
+    border: 4px ridge #c0c0c0;
+    padding: 12px 10px 0;
+    text-align: center;
+    margin-bottom: 12px;
+}
+
+.banner-eyebrow {
+    margin: 0;
+    color: #00ff66;
+    font-family: "Courier New", monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+}
+
+.banner-title {
+    margin: 6px 0 2px;
+    font-family: "Comic Sans MS", "Trebuchet MS", cursive, sans-serif;
+    font-size: clamp(1.8rem, 6vw, 3.4rem);
+    font-weight: bold;
+    color: #ffe600;
+    text-shadow:
+        2px 2px 0 #ff00c8,
+        4px 4px 0 #00e5ff,
+        6px 6px 0 rgba(0, 0, 0, 0.6);
+    animation: hue-cycle 6s linear infinite;
+}
+
+.banner-sub {
+    margin: 0 0 10px;
+    color: #ff8ce0;
+    font-family: "Courier New", monospace;
+    font-size: 0.8rem;
+}
+
+.marquee {
+    overflow: hidden;
+    white-space: nowrap;
+    background: #1a1a1a;
+    border-top: 2px solid #444;
+    border-bottom: 2px solid #444;
+    padding: 4px 0;
+}
+
+.marquee span {
+    display: inline-block;
+    padding-left: 100%;
+    color: #00ff66;
+    font-family: "Courier New", monospace;
+    font-size: 0.85rem;
+    animation: marquee 26s linear infinite;
+}
+
+.construction {
+    background: repeating-linear-gradient(45deg, #ffd400 0 14px, #1a1a1a 14px 28px);
+    background-size: 40px 40px;
+    padding: 6px;
+    animation: barber 1.2s linear infinite;
+}
+
+.construction-label {
+    display: inline-block;
+    background: #000;
+    color: #ffd400;
+    font-family: "Comic Sans MS", "Trebuchet MS", cursive, sans-serif;
+    font-size: 0.85rem;
+    font-weight: bold;
+    padding: 3px 12px;
+    border: 2px solid #ffd400;
+}
+
+/* ---------- 4. Modo 2000: layout de tres columnas ---------- */
+
+.retro-layout {
+    display: grid;
+    grid-template-columns: 190px 1fr 210px;
+    gap: 10px;
+    align-items: start;
+}
+
+.retro-col {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 0;
+}
+
+/* ---------- 5. Modo 2000: componentes ---------- */
+
+.retro-box {
+    background: #c0c0c0;
+    border: 3px outset #e8e8e8;
+    padding: 8px;
+}
+
+.retro-box.highlight {
+    background: #fffbe6;
+    border: 4px ridge #ff00c8;
+}
+
+.box-title {
+    margin: -8px -8px 8px;
+    padding: 4px 8px;
+    font-family: "Comic Sans MS", "Trebuchet MS", cursive, sans-serif;
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: #ffe600;
+    background: linear-gradient(90deg, #000080, #7a00b8);
+    border-bottom: 2px solid #000;
+    letter-spacing: 0.03em;
+}
+
+.retro-box p {
+    margin: 0 0 8px;
+    font-size: 0.95rem;
+    line-height: 1.35;
+}
+
+.retro-box p:last-child {
+    margin-bottom: 0;
+}
+
+.tiny {
+    font-size: 0.75rem;
+    font-family: "Courier New", monospace;
+    line-height: 1.3;
+}
+
+.center {
+    text-align: center;
+}
+
+.mono {
+    font-family: "Courier New", monospace;
+    font-weight: bold;
+}
+
+a {
+    color: #0000ee;
+}
+
+a:visited {
+    color: #551a8b;
+}
+
+a:hover {
+    color: #ff00c8;
+}
+
+/* Listas de botones biselados de la barra lateral */
+.btn-list,
+.link-list,
+.poll {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.btn-list li {
+    margin-bottom: 4px;
+}
+
+.btn-list a {
+    display: block;
+    padding: 4px 6px;
+    font-family: "Comic Sans MS", "Trebuchet MS", cursive, sans-serif;
+    font-size: 0.78rem;
+    text-decoration: none;
+    color: #000;
+    background: #d4d0c8;
+    border: 2px outset #f0f0f0;
+}
+
+.btn-list a:hover {
+    background: #ffe600;
+    color: #000;
+}
+
+.btn-list a:active {
+    border-style: inset;
+}
+
+.link-list li {
+    font-size: 0.78rem;
+    margin-bottom: 4px;
+    line-height: 1.25;
+}
+
+.star-list {
+    margin: 0;
+    padding-left: 1.2rem;
+    list-style: "\2605  ";
+    font-size: 0.92rem;
+    line-height: 1.45;
+}
+
+.rank-list {
+    margin: 0;
+    padding-left: 1.6rem;
+    font-size: 0.92rem;
+    line-height: 1.45;
+}
+
+.star-list li,
+.rank-list li {
+    margin-bottom: 4px;
+}
+
+.retro-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    background: #fff;
+    border: 2px inset #999;
+}
+
+.retro-table th,
+.retro-table td {
+    border: 1px solid #999;
+    padding: 4px 6px;
+    text-align: left;
+    vertical-align: top;
+}
+
+.retro-table th {
+    background: #000080;
+    color: #fff;
+    font-family: "Comic Sans MS", "Trebuchet MS", cursive, sans-serif;
+    font-size: 0.78rem;
+    white-space: nowrap;
+}
+
+.retro-table.striped tr:nth-child(odd) td {
+    background: #eef1ff;
+}
+
+.retro-table td.center {
+    text-align: center;
+}
+
+/* Marcos que hacen de hueco para las imágenes que aún no existen */
+.frame-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 8px;
+}
+
+.frame {
+    height: 92px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: repeating-linear-gradient(135deg, #fff 0 8px, #e6e6e6 8px 16px);
+    border: 3px inset #8a8a8a;
+    font-family: "Courier New", monospace;
+    font-size: 0.72rem;
+    color: #555;
+    text-align: center;
+    padding: 4px;
+}
+
+.frame.tall {
+    height: 130px;
+}
+
+.webring {
+    text-align: center;
+}
+
+.webring-name {
+    font-family: "Comic Sans MS", "Trebuchet MS", cursive, sans-serif;
+    font-size: 0.75rem;
+    color: #7a00b8;
+}
+
+.webring-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    justify-content: center;
+    font-size: 0.7rem;
+}
+
+.webring-nav a {
+    background: #d4d0c8;
+    border: 2px outset #f0f0f0;
+    padding: 2px 5px;
+    text-decoration: none;
+    color: #000;
+}
+
+/* Contador de visitas tipo odómetro */
+.counter-box {
+    text-align: center;
+}
+
+.counter {
+    display: flex;
+    justify-content: center;
+    gap: 2px;
+    margin: 8px 0;
+}
+
+.counter .digit {
+    background: #000;
+    color: #fff;
+    font-family: "Courier New", monospace;
+    font-size: 1.5rem;
+    font-weight: bold;
+    line-height: 1;
+    padding: 5px 6px;
+    border: 1px solid #666;
+}
+
+.guestbook {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.guestbook label {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 0.72rem;
+    font-family: "Courier New", monospace;
+}
+
+.guestbook input,
+.guestbook textarea {
+    font-family: "Courier New", monospace;
+    font-size: 0.75rem;
+    border: 2px inset #999;
+    background: #fff;
+    padding: 3px;
+    width: 100%;
+    resize: none;
+}
+
+.guestbook button {
+    font-family: "Comic Sans MS", "Trebuchet MS", cursive, sans-serif;
+    font-size: 0.75rem;
+    font-weight: bold;
+    padding: 4px;
+    background: #d4d0c8;
+    border: 2px outset #f0f0f0;
+}
+
+.poll li {
+    font-size: 0.75rem;
+    font-family: "Courier New", monospace;
+    margin-bottom: 3px;
+}
+
+/* Chapas 88x31, dibujadas con CSS */
+.badges-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.badge {
+    width: 88px;
+    height: 31px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: Verdana, Geneva, sans-serif;
+    line-height: 1.05;
+    border: 1px solid #000;
+    background: linear-gradient(180deg, #1b1b6f, #000);
+    color: #fff;
+}
+
+.badge b {
+    font-size: 8px;
+    letter-spacing: 0.06em;
+}
+
+.badge span {
+    font-size: 7px;
+    color: #ffe600;
+}
+
+.badge.alt {
+    background: linear-gradient(180deg, #d4d0c8, #8a8a8a);
+    color: #000;
+}
+
+.badge.alt span {
+    color: #a00;
+}
+
+.badge.alt2 {
+    background: linear-gradient(180deg, #007a2f, #00340f);
+}
+
+.badge.alt3 {
+    background: linear-gradient(180deg, #a00, #400);
+}
+
+.mail-icon {
+    font-size: 2rem;
+    line-height: 1;
+}
+
+.blink {
+    color: #d40000;
+    font-weight: bold;
+    animation: blink 1s steps(1, end) infinite;
+}
+
+.retro-footer {
+    margin-top: 14px;
+    background: #c0c0c0;
+    border: 3px outset #e8e8e8;
+    padding: 8px;
+    font-size: 0.75rem;
+    font-family: "Courier New", monospace;
+}
+
+.retro-footer p {
+    margin: 5px 0;
+}
+
+.retro-footer hr {
+    border: none;
+    border-top: 2px groove #888;
+}
+
+/* ---------- 6. Modo alternativo (homenaje) ---------- */
+
+.mrx-stage {
+    padding: 58px 14px 30px;
+}
+
+.mrx-window {
+    max-width: 900px;
+    margin: 0 auto;
+    background: #d8d8d8;
+    border: 3px solid #7a7a8a;
+    border-radius: 4px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    padding: 5px;
+}
+
+.mrx-titlebar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: 20px;
+    padding: 0 4px;
+    margin-bottom: 5px;
+    border: 2px outset #ececec;
+    background: #d8d8d8;
+}
+
+.mrx-btn-square,
+.mrx-btn-save {
+    width: 13px;
+    height: 13px;
+    flex: none;
+    border: 1px solid #555;
+    background: #f2f2f2;
+}
+
+.mrx-btn-save {
+    background: linear-gradient(180deg, #f2f2f2 0 55%, #9a9a9a 55%);
+}
+
+.mrx-stripes {
+    flex: 1;
+    height: 12px;
+    background: repeating-linear-gradient(180deg, #8f8f9c 0 2px, #e8e8ee 2px 4px);
+}
+
+/* El "lienzo" verde menta */
+.mrx-screen {
+    position: relative;
+    background: #6ad3a6;
+    border: 2px inset #9a9a9a;
+    padding: 14px 10px 0;
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+    min-height: 380px;
+}
+
+.mrx-title {
+    position: relative;
+    z-index: 2;
+    margin: 0;
+    text-align: center;
+    font-family: "Cooper Black", "Bookman Old Style", Rockwell, Georgia, serif;
+    font-size: clamp(1.5rem, 5.2vw, 3.1rem);
+    font-weight: 900;
+    color: #7b0f8f;
+    letter-spacing: 0.01em;
+    -webkit-text-stroke: 1px #4d0059;
+}
+
+.mrx-field {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+}
+
+.spr {
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    width: calc(150px * var(--sc, 1));
+    height: calc(110px * var(--sc, 1));
+    overflow: visible;
+    animation-delay: var(--d, 0s);
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+}
+
+.s-toaster {
+    animation-name: flap;
+    animation-duration: 2.6s;
+}
+
+.s-worm {
+    animation-name: wiggle;
+    animation-duration: 2s;
+}
+
+.s-lips {
+    animation-name: chatter;
+    animation-duration: 1.6s;
+}
+
+.s-clock {
+    animation-name: shake;
+    animation-duration: 1.1s;
+    animation-timing-function: linear;
+}
+
+.s-figure {
+    width: calc(150px * var(--sc, 1));
+    height: calc(270px * var(--sc, 1));
+    animation-name: hover-float;
+    animation-duration: 4s;
+}
+
+.mrx-counter {
+    position: absolute;
+    z-index: 2;
+    left: 50%;
+    bottom: 6%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 5px;
+    margin: 0;
+}
+
+.mrx-counter span {
+    background: #000;
+    color: #fff;
+    font-family: "Courier New", monospace;
+    font-size: clamp(1.2rem, 3.6vw, 2.1rem);
+    font-weight: bold;
+    line-height: 1;
+    padding: 4px 10px;
+    border: 2px solid #fff;
+}
+
+.mrx-scrollbar-h {
+    margin-top: 5px;
+    height: 15px;
+    border: 2px inset #ececec;
+    background: repeating-linear-gradient(90deg, #cfcfcf 0 2px, #e9e9e9 2px 4px);
+}
+
+.mrx-scrollbar-h span {
+    display: block;
+    width: 42%;
+    height: 100%;
+    background: #d8d8d8;
+    border: 2px outset #f2f2f2;
+}
+
+.mrx-back {
+    text-align: center;
+    margin: 16px 0 0;
+    font-family: "Courier New", monospace;
+    font-size: 0.8rem;
+}
+
+.mrx-back a {
+    color: #ffe600;
+}
+
+/* ---------- 7. Animaciones ---------- */
+
+@keyframes marquee {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-100%); }
+}
+
+@keyframes blink {
+    50% { opacity: 0; }
+}
+
+@keyframes barber {
+    to { background-position: 40px 0; }
+}
+
+@keyframes hue-cycle {
+    to { filter: hue-rotate(360deg); }
+}
+
+@keyframes flap {
+    0%, 100% { transform: translate(0, 0) rotate(-3deg); }
+    50%      { transform: translate(10px, -14px) rotate(3deg); }
+}
+
+@keyframes wiggle {
+    0%, 100% { transform: translateY(0) rotate(-4deg); }
+    50%      { transform: translateY(-8px) rotate(4deg); }
+}
+
+@keyframes chatter {
+    0%, 100% { transform: scaleY(1) rotate(-2deg); }
+    50%      { transform: scaleY(0.72) rotate(2deg); }
+}
+
+@keyframes shake {
+    0%, 100% { transform: rotate(-7deg); }
+    50%      { transform: rotate(7deg); }
+}
+
+@keyframes hover-float {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-12px); }
+}
+
+/* ---------- 8. Responsive y reduced-motion ---------- */
+
+@media (max-width: 900px) {
+    .retro-layout {
+        grid-template-columns: 170px 1fr;
+    }
+
+    .retro-col-right {
+        grid-column: 1 / -1;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .retro-col-right .retro-box {
+        flex: 1 1 200px;
+    }
+}
+
+@media (max-width: 768px) {
+    .retro-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .retro-col-right {
+        flex-direction: column;
+    }
+
+    .mode-toggle {
+        font-size: 0.7rem;
+        padding: 6px 10px;
+    }
+
+    .wip-badge {
+        font-size: 0.7rem;
+        padding: 6px 10px;
+    }
+
+    .mrx-screen {
+        aspect-ratio: 3 / 4;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .marquee span,
+    .construction,
+    .banner-title,
+    .blink,
+    .spr {
+        animation: none;
+    }
+
+    .marquee span {
+        padding-left: 0;
+    }
+
+    .blink {
+        opacity: 1;
+    }
+}
