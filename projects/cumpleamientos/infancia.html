@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infancia</title>
+    <!-- Página deliberadamente independiente: NO carga ../../style.css -->
+    <link rel="stylesheet" href="infancia.css">
+    <script src="/global.js"></script>
+</head>
+<!-- Por ahora solo se muestra la versión alternativa: el <body> arranca en mode-mrx.
+     Para recuperar el cambio de versión, volver a poner class="mode-2000s" y descomentar
+     el botón de más abajo y el bloque de cambio de modo en ../js/infancia.js. -->
+<body class="mode-mrx">
+
+    <!-- ================= SPRITES (modo alternativo) ================= -->
+    <svg class="sprite-defs" aria-hidden="true" focusable="false">
+        <defs>
+            <!-- Tostadora con alas -->
+            <symbol id="spr-toaster" viewBox="0 0 140 90">
+                <path d="M8 34 C2 30 4 18 14 14 C28 8 44 12 52 22 C42 24 28 28 8 34 Z" fill="#fff" stroke="#333" stroke-width="2.5" stroke-linejoin="round"/>
+                <path d="M14 30 C24 26 36 23 48 21" fill="none" stroke="#333" stroke-width="1.5"/>
+                <rect x="46" y="26" width="82" height="52" rx="10" fill="#d8d8d8" stroke="#333" stroke-width="3"/>
+                <rect x="52" y="32" width="70" height="16" rx="6" fill="#f2f2f2" stroke="#333" stroke-width="2"/>
+                <rect x="60" y="36" width="20" height="6" rx="3" fill="#555"/>
+                <rect x="90" y="36" width="20" height="6" rx="3" fill="#555"/>
+                <rect x="126" y="44" width="10" height="20" rx="4" fill="#9a9a9a" stroke="#333" stroke-width="2"/>
+                <circle cx="62" cy="64" r="5" fill="#8a8a8a" stroke="#333" stroke-width="2"/>
+                <path d="M52 78 L52 84 M122 78 L122 84" stroke="#333" stroke-width="4" stroke-linecap="round"/>
+            </symbol>
+
+            <!-- Gusano a rayas -->
+            <symbol id="spr-worm" viewBox="0 0 140 60">
+                <path d="M12 40 C24 16 42 16 54 32 C66 48 84 48 96 32 C106 19 118 18 128 26" fill="none" stroke="#b9a7e0" stroke-width="16" stroke-linecap="round"/>
+                <path d="M12 40 C24 16 42 16 54 32 C66 48 84 48 96 32 C106 19 118 18 128 26" fill="none" stroke="#f0a8d0" stroke-width="16" stroke-linecap="butt" stroke-dasharray="9 13"/>
+                <circle cx="128" cy="26" r="9" fill="#c8b8ea" stroke="#7d6aa8" stroke-width="1.5"/>
+                <circle cx="126" cy="23" r="2" fill="#2b2b2b"/>
+                <circle cx="132" cy="25" r="2" fill="#2b2b2b"/>
+            </symbol>
+
+            <!-- Boca abierta -->
+            <symbol id="spr-lips" viewBox="0 0 120 80">
+                <path d="M6 40 C26 6 96 4 114 30 C96 34 40 40 6 40 Z" fill="#ff5fa2" stroke="#c9247a" stroke-width="3" stroke-linejoin="round"/>
+                <path d="M6 40 C40 40 96 34 114 30 C104 62 34 74 6 40 Z" fill="#ff77b3" stroke="#c9247a" stroke-width="3" stroke-linejoin="round"/>
+                <path d="M22 44 C44 62 82 58 96 40 C74 46 44 48 22 44 Z" fill="#e02020"/>
+                <path d="M14 38 C40 38 84 34 104 31 L104 25 C82 30 40 34 14 33 Z" fill="#fff"/>
+            </symbol>
+
+            <!-- Despertador -->
+            <symbol id="spr-clock" viewBox="0 0 90 90">
+                <circle cx="22" cy="20" r="12" fill="#ffd400" stroke="#333" stroke-width="3"/>
+                <circle cx="68" cy="20" r="12" fill="#ffd400" stroke="#333" stroke-width="3"/>
+                <path d="M18 78 L10 88 M72 78 L80 88" stroke="#333" stroke-width="5" stroke-linecap="round"/>
+                <circle cx="45" cy="48" r="30" fill="#ffd400" stroke="#333" stroke-width="4"/>
+                <circle cx="45" cy="48" r="23" fill="#fffbe6" stroke="#333" stroke-width="2"/>
+                <path d="M45 48 L45 33 M45 48 L57 54" stroke="#222" stroke-width="3.5" stroke-linecap="round"/>
+                <circle cx="45" cy="48" r="3" fill="#222"/>
+                <rect x="39" y="4" width="12" height="7" rx="3" fill="#ffd400" stroke="#333" stroke-width="2.5"/>
+            </symbol>
+
+            <!-- Figura con halo -->
+            <symbol id="spr-figure" viewBox="0 0 120 220">
+                <ellipse cx="60" cy="26" rx="30" ry="8" fill="none" stroke="#f2c200" stroke-width="5"/>
+                <path d="M34 60 C34 32 86 32 86 60 C86 84 78 98 60 98 C42 98 34 84 34 60 Z" fill="#8a5a2b"/>
+                <circle cx="60" cy="60" r="20" fill="#f6d9a8" stroke="#c9a06a" stroke-width="1.5"/>
+                <path d="M38 58 C38 34 82 34 82 58 C76 48 68 45 60 45 C52 45 44 48 38 58 Z" fill="#8a5a2b"/>
+                <path d="M40 62 C40 88 80 88 80 62 C80 82 72 92 60 92 C48 92 40 82 40 62 Z" fill="#8a5a2b"/>
+                <circle cx="52" cy="58" r="2.6" fill="#3a2410"/>
+                <circle cx="68" cy="58" r="2.6" fill="#3a2410"/>
+                <path d="M53 70 C57 73 63 73 67 70" fill="none" stroke="#3a2410" stroke-width="2" stroke-linecap="round"/>
+                <path d="M42 92 L78 92 L92 200 L28 200 Z" fill="#f4f4f8" stroke="#b9b9c8" stroke-width="2.5"/>
+                <path d="M42 96 L24 140 L36 146 L48 112 Z" fill="#f4f4f8" stroke="#b9b9c8" stroke-width="2.5"/>
+                <path d="M78 96 L98 138 L86 146 L72 112 Z" fill="#f4f4f8" stroke="#b9b9c8" stroke-width="2.5"/>
+                <circle cx="28" cy="148" r="7" fill="#f6d9a8" stroke="#c9a06a" stroke-width="2"/>
+                <circle cx="92" cy="148" r="7" fill="#f6d9a8" stroke="#c9a06a" stroke-width="2"/>
+                <path d="M36 200 L36 212 L54 212 L54 200 M66 200 L66 212 L84 212 L84 200" fill="#f6d9a8" stroke="#c9a06a" stroke-width="2"/>
+            </symbol>
+        </defs>
+    </svg>
+
+    <!-- Control de cambio de versión, desactivado temporalmente: la versión original
+         (modo 2000) sigue en el HTML de más abajo, pero no hay forma de llegar a ella. -->
+    <!-- <button type="button" id="mode-toggle" class="mode-toggle">Ver versión alternativa</button> -->
+
+    <!-- Aviso mientras la versión original está desactivada -->
+    <p class="wip-badge">En proceso</p>
+
+    <!-- ================================================================
+         MODO 1 — Página personal de principios de los 2000
+         ================================================================ -->
+    <div class="retro-page">
+
+        <div class="retro-banner">
+            <p class="banner-eyebrow">&#9733; &#9733; &#9733; bienvenido al pasado &#9733; &#9733; &#9733;</p>
+            <h1 class="banner-title">Cumpleaños pasados</h1>
+            <p class="banner-sub">Donde podrás encontrar fotos, montajes y recuerdos en general de mis anteriores celebraciones.</p>
+            <div class="marquee" aria-hidden="true">
+                <span>&#9658; &iexcl;&iexcl;NUEVO!! he a&ntilde;adido fotos nuevas &nbsp; &#9679; &nbsp; firma mi libro de visitas &nbsp; &#9679; &nbsp; esta p&aacute;gina se ve mejor en 800x600 &nbsp; &#9679; &nbsp; gracias por visitarme!!! &nbsp; &#9679; &nbsp; no te olvides de pulsar F5 &nbsp; &#9658;</span>
+            </div>
+            <div class="construction">
+                <span class="construction-label">&#9888; P&Aacute;GINA EN CONSTRUCCI&Oacute;N &#9888;</span>
+            </div>
+        </div>
+
+        <div class="retro-layout">
+
+            <!-- ------------------ COLUMNA IZQUIERDA ------------------ -->
+            <div class="retro-col retro-col-left">
+
+                <div class="retro-box">
+                    <h2 class="box-title">SECCIONES</h2>
+                    <ul class="btn-list">
+                        <li><a href="#quien-soy">&#9654; &iquest;Qui&eacute;n soy?</a></li>
+                        <li><a href="#juguetes">&#9654; Mis juguetes</a></li>
+                        <li><a href="#cole">&#9654; El cole</a></li>
+                        <li><a href="#videojuegos">&#9654; Videojuegos <span class="blink">&iexcl;NUEVO!</span></a></li>
+                        <li><a href="#verano">&#9654; El verano</a></li>
+                        <li><a href="#dibujos">&#9654; Mis dibujos</a></li>
+                        <li><a href="#fotos">&#9654; Fotos</a></li>
+                    </ul>
+                </div>
+
+                <div class="retro-box">
+                    <h2 class="box-title">MIS LINKS</h2>
+                    <!-- TODO: enlaces reales -->
+                    <ul class="link-list">
+                        <li><a href="#">&#9733; La p&aacute;gina de [NOMBRE]</a></li>
+                        <li><a href="#">&#9733; [ENLACE AQU&Iacute;]</a></li>
+                        <li><a href="#">&#9733; [ENLACE AQU&Iacute;]</a></li>
+                        <li><a href="../otros_cumpleamientos.html">&#9733; Volver a a&ntilde;os anteriores</a></li>
+                        <li><a href="../../index.html">&#9733; Home</a></li>
+                    </ul>
+                </div>
+
+                <div class="retro-box webring">
+                    <h2 class="box-title">WEBRING</h2>
+                    <p class="webring-name">~ El Anillo de las P&aacute;ginas Personales ~</p>
+                    <p class="webring-nav">
+                        <a href="#">&laquo; ANTERIOR</a>
+                        <a href="#">AZAR</a>
+                        <a href="#">SIGUIENTE &raquo;</a>
+                    </p>
+                    <p class="tiny">esta p&aacute;gina es el sitio n&ordm; 47 del anillo</p>
+                </div>
+
+                <div class="retro-box">
+                    <h2 class="box-title">&Uacute;LTIMA ACTUALIZACI&Oacute;N</h2>
+                    <p class="tiny center">
+                        <!-- TODO: fecha real -->
+                        [FECHA]<br>
+                        <span class="blink">&iexcl;actualizada hoy mismo!</span>
+                    </p>
+                    <p class="tiny center">Hora del servidor:<br><span id="retro-clock" class="mono">--:--:--</span></p>
+                </div>
+
+            </div>
+
+            <!-- ------------------ COLUMNA CENTRAL ------------------ -->
+            <div class="retro-col retro-col-main">
+
+                <div class="retro-box highlight">
+                    <h2 class="box-title">&#9829; &iexcl;BIENVENIDO A MI P&Aacute;GINA! &#9829;</h2>
+                    <!-- TODO: texto real de bienvenida -->
+                    <p><b>[TU TEXTO AQU&Iacute;]</b> &mdash; esta es la parte donde se explica de qu&eacute; va la p&aacute;gina, por qu&eacute; existe y a qui&eacute;n hay que dar las gracias por el hosting.</p>
+                    <p class="tiny">Si esta p&aacute;gina se ve rara, prueba a maximizar la ventana. Y si sigue vi&eacute;ndose rara, es que se ve as&iacute;.</p>
+                </div>
+
+                <div class="retro-box" id="quien-soy">
+                    <h2 class="box-title">&iquest;QUI&Eacute;N SOY?</h2>
+                    <!-- TODO: datos reales -->
+                    <table class="retro-table">
+                        <tr><th>Nombre</th><td>[NOMBRE]</td></tr>
+                        <tr><th>Edad</th><td>[EDAD] a&ntilde;os</td></tr>
+                        <tr><th>Color favorito</th><td>[COLOR]</td></tr>
+                        <tr><th>Comida favorita</th><td>[COMIDA]</td></tr>
+                        <tr><th>Animal favorito</th><td>[ANIMAL]</td></tr>
+                        <tr><th>De mayor quiero ser</th><td>[PROFESI&Oacute;N]</td></tr>
+                    </table>
+                </div>
+
+                <div class="retro-box" id="juguetes">
+                    <h2 class="box-title">&#9733; MIS JUGUETES &#9733;</h2>
+                    <!-- TODO: lista real -->
+                    <ul class="star-list">
+                        <li>[JUGUETE 1] &mdash; breve explicaci&oacute;n de por qu&eacute; era el mejor</li>
+                        <li>[JUGUETE 2] &mdash; [DETALLE]</li>
+                        <li>[JUGUETE 3] &mdash; [DETALLE]</li>
+                        <li>[JUGUETE 4] &mdash; [DETALLE]</li>
+                    </ul>
+                    <p class="tiny">&#9755; Los tengo todos guardados en una caja. <span class="blink">&iexcl;NO TOCAR!</span></p>
+                </div>
+
+                <div class="retro-box" id="cole">
+                    <h2 class="box-title">EL COLE</h2>
+                    <!-- TODO: asignaturas y notas reales -->
+                    <table class="retro-table striped">
+                        <tr><th>Asignatura</th><th>Nota</th><th>Comentario</th></tr>
+                        <tr><td>[ASIGNATURA]</td><td class="center">[NOTA]</td><td>[COMENTARIO]</td></tr>
+                        <tr><td>[ASIGNATURA]</td><td class="center">[NOTA]</td><td>[COMENTARIO]</td></tr>
+                        <tr><td>[ASIGNATURA]</td><td class="center">[NOTA]</td><td>[COMENTARIO]</td></tr>
+                        <tr><td>[ASIGNATURA]</td><td class="center">[NOTA]</td><td>[COMENTARIO]</td></tr>
+                    </table>
+                </div>
+
+                <div class="retro-box" id="videojuegos">
+                    <h2 class="box-title">VIDEOJUEGOS <span class="blink">&iexcl;NUEVO!</span></h2>
+                    <!-- TODO: ranking real -->
+                    <ol class="rank-list">
+                        <li>[JUEGO] &mdash; [POR QU&Eacute;]</li>
+                        <li>[JUEGO] &mdash; [POR QU&Eacute;]</li>
+                        <li>[JUEGO] &mdash; [POR QU&Eacute;]</li>
+                    </ol>
+                    <p class="tiny">Trucos, contrase&ntilde;as y c&oacute;digos: <a href="#">pincha aqu&iacute;</a> (p&aacute;gina en obras)</p>
+                </div>
+
+                <div class="retro-box" id="verano">
+                    <h2 class="box-title">EL VERANO</h2>
+                    <!-- TODO: texto real -->
+                    <p>[TU TEXTO AQU&Iacute;] &mdash; el p&aacute;rrafo largo sobre los veranos: el sitio, la gente, la bici, lo que se com&iacute;a y a qu&eacute; hora hab&iacute;a que volver a casa.</p>
+                    <p>[SEGUNDO P&Aacute;RRAFO] &mdash; y aqu&iacute; la an&eacute;cdota que se cuenta siempre.</p>
+                </div>
+
+                <div class="retro-box" id="dibujos">
+                    <h2 class="box-title">MIS DIBUJOS</h2>
+                    <!-- TODO: sustituir los marcos por <img src="../../src/..."> -->
+                    <div class="frame-grid">
+                        <div class="frame"><span>[DIBUJO 1]</span></div>
+                        <div class="frame"><span>[DIBUJO 2]</span></div>
+                        <div class="frame"><span>[DIBUJO 3]</span></div>
+                        <div class="frame"><span>[DIBUJO 4]</span></div>
+                    </div>
+                </div>
+
+                <div class="retro-box" id="fotos">
+                    <h2 class="box-title">&#9658; FOTOS &#9668;</h2>
+                    <!-- TODO: sustituir los marcos por <img src="../../src/..."> -->
+                    <div class="frame-grid">
+                        <div class="frame tall"><span>[FOTO 1]</span></div>
+                        <div class="frame tall"><span>[FOTO 2]</span></div>
+                        <div class="frame tall"><span>[FOTO 3]</span></div>
+                    </div>
+                    <p class="tiny">Las fotos tardan en cargar porque son muy grandes (casi 40 KB cada una).</p>
+                </div>
+
+            </div>
+
+            <!-- ------------------ COLUMNA DERECHA ------------------ -->
+            <div class="retro-col retro-col-right">
+
+                <div class="retro-box counter-box">
+                    <h2 class="box-title">VISITAS</h2>
+                    <p class="counter" id="hit-counter" aria-label="Contador de visitas">
+                        <span class="digit">0</span><span class="digit">0</span><span class="digit">0</span><span class="digit">0</span><span class="digit">0</span><span class="digit">0</span>
+                    </p>
+                    <p class="tiny center">personas han visitado esta p&aacute;gina desde 1999</p>
+                </div>
+
+                <div class="retro-box">
+                    <h2 class="box-title">LIBRO DE VISITAS</h2>
+                    <p class="tiny">&iexcl;D&eacute;jame un mensaje!</p>
+                    <!-- Formulario decorativo: el sitio es est&aacute;tico, no hay backend -->
+                    <form class="guestbook" onsubmit="return false;">
+                        <label>Nombre:<input type="text" disabled placeholder="tu nombre"></label>
+                        <label>Mensaje:<textarea rows="3" disabled placeholder="hola!! muy chula tu pagina"></textarea></label>
+                        <button type="button" disabled>ENVIAR</button>
+                    </form>
+                    <p class="tiny">(el libro de visitas est&aacute; temporalmente fuera de servicio)</p>
+                </div>
+
+                <div class="retro-box">
+                    <h2 class="box-title">ENCUESTA</h2>
+                    <p class="tiny"><b>&iquest;Qu&eacute; te parece mi p&aacute;gina?</b></p>
+                    <ul class="poll">
+                        <li><label><input type="radio" name="poll" disabled> Muy chula</label></li>
+                        <li><label><input type="radio" name="poll" disabled> Gu&aacute;u</label></li>
+                        <li><label><input type="radio" name="poll" disabled> La mejor de internet</label></li>
+                    </ul>
+                </div>
+
+                <div class="retro-box badges-box">
+                    <h2 class="box-title">PREMIOS</h2>
+                    <div class="badge"><b>BEST VIEWED</b><span>with NETSCAPE</span></div>
+                    <div class="badge alt"><b>MADE WITH</b><span>NOTEPAD</span></div>
+                    <div class="badge alt2"><b>800&times;600</b><span>OPTIMIZED</span></div>
+                    <div class="badge alt3"><b>NO FRAMES</b><span>ZONE</span></div>
+                </div>
+
+                <div class="retro-box">
+                    <h2 class="box-title">ESCR&Iacute;BEME</h2>
+                    <p class="center"><span class="mail-icon" aria-hidden="true">&#9993;</span></p>
+                    <!-- TODO: correo real -->
+                    <p class="tiny center"><a href="#">[TU CORREO AQU&Iacute;]</a></p>
+                    <p class="tiny center">(escribe "hola" en el asunto)</p>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="retro-footer">
+            <hr>
+            <p class="center">&#9733; &#9733; &#9733;</p>
+            <p class="center">&copy; 2026 Fran Matorras &nbsp;&#9679;&nbsp; Esta p&aacute;gina funciona mejor a 800&times;600 &nbsp;&#9679;&nbsp; Hecha con el Bloc de notas</p>
+            <p class="center"><a href="../otros_cumpleamientos.html">Volver a a&ntilde;os anteriores</a> | <a href="../../index.html">Home</a></p>
+            <hr>
+        </div>
+
+    </div>
+
+    <!-- ================================================================
+         MODO 2 — Versión alternativa (homenaje, arte original)
+         ================================================================ -->
+    <div class="mrx-stage">
+        <div class="mrx-window">
+            <div class="mrx-titlebar">
+                <span class="mrx-btn-square"></span>
+                <span class="mrx-stripes"></span>
+                <span class="mrx-btn-save"></span>
+            </div>
+            <div class="mrx-screen">
+                <h1 class="mrx-title">La p&aacute;gina web de Fran</h1>
+
+                <div class="mrx-field" aria-hidden="true">
+                    <svg class="spr s-clock"   style="--x:22%;  --y:14%; --sc:.55; --d:-1.2s"><use href="#spr-clock"/></svg>
+                    <svg class="spr s-toaster" style="--x:31%;  --y:22%; --sc:.55; --d:-0.4s"><use href="#spr-toaster"/></svg>
+                    <svg class="spr s-toaster" style="--x:72%;  --y:12%; --sc:.6;  --d:-2.6s"><use href="#spr-toaster"/></svg>
+                    <svg class="spr s-worm"    style="--x:16%;  --y:31%; --sc:.75; --d:-0.9s"><use href="#spr-worm"/></svg>
+                    <svg class="spr s-worm"    style="--x:60%;  --y:21%; --sc:.6;  --d:-2.1s"><use href="#spr-worm"/></svg>
+                    <svg class="spr s-lips"    style="--x:26%;  --y:44%; --sc:.85; --d:-1.7s"><use href="#spr-lips"/></svg>
+                    <svg class="spr s-lips"    style="--x:70%;  --y:41%; --sc:.75; --d:-0.6s"><use href="#spr-lips"/></svg>
+                    <svg class="spr s-toaster" style="--x:14%;  --y:57%; --sc:.6;  --d:-3.1s"><use href="#spr-toaster"/></svg>
+                    <svg class="spr s-toaster" style="--x:64%;  --y:52%; --sc:.5;  --d:-1.5s"><use href="#spr-toaster"/></svg>
+                    <svg class="spr s-clock"   style="--x:39%;  --y:65%; --sc:.6;  --d:-2.3s"><use href="#spr-clock"/></svg>
+                    <svg class="spr s-clock"   style="--x:82%;  --y:66%; --sc:.45; --d:-0.2s"><use href="#spr-clock"/></svg>
+                    <svg class="spr s-toaster" style="--x:57%;  --y:70%; --sc:.85; --d:-1.9s"><use href="#spr-toaster"/></svg>
+                    <svg class="spr s-worm"    style="--x:20%;  --y:78%; --sc:.65; --d:-2.8s"><use href="#spr-worm"/></svg>
+                    <svg class="spr s-worm"    style="--x:76%;  --y:79%; --sc:.65; --d:-1.1s"><use href="#spr-worm"/></svg>
+                    <svg class="spr s-figure"  style="--x:44%;  --y:30%; --sc:1;   --d:-0.8s"><use href="#spr-figure"/></svg>
+                </div>
+
+                <p class="mrx-counter" aria-label="Contador de visitas">
+                    <span>0</span><span>0</span><span>0</span><span>0</span>
+                </p>
+            </div>
+            <div class="mrx-scrollbar-h" aria-hidden="true"><span></span></div>
+        </div>
+        <p class="mrx-back"><a href="../otros_cumpleamientos.html">Volver a a&ntilde;os anteriores</a></p>
+    </div>
+
+    <script src="../js/infancia.js"></script>
+</body>
+</html>
