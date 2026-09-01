@@ -1,5 +1,6 @@
 // Lecturas Page - Interactive functionality
 let booksData = [];
+let loadError = null;
 
 // Localization for months
 const monthNames = {
@@ -17,15 +18,158 @@ const monthNames = {
     12: 'Diciembre'
 };
 
-// Load books data from JSON
-async function loadBooks() {
-    try {
-        const response = await fetch('/projects/data/lecturas.json');
-        const data = await response.json();
-        booksData = data.books;
-    } catch (error) {
-        console.error('Error loading books data:', error);
+// Columns pulled from Supabase, including the embedded book/author/reading log rows
+const LECTURAS_SELECT = [
+    'id',
+    'status',
+    'state',
+    'language',
+    'date_added',
+    'acquisition_source',
+    'books(title,publication_year,original_language,series_name,series_number,book_authors(authors(name)))',
+    'reading_logs(notes,start_date,end_date)'
+].join(',');
+
+// Database values that differ from the labels shown on the page.
+// Anything not listed here is rendered as it comes from the database.
+const STATUS_MAP = {
+    finished: 'terminadas'
+};
+const LANGUAGE_MAP = {
+    Spanish: 'Español',
+    spa: 'Español',
+    English: 'Inglés',
+    eng: 'Inglés'
+};
+
+// "active" is the default state in the database and means "nothing to report",
+// so it is not shown as an "Estado" section
+const NEUTRAL_STATE = 'active';
+
+// How "Cómo lo descubrí" and the opinion are packed into reading_logs.notes
+const SOURCE_PREFIX = 'Cómo lo descubrí:';
+const NOTES_SEPARATOR = 'Notes:';
+
+// Some rows were written as UTF-8 bytes read back as Latin-1, so accented text
+// arrives double-encoded ("Ana Iris SimÃ³n"). Text that is already correct
+// makes decodeURIComponent throw, and is returned untouched — which also makes
+// this a no-op once the rows are repaired in the database.
+function fixEncoding(value) {
+    if (!value) {
+        return '';
     }
+    try {
+        return decodeURIComponent(escape(value));
+    } catch (error) {
+        return value;
+    }
+}
+
+function applyMap(value, map) {
+    if (!value) {
+        return '';
+    }
+    return map[value] || value;
+}
+
+// Most recent reading log for a book
+function getLatestLog(logs) {
+    const withNotes = (logs || []).filter(log => log.notes);
+    if (withNotes.length === 0) {
+        return null;
+    }
+    const logDate = log => log.end_date || log.start_date || '';
+    withNotes.sort((a, b) => logDate(b).localeCompare(logDate(a)));
+    return withNotes[0];
+}
+
+// Split "Cómo lo descubrí: X. Notes: Y" into the two sections the page shows.
+// Notes without those markers are treated as an opinion.
+function parseNotes(rawNotes) {
+    const notes = fixEncoding(rawNotes).trim();
+    if (!notes.startsWith(SOURCE_PREFIX)) {
+        return { source: '', opinion: notes };
+    }
+
+    const rest = notes.slice(SOURCE_PREFIX.length);
+    const separatorIndex = rest.indexOf(NOTES_SEPARATOR);
+    if (separatorIndex === -1) {
+        return { source: rest.trim().replace(/\.$/, ''), opinion: '' };
+    }
+
+    return {
+        source: rest.slice(0, separatorIndex).trim().replace(/\.$/, ''),
+        opinion: rest.slice(separatorIndex + NOTES_SEPARATOR.length).trim()
+    };
+}
+
+// Turn one personal_library row into the flat book object the table renders
+function mapLibraryRow(row) {
+    const book = row.books;
+    if (!book) {
+        return null;
+    }
+
+    const author = (book.book_authors || [])
+        .map(link => link.authors && fixEncoding(link.authors.name))
+        .filter(Boolean)
+        .join(', ');
+
+    // date_added is a DATE ("YYYY-MM-DD"); split it instead of using Date()
+    // so the month never shifts with the browser's timezone
+    const [yearAdded, monthAdded] = row.date_added ? row.date_added.split('-') : ['', ''];
+
+    const latestLog = getLatestLog(row.reading_logs);
+    const notes = latestLog ? parseNotes(latestLog.notes) : { source: '', opinion: '' };
+    const state = row.state && row.state !== NEUTRAL_STATE ? row.state : '';
+
+    return {
+        id: row.id,
+        title: fixEncoding(book.title),
+        author: author,
+        year: book.publication_year || '',
+        status: applyMap(row.status, STATUS_MAP),
+        monthAdded: monthAdded ? Number(monthAdded) : '',
+        yearAdded: yearAdded ? Number(yearAdded) : '',
+        originalLanguage: applyMap(fixEncoding(book.original_language), LANGUAGE_MAP),
+        readLanguage: applyMap(fixEncoding(row.language), LANGUAGE_MAP),
+        source: notes.source || fixEncoding(row.acquisition_source),
+        series: fixEncoding(book.series_name),
+        seriesNumber: book.series_number === null || book.series_number === undefined ? '' : book.series_number,
+        opinion: notes.opinion,
+        state: state
+    };
+}
+
+// Load books data from Supabase
+async function loadBooks() {
+    if (typeof SUPABASE_URL === 'undefined' || typeof SUPABASE_ANON_KEY === 'undefined') {
+        throw new Error('Falta js/supabase-config.js con SUPABASE_URL y SUPABASE_ANON_KEY');
+    }
+
+    const url = `${SUPABASE_URL}/rest/v1/personal_library`
+        + `?select=${encodeURIComponent(LECTURAS_SELECT)}`
+        + `&order=date_added.desc`;
+
+    const response = await fetch(url, {
+        headers: { apikey: SUPABASE_ANON_KEY }
+    });
+
+    if (!response.ok) {
+        throw new Error(`Supabase respondió ${response.status}: ${await response.text()}`);
+    }
+
+    const rows = await response.json();
+    booksData = rows.map(mapLibraryRow).filter(Boolean);
+}
+
+// Message shown when the data could not be fetched
+function renderLoadError() {
+    document.getElementById('tab-content').innerHTML = `
+        <div style="text-align: center; padding: 2rem; color: #999;">
+            <p>No se han podido cargar las lecturas.</p>
+        </div>
+    `;
 }
 
 // Get month and year string for grouping
@@ -112,7 +256,12 @@ function formatBookDetails(book) {
 // Render books table for a given status
 function renderBooks(status) {
     const tabContent = document.getElementById('tab-content');
-    
+
+    if (loadError) {
+        renderLoadError();
+        return;
+    }
+
     // Filter books by status
     const filteredBooks = booksData.filter(book => book.status === status);
     
@@ -300,9 +449,14 @@ function initializeEventListeners() {
 
 // Initialize the page
 document.addEventListener('DOMContentLoaded', async function() {
-    await loadBooks();
+    try {
+        await loadBooks();
+    } catch (error) {
+        loadError = error;
+        console.error('Error loading books data:', error);
+    }
     initializeEventListeners();
-    
+
     // Render default tab (en_marcha)
     switchTab('en_marcha');
 });
