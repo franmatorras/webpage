@@ -26,7 +26,6 @@
     }
 
     var targetDate = new Date('2026-09-19T20:00:00+02:00');
-    var wrapper = document.getElementById('cumple-countdown-wrapper');
     var daysEl = document.getElementById('cd-days');
     var hoursEl = document.getElementById('cd-hours');
     var minutesEl = document.getElementById('cd-minutes');
@@ -36,15 +35,45 @@
         return String(n).padStart(2, '0');
     }
 
+    // Para poder ver el modo fiesta antes del día 19: ?fiesta=1 lo fuerza,
+    // ?fiesta=0 lo desactiva. Sin parámetro manda la cuenta atrás.
+    var forzado = new URLSearchParams(window.location.search).get('fiesta');
+
+    if (forzado === '1') {
+        activarFiesta();
+        return;
+    }
+
     var intervalId = setInterval(updateCountdown, 1000);
     updateCountdown();
+
+    // Al llegar a cero la página se convierte en la fiesta: se esconde la cuenta
+    // atrás (por CSS, no borrando nada, para que el botón "Ver años anteriores"
+    // siga ahí) y se destapa el muro de fotos, que ya está en el HTML.
+    function activarFiesta() {
+        document.body.classList.add('fiesta-activa');
+
+        var seccion = document.getElementById('fiesta-section');
+
+        if (seccion) {
+            seccion.hidden = false;
+        }
+
+        document.dispatchEvent(new CustomEvent('fiesta:start'));
+    }
 
     function updateCountdown() {
         var diff = targetDate.getTime() - Date.now();
 
         if (diff <= 0) {
             clearInterval(intervalId);
-            wrapper.innerHTML = '<p class="cumple-celebration">¡Es la fiesta! 🎉</p>';
+
+            // ?fiesta=0 deja la cuenta atrás congelada en ceros, para poder ver
+            // la página "de antes" aunque la fecha ya haya pasado.
+            if (forzado !== '0') {
+                activarFiesta();
+            }
+
             return;
         }
 
