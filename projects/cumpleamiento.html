@@ -38,6 +38,19 @@
             </div>
         </div>
 
+        <!-- Muro de fotos: oculto hasta que la cuenta atrás llega a cero.
+             Va aquí a propósito, entre el hero y el vídeo, para que al aparecer
+             empuje el vídeo y las tarjetas hacia abajo sin mover nada por JS. -->
+        <section id="fiesta-section" class="fiesta" hidden>
+            <h2 class="fiesta-titulo">La fiesta está en marcha</h2>
+
+            <!-- La subida, con contraseña, vive en fotos.html -->
+            <a href="fotos.html" class="btn-cumpleamiento fiesta-subir-btn">📸 Sube fotos del cumple</a>
+
+            <div id="fiesta-galeria" class="fiesta-galeria"></div>
+            <a href="fotos.html#todas" class="fiesta-ver-todas" id="fiesta-ver-todas" hidden>Ver todas las fotos →</a>
+        </section>
+
         <section class="cumple-video">
             <div class="cumple-video-frame" id="cumple-video-frame">
                 <p class="cumple-video-placeholder">El vídeo estará disponible pronto 🎬</p>
@@ -84,6 +97,10 @@
     </footer>
 
     <script src="../script.js"></script>
+    <script src="/fiesta-config.js"></script>
+    <script src="js/carrusel.js"></script>
     <script src="js/cumpleamiento.js"></script>
+    <script src="js/fiesta-api.js"></script>
+    <script src="js/fiesta.js"></script>
 </body>
 </html>

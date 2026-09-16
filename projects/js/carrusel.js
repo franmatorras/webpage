@@ -22,6 +22,16 @@
     }
 
     function setupCarrusel(carrusel) {
+        // Un carrusel solo se monta una vez: init() recorre todos los
+        // [data-carrusel] al cargar la página y js/fiesta.js monta a mano el suyo
+        // en cuanto llegan las fotos, así que los dos pueden caer sobre el mismo
+        // elemento y duplicar flechas y puntos.
+        if (carrusel.dataset.carruselListo === '1') {
+            return;
+        }
+
+        carrusel.dataset.carruselListo = '1';
+
         var track = carrusel.querySelector('.carrusel-track');
         var images = track ? track.querySelectorAll('img') : [];
 
@@ -143,7 +153,12 @@
             '<button type="button" class="lightbox-close" aria-label="Cerrar">✕</button>' +
             '<button type="button" class="lightbox-prev" aria-label="Foto anterior">‹</button>' +
             '<img alt="">' +
-            '<button type="button" class="lightbox-next" aria-label="Foto siguiente">›</button>';
+            '<button type="button" class="lightbox-next" aria-label="Foto siguiente">›</button>' +
+            '<div class="lightbox-caption" hidden>' +
+                '<strong class="lightbox-caption-titulo"></strong>' +
+                '<span class="lightbox-caption-nota"></span>' +
+                '<span class="lightbox-caption-autor"></span>' +
+            '</div>';
 
         lightboxImg = lightbox.querySelector('img');
 
@@ -212,11 +227,44 @@
         lightboxIndex = (index % total + total) % total;
 
         var source = lightboxImages[lightboxIndex];
-        lightboxImg.src = source.src;
+        // Las miniaturas de la cuadrícula de fotos.html apuntan a su foto grande.
+        lightboxImg.src = source.dataset.grande || source.src;
         lightboxImg.alt = source.alt || '';
+
+        showCaption(source);
 
         var multiple = total > 1;
         lightbox.querySelector('.lightbox-prev').hidden = !multiple;
         lightbox.querySelector('.lightbox-next').hidden = !multiple;
     }
+
+    // Los carruseles antiguos no llevan data-* y no muestran pie ninguno; las
+    // fotos de la fiesta traen título, autor y nota en el dataset.
+    function showCaption(source) {
+        var caption = lightbox.querySelector('.lightbox-caption');
+        var titulo = source.dataset.titulo || '';
+        var nota = source.dataset.nota || '';
+        var autor = source.dataset.autor || '';
+
+        fillPart(caption.querySelector('.lightbox-caption-titulo'), titulo);
+        fillPart(caption.querySelector('.lightbox-caption-nota'), nota);
+        fillPart(caption.querySelector('.lightbox-caption-autor'), autor ? '— ' + autor : '');
+
+        caption.hidden = !titulo && !nota && !autor;
+    }
+
+    // textContent, nunca innerHTML: estos textos los escribe cualquiera.
+    function fillPart(element, text) {
+        element.textContent = text;
+        element.hidden = !text;
+    }
+
+    // Se expone para que quien cargue fotos por JS pueda montar un carrusel creado
+    // después del DOMContentLoaded (js/fiesta.js) o abrir el lightbox desde otra
+    // colección de imágenes, como la cuadrícula de fotos.html (js/fotos.js).
+    window.Carrusel = {
+        setup: setupCarrusel,
+        refresh: init,
+        bindLightbox: bindLightbox
+    };
 })();
