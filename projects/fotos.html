@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fotos del cumple</title>
+    <link rel="stylesheet" href="../style.css">
+    <script src="/global.js"></script>
+</head>
+<body class="theme-cumpleamiento">
+    <div class="cover-image-cumpleamiento"></div>
+
+    <header>
+        <h1>Fotos del cumple</h1>
+        <button class="nav-toggle" aria-label="Toggle navigation">☰</button>
+        <nav>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="cumpleamiento.html">Volver a Cumpleaños</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="fiesta">
+            <h2 class="fiesta-titulo">Sube fotos del cumple</h2>
+
+            <!-- 1. Contraseña. Es una puerta de interfaz, no seguridad: ver fiesta-config.js -->
+            <form id="fotos-puerta" class="fiesta-form fotos-puerta" hidden>
+                <label class="fiesta-campo">
+                    Contraseña
+                    <input type="password" id="fotos-clave" required
+                           autocomplete="current-password" autocapitalize="none"
+                           autocorrect="off" spellcheck="false">
+                </label>
+
+                <label class="fotos-mostrar">
+                    <input type="checkbox" id="fotos-mostrar"> Mostrar contraseña
+                </label>
+
+                <button type="submit" class="btn-cumpleamiento">Entrar</button>
+                <p class="fiesta-estado" id="fotos-puerta-estado" role="status" aria-live="polite"></p>
+            </form>
+
+            <p id="fotos-cerrado" class="fiesta-vacio" hidden>La subida de fotos todavía no está abierta.</p>
+
+            <!-- 2. Subida, visible tras acertar la contraseña -->
+            <form id="fiesta-form" class="fiesta-form" hidden>
+                <label class="fiesta-campo">
+                    Elegir fotos <span class="fiesta-pista">(máx. 5 por envío)</span>
+                    <input type="file" id="fiesta-file" accept="image/*" multiple>
+                </label>
+
+                <label class="fiesta-campo">
+                    Tu nombre <span class="fiesta-obligatorio" aria-hidden="true">*</span>
+                    <input type="text" id="fiesta-autor" maxlength="40" required
+                           autocomplete="name" placeholder="¿Quién sube las fotos?">
+                </label>
+
+                <!-- Una fila por foto elegida, generada por js/fotos.js -->
+                <div id="fiesta-seleccion" class="fiesta-seleccion"></div>
+
+                <button type="submit" class="btn-cumpleamiento" id="fiesta-enviar">Enviar</button>
+                <p class="fiesta-estado" id="fiesta-estado" role="status" aria-live="polite"></p>
+            </form>
+        </section>
+
+        <!-- 3. Todas las fotos, visible para todos (sin contraseña) -->
+        <section id="todas" class="fotos-todas">
+            <h2>Todas las fotos <span id="fotos-contador" class="fotos-contador"></span></h2>
+            <div id="fotos-grid" class="fotos-grid"></div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Fran Matorras</p>
+    </footer>
+
+    <script src="../script.js"></script>
+    <script src="/fiesta-config.js"></script>
+    <script src="js/carrusel.js"></script>
+    <script src="js/fiesta-api.js"></script>
+    <script src="js/fotos.js"></script>
+</body>
+</html>

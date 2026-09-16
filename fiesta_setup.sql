@@ -1,9 +1,10 @@
 -- Configuración del muro de fotos de la fiesta.
 --
--- Ejecutar UNA SOLA VEZ en el SQL Editor del proyecto Supabase *de la fiesta*
--- (el nuevo, separado del de Lecturas). Este archivo no lo carga la web: queda
--- aquí como registro de la configuración, igual que data_model.md documenta el
--- esquema de la biblioteca.
+-- Ejecutar en el SQL Editor del proyecto Supabase *de la fiesta* (el nuevo,
+-- separado del de Lecturas). Se puede volver a ejecutar sin miedo: todo va con
+-- "if not exists" / "drop policy if exists" y no borra datos. Este archivo no lo
+-- carga la web: queda aquí como registro de la configuración, igual que
+-- data_model.md documenta el esquema de la biblioteca.
 --
 -- Modelo de seguridad: la clave anon viaja en el navegador (fiesta-config.js),
 -- así que cualquiera puede hacer POST directamente. Los límites de verdad son
@@ -26,6 +27,10 @@ create table if not exists fiesta_fotos (
     visible   boolean not null default true
 );
 
+-- Miniatura de ~400 px para la cuadrícula de fotos.html (mini/<uuid>.jpg).
+-- Puede ser null: la cuadrícula usa entonces la foto grande.
+alter table fiesta_fotos add column if not exists ruta_mini text;
+
 -- El carrusel pide las fotos ordenadas por fecha descendente.
 create index if not exists fiesta_fotos_creada_en_idx
     on fiesta_fotos (creada_en desc);
@@ -43,6 +48,7 @@ create policy "fiesta_fotos anon insert"
     with check (
         visible
         and char_length(ruta) < 100
+        and char_length(coalesce(ruta_mini, '')) < 100
         and char_length(coalesce(titulo, '')) <= 60
         and char_length(coalesce(nota, '')) <= 140
         -- autor obligatorio: trim() rechaza también un nombre de solo espacios,
@@ -66,3 +72,15 @@ create policy "fiesta storage anon insert"
 --   drop policy "fiesta storage anon insert" on storage.objects;
 --   drop policy "fiesta_fotos anon insert" on fiesta_fotos;
 -- Las subidas se cortan al instante y las fotos ya subidas se siguen viendo.
+-- (Para reabrir, volver a ejecutar este archivo.)
+--
+-- La contraseña de fotos.html NO sustituye a nada de lo anterior: se comprueba
+-- solo en el navegador, y con la clave anon se puede subir sin pasar por ella.
+--
+-- Borrar TODO (solo para limpiar pruebas, nunca durante la fiesta), en dos pasos:
+--   1. Aquí, en el SQL Editor:   delete from fiesta_fotos;
+--   2. Los ficheros, desde el dashboard: Storage > fiesta > seleccionar todo
+--      (también la carpeta mini/) > Delete.
+-- Supabase no deja borrar storage.objects con SQL ("Direct deletion from storage
+-- tables is not allowed"), y si se pone en el mismo lote que el paso 1 el error
+-- deshace también el borrado de la tabla.

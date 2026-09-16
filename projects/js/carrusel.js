@@ -227,7 +227,8 @@
         lightboxIndex = (index % total + total) % total;
 
         var source = lightboxImages[lightboxIndex];
-        lightboxImg.src = source.src;
+        // Las miniaturas de la cuadrícula de fotos.html apuntan a su foto grande.
+        lightboxImg.src = source.dataset.grande || source.src;
         lightboxImg.alt = source.alt || '';
 
         showCaption(source);
@@ -258,10 +259,12 @@
         element.hidden = !text;
     }
 
-    // Se expone para que quien cargue fotos por JS (js/fiesta.js) pueda montar
-    // un carrusel creado después del DOMContentLoaded.
+    // Se expone para que quien cargue fotos por JS pueda montar un carrusel creado
+    // después del DOMContentLoaded (js/fiesta.js) o abrir el lightbox desde otra
+    // colección de imágenes, como la cuadrícula de fotos.html (js/fotos.js).
     window.Carrusel = {
         setup: setupCarrusel,
-        refresh: init
+        refresh: init,
+        bindLightbox: bindLightbox
     };
 })();

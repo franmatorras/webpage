@@ -1415,10 +1415,15 @@ body.fiesta-activa #cumple-countdown-wrapper {
     margin-bottom: 1.5rem;
 }
 
+/* Es un enlace a fotos.html: inline-flex centra el texto en los 48px de alto. */
 .fiesta-subir-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     min-height: 48px;
     padding: 0.85rem 1.75rem;
     font-size: 1.05rem;
+    text-decoration: none;
     border: none;
     cursor: pointer;
 }
@@ -1546,6 +1551,82 @@ body.fiesta-activa #cumple-countdown-wrapper {
     color: #999;
 }
 
+.fiesta-ver-todas {
+    display: block;
+    margin-top: 0.75rem;
+    text-align: center;
+    color: var(--primary-terracotta);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.fiesta-ver-todas:hover {
+    text-decoration: underline;
+}
+
+/* ===== FOTOS.HTML: contraseña y cuadrícula (ver projects/js/fotos.js) ===== */
+
+.fotos-puerta {
+    max-width: 420px;
+    margin-inline: auto;
+}
+
+.fotos-mostrar {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.9rem;
+    color: #999;
+    cursor: pointer;
+}
+
+.fotos-todas {
+    max-width: 900px;
+    margin: 0 auto 2.5rem;
+}
+
+.fotos-contador {
+    font-size: 1.2rem;
+    font-weight: 400;
+    color: #999;
+}
+
+/* Cuadrícula que hace scroll dentro de su caja: 3 por fila en móvil (forzado en
+   el bloque de 768px), más en pantallas anchas. Las miniaturas pesan ~30 KB; la
+   foto grande se carga solo al abrirla en el lightbox. */
+.fotos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 4px;
+    max-height: 70vh;
+    overflow-y: auto;
+    padding: 4px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(181, 98, 63, 0.25);
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(140, 61, 43, 0.12);
+}
+
+/* El fondo teñido hace de hueco mientras la miniatura carga. */
+.fotos-grid img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 4px;
+    cursor: zoom-in;
+    background: rgba(181, 98, 63, 0.08);
+}
+
+.fotos-grid img:focus-visible {
+    outline: 3px solid var(--accent-clay);
+    outline-offset: -3px;
+}
+
+.fotos-grid-aviso {
+    grid-column: 1 / -1;
+}
+
 @media (max-width: 768px) {
     .carrusel-btn {
         width: 32px;
@@ -1605,5 +1686,10 @@ body.fiesta-activa #cumple-countdown-wrapper {
     .lightbox-caption {
         max-width: calc(100vw - 120px);
         padding: 0.6rem 0.9rem;
+    }
+
+    /* Con minmax(120px) un móvil de 375px solo cabe a 2 columnas; se fuerzan 3. */
+    .fotos-grid {
+        grid-template-columns: repeat(3, 1fr);
     }
 }
