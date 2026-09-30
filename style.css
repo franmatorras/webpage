@@ -270,12 +270,30 @@ main h2 {
     margin-bottom: 0.75rem; /* Reduced top gap */
 }
 
-.card-index p:first-of-type {
+/* Texto desplazable: todos los párrafos dentro de <div class="card-texto"> */
+.card-index .card-texto {
     flex: 1;
+    min-height: 0;
     overflow-y: auto;
-    margin: 0;
     padding-right: 5px;
     line-height: 1.6;
+}
+
+.card-index .card-texto p {
+    margin: 0 0 0.75rem;
+}
+
+.card-index .card-texto p:last-child {
+    margin-bottom: 0;
+}
+
+.card-index .card-texto::-webkit-scrollbar {
+    width: 4px;
+}
+
+.card-index .card-texto::-webkit-scrollbar-thumb {
+    background: var(--accent-green);
+    border-radius: 10px;
 }
 
 /* Footer behavior only for the index version */
@@ -556,6 +574,43 @@ footer {
 
 .card-disenho a {
     align-self: flex-start;
+}
+
+/* Secciones plegables de diseños (projects/fran-cis-coh/disenhos.html) */
+.disenho-seccion {
+    margin-bottom: 1.5rem;
+}
+
+.disenho-seccion summary {
+    list-style: none;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    box-shadow: 0 8px 24px rgba(45, 94, 78, 0.12);
+    border: 1px solid rgba(74, 143, 122, 0.2);
+    color: var(--primary-green);
+    font-size: 1.4rem;
+    font-weight: bold;
+}
+
+.disenho-seccion summary::-webkit-details-marker {
+    display: none;
+}
+
+.disenho-seccion summary::before {
+    content: "▶";
+    display: inline-block;
+    margin-right: 0.75rem;
+    font-size: 0.9em;
+}
+
+.disenho-seccion[open] summary::before {
+    content: "▼";
+}
+
+.disenho-seccion[open] summary {
+    margin-bottom: 1.5rem;
 }
 
 /* ===== LECTURAS PAGE STYLES ===== */
@@ -1691,5 +1746,116 @@ body.fiesta-activa #cumple-countdown-wrapper {
     /* Con minmax(120px) un móvil de 375px solo cabe a 2 columnas; se fuerzan 3. */
     .fotos-grid {
         grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Marco de fotos de las tarjetas de otros_cumpleamientos.html */
+.marco {
+    padding: 15px;
+    background: #8B4513;
+    display: inline-block;
+}
+
+.marco-interior {
+    padding: 5px;
+    background: #F5DEB3;
+    display: inline-block;
+}
+
+/* Destacados: añadir "destacado-oro" (prioridad alta) o "destacado-plata"
+   - a una tarjeta ("card", "card-index" o "card-disenho"): brilla la tarjeta y su botón;
+   - a un botón suelto (<a> o <button>, p. ej. "btn-franciscoh"): brilla solo el botón.
+   Va al final del archivo para ganar a los temas (p. ej. .theme-cumpleamiento .card a).
+   En los botones sueltos la clase va repetida en el selector (.destacado-oro.destacado-oro)
+   solo para subir la especificidad y ganar a esos temas. */
+.destacado-oro {
+    --met-oscuro: #b8860b;
+    --met-medio: #ffd700;
+    --met-claro: #fff3b0;
+    --met-texto: #3a2a00;
+    --met-borde: #e6b800;
+    --brillo: rgba(255, 196, 0, 0.55);
+}
+
+.destacado-plata {
+    --met-oscuro: #5b86c5;
+    --met-medio: #a9c8f0;
+    --met-claro: #eef5ff;
+    --met-texto: #1c3557;
+    --met-borde: #6b9be0;
+    --brillo: rgba(70, 140, 235, 0.65);
+}
+
+:is(.card, .card-index, .card-disenho).destacado-oro,
+:is(.card, .card-index, .card-disenho).destacado-plata {
+    border: 2px solid var(--met-borde);
+    box-shadow: 0 8px 24px rgba(45, 94, 78, 0.12), 0 0 18px var(--brillo);
+    animation: destacado-pulso 3s ease-in-out infinite;
+}
+
+:is(.card, .card-index, .card-disenho).destacado-oro a,
+:is(.card, .card-index, .card-disenho).destacado-plata a,
+:is(a, button).destacado-oro.destacado-oro,
+:is(a, button).destacado-plata.destacado-plata {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--met-oscuro), var(--met-claro) 35%, var(--met-medio) 55%, var(--met-claro) 75%, var(--met-oscuro));
+    color: var(--met-texto);
+    font-weight: 600;
+    box-shadow: 0 2px 8px var(--brillo);
+}
+
+:is(.card, .card-index, .card-disenho).destacado-oro a:hover,
+:is(.card, .card-index, .card-disenho).destacado-plata a:hover,
+:is(a, button).destacado-oro.destacado-oro:hover,
+:is(a, button).destacado-plata.destacado-plata:hover {
+    background: linear-gradient(135deg, var(--met-medio), var(--met-claro) 50%, var(--met-medio));
+    transform: translateX(4px);
+}
+
+/* Destello de luz que cruza el botón */
+:is(.card, .card-index, .card-disenho).destacado-oro a::after,
+:is(.card, .card-index, .card-disenho).destacado-plata a::after,
+:is(a, button).destacado-oro.destacado-oro::after,
+:is(a, button).destacado-plata.destacado-plata::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -75%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+    transform: skewX(-20deg);
+    animation: destacado-brillo 3.5s ease-in-out infinite;
+    pointer-events: none;
+}
+
+/* El marco de fotos (.marco) toma el color del destacado */
+:is(.destacado-oro, .destacado-plata) .marco {
+    background: linear-gradient(135deg, var(--met-oscuro), var(--met-medio) 40%, var(--met-claro) 55%, var(--met-medio) 70%, var(--met-oscuro));
+}
+
+:is(.destacado-oro, .destacado-plata) .marco-interior {
+    background: var(--met-claro);
+}
+
+@keyframes destacado-pulso {
+    0%, 100% { box-shadow: 0 8px 24px rgba(45, 94, 78, 0.12), 0 0 12px var(--brillo); }
+    50%      { box-shadow: 0 8px 24px rgba(45, 94, 78, 0.12), 0 0 26px var(--brillo); }
+}
+
+@keyframes destacado-brillo {
+    0%       { left: -75%; }
+    60%, 100% { left: 125%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :is(.card, .card-index, .card-disenho).destacado-oro,
+    :is(.card, .card-index, .card-disenho).destacado-plata,
+    :is(.card, .card-index, .card-disenho).destacado-oro a::after,
+    :is(.card, .card-index, .card-disenho).destacado-plata a::after,
+    :is(a, button).destacado-oro.destacado-oro::after,
+    :is(a, button).destacado-plata.destacado-plata::after {
+        animation: none;
     }
 }
