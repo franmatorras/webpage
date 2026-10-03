@@ -551,7 +551,7 @@ footer {
     position: relative;
     width: 100%;
     aspect-ratio: 1 / 1;
-    margin: 1.6em 0 1em;
+    margin: 1.6em 0 0.75rem;
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 4px 12px rgba(45, 94, 78, 0.15);
@@ -565,11 +565,22 @@ footer {
     border: 0;
 }
 
+/* Botón bajo el marco: abre el diseño directamente en Google Drive */
 .design-embed__link {
     display: inline-block;
     margin-bottom: 2em;
-    color: var(--primary-green);
+    background: linear-gradient(135deg, var(--light-green), var(--accent-green));
+    color: #fff;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    text-decoration: none;
     font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.design-embed__link:hover {
+    background: linear-gradient(135deg, var(--primary-green), var(--light-green));
+    transform: translateX(4px);
 }
 
 @media (max-width: 768px) {
