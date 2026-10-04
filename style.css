@@ -51,10 +51,12 @@ body {
     /* We render the page background via the fixed .cover-image element so the body itself is transparent. */
     background: transparent;
     min-height: 100vh;
+    min-height: 100dvh; /* en móvil, la altura visible real (sin la barra del navegador) */
 }
 
 .body-index {
     min-height: 100vh;
+    min-height: 100dvh;
     margin: 0;
     /* This puts the image on the body itself */
     background: linear-gradient(rgba(245, 249, 247, 0.1), rgba(245, 249, 247, 0.1)), 
@@ -188,27 +190,44 @@ header nav::-webkit-scrollbar-thumb:hover {
     header nav {
         order: 3;
         flex-basis: 100%;
-        max-height: 0;
-        overflow: hidden;
-        transition: max-height 0.3s ease;
         gap: 0;
         padding: 0; /* con padding, una franja del menú plegado seguía visible */
     }
 
-    header nav.active {
-        max-height: 500px;
-    }
-
+    /* Subpáginas sin ☰: enlaces en fila, más compactos y alineados con el título */
     header nav ul {
-        flex-direction: column;
-        gap: 0;
-    }
-
-    header nav ul li {
-        width: 100%;
+        gap: 0.25rem 0.5rem;
+        margin-left: -0.75rem;
     }
 
     header nav a {
+        display: inline-block;
+        padding: 0.5rem 0.75rem;
+    }
+
+    /* Solo se pliega el menú de las páginas con botón ☰ (va justo antes del <nav>).
+       Las subpáginas sin botón dejan sus enlaces a la vista. */
+    .nav-toggle ~ nav {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+    }
+
+    .nav-toggle ~ nav.active {
+        max-height: 500px;
+    }
+
+    .nav-toggle ~ nav ul {
+        flex-direction: column;
+        gap: 0;
+        margin-left: 0;
+    }
+
+    .nav-toggle ~ nav ul li {
+        width: 100%;
+    }
+
+    .nav-toggle ~ nav a {
         display: block;
         padding: 1rem;
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -282,6 +301,7 @@ main h2 {
     box-shadow: 0 8px 24px rgba(45, 94, 78, 0.12);
     transition: all 0.3s ease;
     border: 1px solid rgba(74, 143, 122, 0.2);
+    -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
     display: flex;
     flex-direction: column;
@@ -352,6 +372,13 @@ main h2 {
     margin: 0;
     margin-bottom: 0.75rem; /* This is the gap ABOVE the text */
     flex-shrink: 0;
+}
+
+/* Junto a la fecha, un título largo pasa a dos líneas en vez de echar la fecha
+   fuera de la tarjeta (p. ej. "Boletín VOL VII - ESTADO DEL FRAN") */
+.card-header h3 {
+    flex-shrink: 1;
+    min-width: 0;
 }
 
 .card-date {
@@ -700,8 +727,9 @@ footer {
     padding: 1.5rem; /* Adjust this to 2rem if you want even larger padding */
     box-shadow: 0 8px 24px rgba(45, 94, 78, 0.12);
     border: 1px solid rgba(74, 143, 122, 0.2);
+    -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
-    
+
     /* The Width Fix */
     display: flex;
     flex-direction: column;
@@ -762,7 +790,7 @@ footer {
 }
 
 .disenho-seccion summary::before {
-    content: "▶";
+    content: "\25B6\FE0E"; /* ▶ forzado a texto: sin \FE0E, iOS lo pinta como emoji */
     display: inline-block;
     margin-right: 0.75rem;
     font-size: 0.9em;
@@ -1528,6 +1556,7 @@ table tbody tr {
 .lightbox img {
     max-width: 92vw;
     max-height: 88vh;
+    max-height: 88dvh; /* en iOS el vh incluye lo que tapa la barra del navegador */
     object-fit: contain;
     border-radius: 6px;
 }
@@ -2010,6 +2039,18 @@ body.fiesta-activa #cumple-countdown-wrapper {
 @keyframes destacado-brillo {
     0%       { left: -75%; }
     60%, 100% { left: 125%; }
+}
+
+/* En pantallas táctiles el hover se queda "pegado" tras tocar: sin desplazamientos.
+   El !important solo hace falta para ganar a los selectores de los destacados,
+   que tienen la especificidad subida a propósito (ver arriba). */
+@media (hover: none) {
+    .btn-cumpleamiento:hover,
+    .design-embed__link:hover,
+    :is(.card, .card-index, .card-disenho):is(.destacado-oro, .destacado-plata) a:hover,
+    :is(a, button):is(.destacado-oro, .destacado-plata):hover {
+        transform: none !important;
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
