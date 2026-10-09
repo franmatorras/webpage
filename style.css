@@ -2063,3 +2063,538 @@ body.fiesta-activa #cumple-countdown-wrapper {
         animation: none;
     }
 }
+
+/* ==========================================================================
+   Boletín nativo (bn-)
+   Boletín maquetado en HTML en lugar de un iframe de Canva (primer uso: boletin-019).
+   Para cambiar la paleta de un número, redefine las variables en .bn-boletin.
+   ========================================================================== */
+.bn-boletin {
+    --bn-fondo: #f1f2f5;
+    --bn-hoja: #fff;
+    --bn-tinta: #222;
+    --bn-menta: #3eebb7;
+    --bn-amarillo: #f5fe8c;
+    --bn-linea: #ededed;
+    --bn-linea-oscura: #bfc3c8;
+    --bn-info-fondo: #e0efff;
+    --bn-info: #1a58d8;
+    --bn-cita-fondo: #faf5f0;
+    --bn-cita: #896200;
+    --bn-articulo-fondo: #f1ebff;
+    --bn-articulo: #7731d8;
+    --bn-mono: 'Roboto Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
+    --bn-sans: 'Open Sans', 'Segoe UI', system-ui, sans-serif;
+
+    flex: 1;
+    width: 100%;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    font-family: var(--bn-mono);
+    color: var(--bn-tinta);
+    line-height: 1.5;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    html:has(.bn-boletin) {
+        scroll-behavior: smooth;
+    }
+}
+
+/* Hoja: cada "página" del boletín */
+.bn-pagina {
+    background: var(--bn-hoja);
+    border-radius: 14px;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.03), 0 6px 24px rgba(20, 30, 50, 0.10);
+    padding: 3.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    scroll-margin-top: 6rem; /* la cabecera del sitio es sticky */
+}
+
+/* Hueco para imagen: sustituir el div por <img src="../../src/..." alt="..."> */
+.bn-img {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 4rem;
+    border: 2px dashed rgba(0, 0, 0, 0.25);
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.35);
+    color: rgba(0, 0, 0, 0.45);
+    font-size: 0.65rem;
+    line-height: 1.2;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 0.25rem;
+}
+
+.bn-pagina img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+/* Pastillas con borde (redactor, columnista, contacto...) */
+.bn-pill {
+    display: inline-block;
+    border: 2px solid var(--bn-tinta);
+    border-radius: 999px;
+    padding: 0.2rem 0.8rem;
+    font-size: 0.75rem;
+    line-height: 1.25;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+/* ---------- Portada ---------- */
+.bn-banner {
+    background: var(--bn-menta);
+    padding: 1.25rem 1rem;
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    gap: 1rem;
+}
+
+.bn-boletin .bn-titulo {
+    font-family: var(--bn-mono);
+    font-weight: 400;
+    font-size: clamp(2rem, 6.2vw, 3.4rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    color: var(--bn-tinta);
+    margin: 0;
+}
+
+.bn-banner-deco {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.bn-banner-deco .bn-img,
+.bn-banner-deco img {
+    width: 4.5rem;
+    height: 4.5rem;
+    min-height: 0;
+    object-fit: contain;
+}
+
+.bn-banner-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+}
+
+.bn-banner-fila {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.bn-banner-meta .bn-img,
+.bn-banner-meta img {
+    width: 3.25rem;
+    height: 3.25rem;
+    min-height: 0;
+    object-fit: cover;
+}
+
+.bn-volumen {
+    text-align: right;
+    font-size: 1.1rem;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.bn-portada-imagen {
+    aspect-ratio: 3 / 2;
+    width: 100%;
+    max-width: 100%;
+}
+
+/* ---------- Callouts ---------- */
+.bn-callout {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border-radius: 10px;
+    padding: 0.85rem 1.1rem;
+}
+
+.bn-callout-icono {
+    flex: none;
+    width: 2.1rem;
+    height: 2.1rem;
+}
+
+.bn-callout-texto {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 0;
+}
+
+.bn-callout-titulo {
+    font-family: var(--bn-sans);
+    font-weight: 700;
+    font-size: 1.05rem;
+    line-height: 1.3;
+}
+
+.bn-callout-sub {
+    font-size: 0.8rem;
+    color: var(--bn-tinta);
+}
+
+.bn-callout--info {
+    background: var(--bn-info-fondo);
+    color: var(--bn-info);
+}
+
+.bn-callout--cita {
+    background: var(--bn-cita-fondo);
+    color: var(--bn-cita);
+}
+
+.bn-callout--articulo {
+    background: var(--bn-articulo-fondo);
+    color: var(--bn-articulo);
+}
+
+.bn-callout--articulo .bn-callout-titulo {
+    font-style: italic;
+}
+
+.bn-callout--cita .bn-callout-icono {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-weight: 700;
+    font-size: 3.4rem;
+    line-height: 0.6;
+    padding-top: 1.1rem;
+    text-align: center;
+}
+
+/* ---------- Patrocinador ---------- */
+.bn-patrocinio {
+    position: relative;
+    margin-top: 2rem;
+    padding: 1.25rem 0;
+    border-top: 1px solid var(--bn-linea);
+    border-bottom: 1px solid var(--bn-linea);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.bn-patrocinio .bn-img,
+.bn-patrocinio img {
+    width: 5.5rem;
+    height: 5.5rem;
+    min-height: 0;
+    object-fit: cover;
+}
+
+.bn-patrocinio-nota {
+    position: absolute;
+    right: 0;
+    bottom: 0.4rem;
+    text-transform: none;
+}
+
+/* ---------- Encabezado de sección (entre dos líneas) ---------- */
+.bn-encabezado {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.6rem 0;
+    border-top: 1px solid var(--bn-linea);
+    border-bottom: 1px solid var(--bn-linea);
+}
+
+.bn-boletin .bn-encabezado h2 {
+    font-family: var(--bn-mono);
+    font-weight: 700;
+    font-size: 1.8rem;
+    letter-spacing: -0.04em;
+    line-height: 1.2;
+    color: var(--bn-tinta);
+    margin: 0;
+}
+
+.bn-encabezado .bn-img,
+.bn-encabezado img {
+    flex: none;
+    width: 4rem;
+    height: 4rem;
+    min-height: 0;
+    object-fit: contain;
+}
+
+/* ---------- Índice ---------- */
+.bn-indice ol {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.bn-indice a {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    padding: 0.6rem 0.8rem;
+    border-radius: 8px;
+    color: var(--bn-tinta);
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+}
+
+.bn-indice a:hover,
+.bn-indice a:focus-visible {
+    background: var(--bn-articulo-fondo);
+}
+
+.bn-indice-num {
+    flex: none;
+    font-weight: 700;
+    color: var(--bn-articulo);
+}
+
+.bn-indice-titulo {
+    font-family: var(--bn-sans);
+    font-weight: 700;
+    font-style: italic;
+    color: var(--bn-articulo);
+}
+
+.bn-indice-autor {
+    font-size: 0.85rem;
+}
+
+.bn-indice-guia {
+    flex: 1;
+    min-width: 1.5rem;
+    border-bottom: 2px dotted var(--bn-linea-oscura);
+}
+
+/* Subapartados del índice (una categoría por grupo, en la misma tarjeta) */
+.bn-indice-grupo {
+    margin: 1.4rem 0 0.4rem;
+    border-bottom: 1px solid var(--bn-linea);
+}
+
+.bn-indice-grupo:first-child {
+    margin-top: 0;
+}
+
+.bn-boletin .bn-indice-grupo a {
+    font-family: var(--bn-mono);
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+/* Tarjeta de título de categoría: solo lleva el encabezado */
+.bn-categoria {
+    padding-block: 2rem;
+}
+
+/* Carrusel de fotos de cada texto: re-pintado con la paleta del boletín */
+.bn-boletin .carrusel {
+    margin: 0;
+    border-color: var(--bn-linea);
+}
+
+.bn-boletin .carrusel-btn {
+    color: var(--bn-articulo);
+}
+
+.bn-boletin .carrusel-dot[aria-current="true"] {
+    background: var(--bn-articulo);
+}
+
+/* Notas al pie */
+.bn-nota-ref a {
+    font-size: 0.75em;
+    font-weight: 700;
+    color: var(--bn-articulo);
+    text-decoration: none;
+    padding: 0 0.1em;
+}
+
+.bn-notas {
+    margin-top: 1.5rem;
+    padding: 1rem 0 0 1.5rem;
+    border-top: 1px solid var(--bn-linea);
+    font-size: 0.85rem;
+}
+
+.bn-notas a {
+    color: var(--bn-articulo);
+    text-decoration: none;
+}
+
+/* ---------- Cuerpo de texto ---------- */
+.bn-texto {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+    font-size: 0.85rem;
+    line-height: 1.45;
+    text-align: justify;
+    hyphens: auto;
+}
+
+.bn-volver {
+    align-self: flex-end;
+    font-size: 0.75rem;
+    color: var(--bn-articulo);
+    text-decoration: none;
+}
+
+.bn-volver:hover {
+    text-decoration: underline;
+}
+
+/* ---------- Cierre ---------- */
+.bn-cierre {
+    margin-top: 2rem;
+    border-top: 1px solid var(--bn-linea-oscura);
+    padding-top: 0.75rem;
+    text-transform: uppercase;
+}
+
+.bn-cierre-fila {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    padding: 2.5rem 1rem;
+}
+
+.bn-cierre-fila--amarillo {
+    background: var(--bn-amarillo);
+    align-items: center;
+    text-align: center;
+}
+
+.bn-cierre-fila--menta {
+    background: var(--bn-menta);
+    align-items: end;
+    padding: 1.25rem 1rem;
+}
+
+.bn-trivia-titulo {
+    font-size: 1.15rem;
+}
+
+.bn-trivia-pregunta {
+    font-size: 0.75rem;
+    line-height: 1.25;
+}
+
+.bn-despedida {
+    font-size: 1.1rem;
+    line-height: 1.25;
+}
+
+.bn-contacto {
+    font-size: 1.1rem;
+    line-height: 1.2;
+}
+
+.bn-contacto .bn-pill {
+    margin-left: 0.25rem;
+    padding: 0 1.5rem;
+    border-width: 1px;
+    font-size: 0.6rem;
+    vertical-align: middle;
+}
+
+.bn-contacto-pills {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.35rem;
+}
+
+.bn-contacto-pills .bn-pill {
+    border-width: 1px;
+    font-size: 0.55rem;
+    padding: 0.1rem 1rem;
+}
+
+@media (max-width: 600px) {
+    .bn-boletin {
+        padding: 1rem 0.5rem;
+        gap: 1.25rem;
+    }
+
+    .bn-pagina {
+        padding: 1.5rem 1rem;
+    }
+
+    .bn-banner {
+        grid-template-columns: auto 1fr;
+    }
+
+    .bn-boletin .bn-titulo {
+        grid-column: 1 / -1;
+    }
+
+    .bn-banner-deco {
+        flex-direction: row;
+    }
+
+    .bn-banner-deco .bn-img,
+    .bn-banner-deco img {
+        width: 3.25rem;
+        height: 3.25rem;
+    }
+
+    .bn-patrocinio {
+        padding-bottom: 2rem;
+    }
+
+    .bn-boletin .bn-encabezado h2 {
+        font-size: 1.4rem;
+    }
+
+    /* En columna estrecha el justificado deja huecos enormes entre palabras */
+    .bn-texto {
+        text-align: left;
+    }
+
+    .bn-indice a {
+        flex-wrap: wrap;
+        padding: 0.5rem;
+    }
+
+    .bn-indice-guia {
+        display: none;
+    }
+
+    .bn-cierre-fila {
+        grid-template-columns: 1fr;
+        padding: 1.5rem 1rem;
+    }
+
+    .bn-contacto-pills {
+        justify-content: flex-start;
+    }
+}
