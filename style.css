@@ -2160,7 +2160,7 @@ body.fiesta-activa #cumple-countdown-wrapper {
     display: grid;
     grid-template-columns: 1fr auto auto;
     align-items: center;
-    gap: 1rem;
+    gap: 1rem 0.75rem;
 }
 
 .bn-boletin .bn-titulo {
@@ -2182,8 +2182,8 @@ body.fiesta-activa #cumple-countdown-wrapper {
 
 .bn-banner-deco .bn-img,
 .bn-banner-deco img {
-    width: 4.5rem;
-    height: 4.5rem;
+    width: 5rem;
+    height: 5rem;
     min-height: 0;
     object-fit: contain;
 }
@@ -2220,6 +2220,12 @@ body.fiesta-activa #cumple-countdown-wrapper {
     aspect-ratio: 3 / 2;
     width: 100%;
     max-width: 100%;
+}
+
+/* La foto real se recorta al 3:2 en vez de deformarse */
+img.bn-portada-imagen {
+    object-fit: cover;
+    border-radius: 6px;
 }
 
 /* ---------- Callouts ---------- */
@@ -2339,8 +2345,8 @@ body.fiesta-activa #cumple-countdown-wrapper {
 .bn-encabezado .bn-img,
 .bn-encabezado img {
     flex: none;
-    width: 4rem;
-    height: 4rem;
+    width: 5rem;
+    height: 5rem;
     min-height: 0;
     object-fit: contain;
 }
@@ -2563,8 +2569,8 @@ body.fiesta-activa #cumple-countdown-wrapper {
 
     .bn-banner-deco .bn-img,
     .bn-banner-deco img {
-        width: 3.25rem;
-        height: 3.25rem;
+        width: 4rem;
+        height: 4rem;
     }
 
     .bn-patrocinio {
