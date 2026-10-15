@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+### GIT
+
+DO NOT EVER COMMIT TO THE REPOSITORY, NOR DELETE BRANCHES
+
 ## What this is
 
 A static personal website (no build step, no framework, no package.json) deployed via GitHub Pages at `fran.matorras.com` (see `CNAME`). Plain HTML/CSS/JS, in Spanish. Content: blog-style "boletines" (bulletins), a novel ("Crónica de un huracán"), a card game ("Fran cis coh!"), and a reading list ("Lecturas").
@@ -40,3 +44,9 @@ After any change, manually check the page in a browser and check the console for
 ## Notes from repo docs
 
 - `next_steps.md` sketches options for adding content without hand-editing HTML post-deploy (Jekyll, a backend, or a JSON+JS approach). The `lecturas.json` + `lecturas.js` pattern is the JSON+JS approach already implemented for one section; it's the model to follow if extending dynamic content elsewhere (e.g. boletines) rather than introducing a backend.
+
+### New content deployment
+- When performing a content update, you must update the destacado-plata to normal state and destacado-oro to destacado-plata. Then, the new added content must be flagged destacado-oro to highlight it. 
+- When performing quick fixes, such as small bugs, typos or similar errors, no changes must be made.
+- If not explicitly told to change things regarding "destacados" do not do it.
+
