@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boletín VOL XVI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,700;1,700&family=Roboto+Mono:wght@400;700&display=swap">
+    <link rel="stylesheet" href="../../style.css">
+    <script src="/global.js"></script>
+</head>
+<body>
+    <div class="cover-image-boletin"></div>
+    <header>
+        <h1>Boletín VOL XVI</h1>
+        <nav>
+            <ul>
+                <li><a href="../../index.html">Home</a></li>
+                <li><a href="../boletines.html">Volver a Boletines</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!--
+        PLANTILLA DE BOLETÍN (no se publica: GitHub Pages/Jekyll ignora los archivos que empiezan por "_").
+        Para crear un boletín nuevo:
+        1. Copiar este archivo como projects/boletines/boletin-0XX.html.
+        2. Quitar el <meta name="robots" content="noindex"> y cambiar "VOL XX" en <title>, <h1> y portada.
+        3. Crear las carpetas de fotos src/boletines/boletin_0XX/NN_slug/ (una por texto).
+        4. Añadir su .card en projects/boletines.html y aplicar la regla de destacados (CLAUDE.md).
+
+        Boletín maquetado en HTML (estilos: bloque "Boletín nativo (bn-)" al final de style.css).
+        - Huecos de imagen: sustituir cada <div class="bn-img">...</div> por
+          <img src="../../src/..." alt="...">; el tamaño lo pone el contenedor.
+        - Los textos se agrupan en categorías: cada una abre con su tarjeta de título
+          (<section class="bn-categoria">) seguida de una tarjeta por texto.
+        - Añadir un texto: copiar un bloque <section id="seccion-N"> completo dentro de su categoría,
+          renumerar, y añadir su <li> en el grupo correspondiente del índice (mismo título y autor).
+        - Fotos de cada texto: <img> dentro de su .carrusel-track (projects/js/carrusel.js).
+          Sin fotos no se muestra nada; con una, foto sola; con varias, carrusel.
+        - Notas al pie: <sup class="bn-nota-ref"><a href="#nota-N-M" id="ref-N-M">M</a></sup> en el texto
+          y su <li id="nota-N-M"> en el <ol class="bn-notas"> del final del texto (ejemplo en la sección 1).
+        - Los textos de relleno son citas de Miguel Delibes y Carlos Ruiz Zafón.
+    -->
+    <main class="bn-boletin">
+
+        <!-- ===================== PORTADA ===================== -->
+        <section class="bn-pagina" aria-label="Portada">
+            <div class="bn-banner">
+                <h2 class="bn-titulo">Franqueo de<br>un boletín</h2>
+                <div class="bn-banner-deco">
+                    <div class="bn-img">Deco 1</div>
+                    <div class="bn-img">Deco 2</div>
+                </div>
+                <div class="bn-banner-meta">
+                    <div class="bn-banner-fila">
+                        <img src="../../src/boletines/elementos_disenho/bigotes.jpg" alt="Bigotes">
+                        <p class="bn-volumen">Vol XVI<br>10/2026</p>
+                    </div>
+                    <span class="bn-pill">Redactor jefe: Fran (obvio)</span>
+                    <span class="bn-pill">Columnista invitado: ...</span>
+                </div>
+            </div>
+
+            <img class="bn-portada-imagen" src="../../src/boletines/elementos_disenho/biblioteca.jpg" alt="Biblioteca">
+
+            <div class="bn-callout bn-callout--info">
+                <svg class="bn-callout-icono" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="10"/><line x1="12" y1="11" x2="12" y2="16.5"/><circle cx="12" cy="7.5" r="0.6" fill="currentColor"/>
+                </svg>
+                <div class="bn-callout-texto">
+                    <span class="bn-callout-titulo">El boletín donde opino de libros, películas, deportes... </span>
+                    <span class="bn-callout-sub">Y un poco lo que se me ocurra</span>
+                </div>
+            </div>
+
+            <div class="bn-callout bn-callout--cita">
+                <span class="bn-callout-icono" aria-hidden="true">&ldquo;</span>
+                <div class="bn-callout-texto">
+                    <span class="bn-callout-titulo">“El coronel no tiene quien le escriba, pero tú sí.”</span>
+                    <span class="bn-callout-sub">Fran Matorras - Justo al mandarte un boletín con muchísimo texto</span>
+                </div>
+            </div>
+
+            <div class="bn-patrocinio">
+                <img src="../../src/boletines/elementos_disenho/yalopise.png" alt="Logo de Yalopise">
+                <span>Yalopise</span>
+                <span class="bn-patrocinio-nota">Presunto patrocinador</span>
+            </div>
+        </section>
+
+        <!-- ===================== INTRO ===================== -->
+        <section class="bn-pagina" id="intro">
+            <div class="bn-encabezado">
+                <h2>Introducción</h2>
+            </div>
+
+            <p>Todavía recuerdo aquel amanecer en que mi padre me llevó por primera vez a visitar el Cementerio de los Libros Olvidados.</p>
+
+            <p>Las cosas podían haber sucedido de cualquier otra manera y, sin embargo, sucedieron así.</p>
+
+            <p>Los libros son espejos: sólo se ve en ellos lo que uno ya lleva dentro.</p>
+        </section>
+
+        <!-- ===================== ÍNDICE ===================== -->
+        <section class="bn-pagina" id="indice">
+            <div class="bn-encabezado">
+                <h2>Índice</h2>
+            </div>
+            <nav class="bn-indice" aria-label="Índice del boletín">
+                <h3 class="bn-indice-grupo"><a href="#categoria-1">La sombra del viento</a></h3>
+                <ol start="1">
+                    <li><a href="#seccion-1"><span class="bn-indice-num">01</span><span class="bn-indice-titulo">El Cementerio de los Libros Olvidados</span><span class="bn-indice-guia"></span><span class="bn-indice-autor">Carlos Ruiz Zafón</span></a></li>
+                    <li><a href="#seccion-2"><span class="bn-indice-num">02</span><span class="bn-indice-titulo">Marina</span><span class="bn-indice-guia"></span><span class="bn-indice-autor">Carlos Ruiz Zafón</span></a></li>
+                </ol>
+                <h3 class="bn-indice-grupo"><a href="#categoria-2">El camino</a></h3>
+                <ol start="3">
+                    <li><a href="#seccion-3"><span class="bn-indice-num">03</span><span class="bn-indice-titulo">Daniel, el Mochuelo</span><span class="bn-indice-guia"></span><span class="bn-indice-autor">Miguel Delibes</span></a></li>
+                </ol>
+            </nav>
+        </section>
+
+        <!-- ===================== CATEGORÍA 1 ===================== -->
+        <section class="bn-pagina bn-categoria" id="categoria-1">
+            <div class="bn-encabezado">
+                <h2>La sombra del viento</h2>
+                <div class="bn-img">Deco</div>
+            </div>
+        </section>
+
+        <!-- ===================== SECCIÓN 1 ===================== -->
+        <section class="bn-pagina" id="seccion-1">
+            <div class="bn-callout bn-callout--articulo">
+                <svg class="bn-callout-icono" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M15 21H6a3 3 0 0 1-3-3V6a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v9z"/><path d="M15 21v-3a3 3 0 0 1 3-3h3"/><line x1="7.5" y1="8.5" x2="16.5" y2="8.5"/><line x1="7.5" y1="12.5" x2="12.5" y2="12.5"/>
+                </svg>
+                <div class="bn-callout-texto">
+                    <h3 class="bn-callout-titulo">El Cementerio de los Libros Olvidados</h3>
+                    <span class="bn-callout-sub">Carlos Ruiz Zafón</span>
+                </div>
+            </div>
+            <div class="bn-texto">
+                <h3>Cada libro tiene alma</h3>
+                <p>Cada libro, cada tomo que ves, tiene alma. El alma de quien lo escribió, y el alma de quienes lo leyeron y vivieron y soñaron con él.<sup class="bn-nota-ref"><a href="#nota-1-1" id="ref-1-1">1</a></sup></p>
+
+                <p>Pocas cosas marcan tanto a un lector como el primer libro que realmente se abre camino hasta su corazón.</p>
+
+                <p>El destino no hace visitas a domicilio, hay que ir a por él.</p>
+
+                <ol class="bn-notas">
+                    <li id="nota-1-1">Los libros son espejos: sólo se ve en ellos lo que uno ya lleva dentro. <a href="#ref-1-1" aria-label="Volver al texto">↩</a></li>
+                </ol>
+            </div>
+            <div class="carrusel" data-carrusel>
+                <div class="carrusel-track">
+                    <!-- Fotos del texto 1, en src/boletines/boletin_0XX/01_slug/. Una sola foto se muestra sin flechas; sin fotos el carrusel se oculta solo. -->
+                    <!-- <img src="../../src/boletines/boletin_0XX/01_slug/foto.jpg" alt="..." loading="lazy"> -->
+                </div>
+            </div>
+            <a class="bn-volver" href="#indice">↑ Volver al índice</a>
+        </section>
+
+        <!-- ===================== SECCIÓN 2 ===================== -->
+        <section class="bn-pagina" id="seccion-2">
+            <div class="bn-callout bn-callout--articulo">
+                <svg class="bn-callout-icono" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M15 21H6a3 3 0 0 1-3-3V6a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v9z"/><path d="M15 21v-3a3 3 0 0 1 3-3h3"/><line x1="7.5" y1="8.5" x2="16.5" y2="8.5"/><line x1="7.5" y1="12.5" x2="12.5" y2="12.5"/>
+                </svg>
+                <div class="bn-callout-texto">
+                    <h3 class="bn-callout-titulo">Marina</h3>
+                    <span class="bn-callout-sub">Carlos Ruiz Zafón</span>
+                </div>
+            </div>
+            <div class="bn-texto">
+                <h3>Lo que nunca sucedió</h3>
+                <p>Marina me dijo una vez que sólo recordamos lo que nunca sucedió.</p>
+
+                <p>Todavía recuerdo aquel amanecer en que mi padre me llevó por primera vez a visitar el Cementerio de los Libros Olvidados.</p>
+            </div>
+            <div class="carrusel" data-carrusel>
+                <div class="carrusel-track">
+                    <!-- Fotos del texto 2, en src/boletines/boletin_0XX/02_slug/. Una sola foto se muestra sin flechas; sin fotos el carrusel se oculta solo. -->
+                    <!-- <img src="../../src/boletines/boletin_0XX/02_slug/foto.jpg" alt="..." loading="lazy"> -->
+                </div>
+            </div>
+            <a class="bn-volver" href="#indice">↑ Volver al índice</a>
+        </section>
+
+        <!-- ===================== CATEGORÍA 2 ===================== -->
+        <section class="bn-pagina bn-categoria" id="categoria-2">
+            <div class="bn-encabezado">
+                <h2>El camino</h2>
+                <div class="bn-img">Deco</div>
+            </div>
+        </section>
+
+        <!-- ===================== SECCIÓN 3 ===================== -->
+        <section class="bn-pagina" id="seccion-3">
+            <div class="bn-callout bn-callout--articulo">
+                <svg class="bn-callout-icono" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M15 21H6a3 3 0 0 1-3-3V6a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v9z"/><path d="M15 21v-3a3 3 0 0 1 3-3h3"/><line x1="7.5" y1="8.5" x2="16.5" y2="8.5"/><line x1="7.5" y1="12.5" x2="12.5" y2="12.5"/>
+                </svg>
+                <div class="bn-callout-texto">
+                    <h3 class="bn-callout-titulo">Daniel, el Mochuelo</h3>
+                    <span class="bn-callout-sub">Miguel Delibes</span>
+                </div>
+            </div>
+            <div class="bn-texto">
+                <h3>De cualquier otra manera</h3>
+                <p>Las cosas podían haber sucedido de cualquier otra manera y, sin embargo, sucedieron así.</p>
+
+                <p>El progreso no consiste en aniquilar hoy el ayer, sino, al revés, en conservar aquella esencia del ayer que tuvo la virtud de crear este hoy mejor.</p>
+
+                <p>El hombre se hace viejo muy pronto y sabio demasiado tarde.</p>
+            </div>
+            <div class="carrusel" data-carrusel>
+                <div class="carrusel-track">
+                    <!-- Fotos del texto 3, en src/boletines/boletin_0XX/03_slug/. Una sola foto se muestra sin flechas; sin fotos el carrusel se oculta solo. -->
+                    <!-- <img src="../../src/boletines/boletin_0XX/03_slug/foto.jpg" alt="..." loading="lazy"> -->
+                </div>
+            </div>
+            <a class="bn-volver" href="#indice">↑ Volver al índice</a>
+        </section>
+
+        <!-- ===================== MUNICIPIO PATROCINADO ===================== -->
+        <section class="bn-pagina" id="municipio-patrocinado">
+            <div class="bn-encabezado">
+                <h2>Municipio Patrocinado: Penagos</h2>
+                <img src="../../src/boletines/elementos_disenho/yalopise.png" alt="Logo de Yalopise">
+            </div>
+            <div class="bn-texto">
+                Penagos es un municipio situado a escasos cinco minutos en coche de Sarón, en dirección (más o menos) este. Aparte de ser un pueblo entrañable en sí mismo y tener unas pistas municipales de pádel tiene varios atractivos bastante llamativos. El primero es un poco trampa: El parque de la naturaleza de Cabárceno. Sin embargo, este es una atracción en sí misma, bastante independiente del municipio y ya conocida internacionalmente, así que no hablaré sobre ello. Sin embargo, hay un lugar (junto al pueblo de Cabárceno) que no tanta gente conoce, pero tiene un gran encanto. El lago del Acebo.
+
+                <p>Este lago, en el que está prohibido el baño, tiene junto a él una explanada de hierba y alguna zona boscosa, desde la cuál salen distintas rutas y donde se puede tranquilamente hacer un picnic. Además, junto a él está el hábitat de los elefantes, que se puede ver desde fuera y sin necesidad de pagar, aunque si no tienes suerte los animales estarán muy lejos y apenas podrás distinguirlos.</p>
+                <p>Hablando de animales, hay un pueblo dentro del municipio, Llanos, que tiene una granja de alpacas que organiza visitas guiadas. Este lugar se llama Alpacas de la Tierruca, cuesta 16€ y estás ahí unas dos horas. La visita comienza con una pequeña explicación sobre los animales y lo que se hace en la granja, seguida de un buen rato en el que pasear a los animales, acariciarlos, abrazarlos y darles todo el cariño que quieras. También se les da de comer y te enseñan la manera artesana de tratar el pelo. La alpaca más molona de todas se llama Elvis y somos amigos.
+                </p>
+
+                <img src="../../src/boletines/boletin_021/fran_elvis.jpeg" alt="..." loading="lazy">
+            </div>
+        </section>
+
+        <!-- ===================== CIERRE ===================== -->
+        <section class="bn-pagina" aria-label="Cierre">
+            <div class="bn-encabezado">
+                <h2>Agradecimientos</h2>
+                <img src="../../src/boletines/elementos_disenho/hug.png" alt="hug">
+            </div>
+            <div class="bn-texto">
+                <p>Muchas gracias a ti, mi estimado lector.</p>
+            </div>
+
+            <div class="bn-cierre">
+                <div class="bn-cierre-fila bn-cierre-fila--amarillo">
+                    <div>
+                        <p class="bn-trivia-titulo">Al ser una edición especial, no hay pregunta de Trivia...</p>
+                        <p class="bn-trivia-pregunta">¿O sí?</p>
+                    </div>
+                    <p class="bn-despedida">espero que hayas disfrutado leyendo por lo menos una fracción de lo que yo lo he hecho escribiendo</p>
+                </div>
+                <div class="bn-cierre-fila bn-cierre-fila--menta">
+                    <p class="bn-contacto">Para sugerencias, comentarios, opiniones o cartas al director, contáctame directamente <span class="bn-pill">(:</span></p>
+                    <div class="bn-contacto-pills">
+                        <span class="bn-pill">@matorrasjr</span>
+                        <span class="bn-pill">Desde 2025</span>
+                        <span class="bn-pill">Santander</span>
+                        <span class="bn-pill">fran@matorras.com</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Fran Matorras</p>
+    </footer>
+    <script src="../js/carrusel.js"></script>
+</body>
+</html>

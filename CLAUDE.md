@@ -39,7 +39,7 @@ After any change, manually check the page in a browser and check the console for
 ### Adding a new boletín (the most common content update)
 
 1. Add a new `projects/boletines/boletin-0XX.html` by copying `projects/boletines/_plantilla-boletin.html` (native HTML template; unpublished because Jekyll skips `_` files — remove its `noindex` meta in the copy). Older boletines are Canva embeds (copy one of those only for a Canva issue).
-2. Add a corresponding `.card` block at the top of the list in `projects/boletines.html` linking to it, plus a preview image in `src/boletines/`.
+2. Add a corresponding `.card` block at the top of the list in `projects/boletines.html` linking to it, plus a preview image in `src/boletines/cabeceras/`.
 
 ## Notes from repo docs
 
