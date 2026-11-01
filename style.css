@@ -2203,10 +2203,9 @@ body.fiesta-activa #cumple-countdown-wrapper {
 
 .bn-banner-meta .bn-img,
 .bn-banner-meta img {
-    width: 3.25rem;
+    width: auto;
     height: 3.25rem;
     min-height: 0;
-    object-fit: cover;
 }
 
 .bn-volumen {
@@ -2503,6 +2502,17 @@ img.bn-portada-imagen {
     background: var(--bn-menta);
     align-items: end;
     padding: 1.25rem 1rem;
+}
+
+/* Respuesta a la trivia del boletín anterior: va encima de la pregunta, más pequeña */
+.bn-trivia-respuesta-titulo {
+    font-size: 0.8rem;
+}
+
+.bn-trivia-respuesta {
+    font-size: 0.7rem;
+    line-height: 1.25;
+    margin-bottom: 0.8rem;
 }
 
 .bn-trivia-titulo {
