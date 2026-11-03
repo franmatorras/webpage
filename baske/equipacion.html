@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Equipación · FRAN-BASKET</title>
+    <link rel="stylesheet" href="css/baske.css">
+    <script src="/global.js"></script>
+</head>
+<body class="bk">
+    <main class="bk-main">
+        <h1 class="bk-titulo">Equipación</h1>
+
+        <!-- Fotos provisionales: sustituir los archivos de img/equipacion/ (y la extensión aquí si cambia) -->
+        <div class="bk-grid bk-grid--2 bk-equipaciones">
+            <section class="bk-card">
+                <h2 class="bk-h3">Primera equipación</h2>
+                <div class="bk-equipacion">
+                    <figure><img src="img/equipacion/primera-frontal.svg" alt="Primera equipación, parte frontal"><figcaption>Frontal</figcaption></figure>
+                    <figure><img src="img/equipacion/primera-trasera.svg" alt="Primera equipación, parte trasera"><figcaption>Trasera</figcaption></figure>
+                </div>
+            </section>
+
+            <section class="bk-card">
+                <h2 class="bk-h3">Segunda equipación</h2>
+                <div class="bk-equipacion">
+                    <figure><img src="img/equipacion/segunda-frontal.svg" alt="Segunda equipación, parte frontal"><figcaption>Frontal</figcaption></figure>
+                    <figure><img src="img/equipacion/segunda-trasera.svg" alt="Segunda equipación, parte trasera"><figcaption>Trasera</figcaption></figure>
+                </div>
+            </section>
+        </div>
+
+        <div class="bk-centro"><a class="bk-btn bk-btn--azul" href="dorsales.html">Ver dorsales disponibles</a></div>
+
+        <div class="bk-card bk-card--aviso">Estate atento para nuevos lanzamientos de ropa</div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+    <script src="/fiesta-config.js"></script>
+    <script src="js/baske.js"></script>
+    <script>Baske.iniciar({ activa: 'equipacion' });</script>
+</body>
+</html>

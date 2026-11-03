@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Junta directiva · FRAN-BASKET</title>
+    <link rel="stylesheet" href="css/baske.css">
+    <script src="/global.js"></script>
+</head>
+<body class="bk">
+    <main class="bk-main">
+        <a class="bk-volver" href="transparencia.html">Transparencia</a>
+        <h1 class="bk-titulo">Junta directiva</h1>
+
+        <div id="actual" class="bk-grid"><div class="bk-cargando">Cargando…</div></div>
+
+        <section class="bk-seccion">
+            <h2 class="bk-h2">Histórico de cargos</h2>
+            <div class="bk-barra">
+                <select id="filtro-cargo" aria-label="Filtrar por cargo" style="flex: 0 1 260px"><option value="">Todos los cargos</option></select>
+            </div>
+            <div id="historico"></div>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+    <script src="/fiesta-config.js"></script>
+    <script src="js/baske.js"></script>
+    <script src="js/junta.js"></script>
+</body>
+</html>

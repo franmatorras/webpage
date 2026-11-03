@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 220" role="img" aria-label="Camiseta">
+  <rect width="200" height="220" fill="#ffffff"/>
+  <path d="M58 12h24q18 26 36 0h24q4 44 38 58v140H20V70q34-14 38-58z" fill="#5bb8e6" stroke="#111418" stroke-width="7" stroke-linejoin="round"/>
+  <text x="100" y="92" font-family="Arial, sans-serif" font-weight="900" font-size="15" text-anchor="middle" fill="#111418">FRAN-BASKET</text><text x="100" y="150" font-family="Arial, sans-serif" font-weight="900" font-size="48" text-anchor="middle" fill="#111418">00</text>
+  <text x="100" y="212" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#9aa8b3">FOTO PROVISIONAL</text>
+</svg>

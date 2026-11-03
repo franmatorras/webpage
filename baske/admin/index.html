@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Admin · FRAN-BASKET</title>
+    <link rel="stylesheet" href="../css/baske.css">
+    <script src="/global.js"></script>
+</head>
+<body class="bk">
+    <main class="bk-main">
+        <h1 class="bk-titulo">Administración</h1>
+
+        <div class="bk-grid">
+            <a class="bk-card" href="pachangas.html" style="text-decoration:none;color:inherit">
+                <h2 class="bk-h3">Pachangas y asistencia</h2>
+                <p class="bk-nota">Reservas, pachangas, quién jugó, cervezas, invitados, equipos y entrenamientos.</p>
+            </a>
+            <a class="bk-card" href="pagos.html" style="text-decoration:none;color:inherit">
+                <h2 class="bk-h3">Pagos y gastos</h2>
+                <p class="bk-nota">Marcar pagos pendientes y apuntar gastos.</p>
+            </a>
+            <a class="bk-card" href="miembros.html" style="text-decoration:none;color:inherit">
+                <h2 class="bk-h3">Miembros y usuarios</h2>
+                <p class="bk-nota">Fichas, dorsales, fotos, bajas, junta directiva y logins.</p>
+            </a>
+            <a class="bk-card" href="premios.html" style="text-decoration:none;color:inherit">
+                <h2 class="bk-h3">Premios</h2>
+                <p class="bk-nota">Asignar premios a los ganadores y gestionar el catálogo de premios.</p>
+            </a>
+            <a class="bk-card" href="apodos.html" style="text-decoration:none;color:inherit">
+                <h2 class="bk-h3">Apodos y habilidades</h2>
+                <p class="bk-nota">Validar o rechazar propuestas y añadir apodos o habilidades.</p>
+                <p id="pendientes" style="margin-top:0.5rem;font-weight:700"></p>
+            </a>
+        </div>
+
+        <section class="bk-card bk-seccion">
+            <h2 class="bk-h3">Desde el panel de Supabase</h2>
+            <p>Subir los PDF al bucket <code>equipo</code> (<code>docs/estatutos.pdf</code>, <code>docs/junta.pdf</code>).</p>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+    <script src="/fiesta-config.js"></script>
+    <script src="../js/baske.js"></script>
+    <script>
+        (async function () {
+            await Baske.iniciar({ admin: true, activa: 'admin' });
+            var res = await Promise.all([
+                Baske.cliente.from('apodo').select('id', { count: 'exact', head: true }).eq('validado', false),
+                Baske.cliente.from('habilidad_especial').select('id', { count: 'exact', head: true }).eq('validado', false)
+            ]);
+            var n = (res[0].count || 0) + (res[1].count || 0);
+            document.getElementById('pendientes').textContent = n
+                ? n + (n === 1 ? ' propuesta pendiente' : ' propuestas pendientes')
+                : 'Sin propuestas pendientes';
+        })();
+    </script>
+</body>
+</html>

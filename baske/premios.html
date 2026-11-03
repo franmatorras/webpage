@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Premios · FRAN-BASKET</title>
+    <link rel="stylesheet" href="css/baske.css">
+    <script src="/global.js"></script>
+</head>
+<body class="bk">
+    <main class="bk-main">
+        <h1 class="bk-titulo">Carrera por…</h1>
+        <p class="bk-nota" style="margin-bottom:1rem">MVP: 3 puntos por cada voto como 1º, 2 como 2º y 1 como 3º. Fraude: un punto por voto. Solo cuentan los votos a miembros.</p>
+        <div id="carrera" class="bk-carrera"><div class="bk-cargando">Cargando…</div></div>
+
+        <section class="bk-seccion">
+            <h2 class="bk-h2">Histórico de premios</h2>
+            <div class="bk-barra">
+                <div id="filtro-temporadas"></div>
+                <select id="filtro-premio" aria-label="Premio" style="flex: 0 1 220px"><option value="">Todos los premios</option></select>
+                <input type="search" id="filtro-nombre" placeholder="Buscar por nombre…" aria-label="Buscar por nombre">
+            </div>
+            <div id="historico"></div>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+    <script src="/fiesta-config.js"></script>
+    <script src="js/baske.js"></script>
+    <script src="js/premios.js"></script>
+</body>
+</html>

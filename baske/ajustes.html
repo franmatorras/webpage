@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Ajustes · FRAN-BASKET</title>
+    <link rel="stylesheet" href="css/baske.css">
+    <script src="/global.js"></script>
+</head>
+<body class="bk">
+    <main class="bk-main" style="max-width: 760px">
+        <h1 class="bk-titulo">Ajustes</h1>
+
+        <section class="bk-card">
+            <h2 class="bk-h3">Mi cuenta</h2>
+            <dl class="bk-datos" id="cuenta"></dl>
+            <div class="bk-acciones"><button type="button" class="bk-btn bk-btn--sec" id="salir">Cerrar sesión</button></div>
+        </section>
+
+        <section class="bk-card" id="sec-datos" hidden>
+            <h2 class="bk-h3">Mis datos</h2>
+            <form id="form-datos" class="bk-form-grid">
+                <div class="bk-campo"><label for="nombre">Nombre</label><input type="text" id="nombre" required maxlength="60"></div>
+                <div class="bk-campo"><label for="apellido">Apellido</label><input type="text" id="apellido" maxlength="80"></div>
+                <div class="bk-campo" style="justify-content:flex-end"><button type="submit" class="bk-btn">Guardar</button></div>
+            </form>
+            <p class="bk-nota">El resto de tus datos (dorsales, foto, tipo de miembro…) los cambia un administrador.</p>
+            <div id="msg-datos" class="bk-mensaje" role="status"></div>
+        </section>
+
+        <section class="bk-card">
+            <h2 class="bk-h3">Cambiar contraseña</h2>
+            <form id="form-password" class="bk-form-grid">
+                <input type="text" autocomplete="username" id="usuario-oculto" hidden>
+                <div class="bk-campo"><label for="nueva">Nueva contraseña</label><input type="password" id="nueva" autocomplete="new-password" minlength="8" required></div>
+                <div class="bk-campo"><label for="repetir">Repítela</label><input type="password" id="repetir" autocomplete="new-password" minlength="8" required></div>
+                <div class="bk-campo" style="justify-content:flex-end"><button type="submit" class="bk-btn">Cambiar</button></div>
+            </form>
+            <div id="msg-password" class="bk-mensaje" role="status"></div>
+        </section>
+
+        <section class="bk-card">
+            <h2 class="bk-h3">Mis propuestas</h2>
+            <p class="bk-nota" style="margin-bottom:0.75rem">Apodos y habilidades que has propuesto desde las fichas de los jugadores.</p>
+            <div id="propuestas"><div class="bk-cargando">Cargando…</div></div>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+    <script src="/fiesta-config.js"></script>
+    <script src="js/baske.js"></script>
+    <script src="js/ajustes.js"></script>
+</body>
+</html>

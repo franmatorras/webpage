@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Miembros · FRAN-BASKET</title>
+    <link rel="stylesheet" href="css/baske.css">
+    <script src="/global.js"></script>
+</head>
+<body class="bk">
+    <main class="bk-main">
+        <h1 class="bk-titulo">Miembros</h1>
+
+        <section>
+            <div class="bk-cabecera-card">
+                <h2 class="bk-h2" style="margin:0">Asistencia histórica</h2>
+                <a class="bk-btn bk-btn--peq" href="pachangas.html?vista=jugadores&amp;temporadas=todas">Ver tabla completa</a>
+            </div>
+            <div id="top5" class="bk-top5"><div class="bk-cargando">Cargando…</div></div>
+        </section>
+
+        <section class="bk-seccion">
+            <div class="bk-cabecera-card">
+                <h2 class="bk-h2" style="margin:0">Ficha de jugadores</h2>
+                <input type="search" id="buscar" placeholder="Buscar jugador…" aria-label="Buscar jugador" style="max-width: 260px">
+            </div>
+            <div class="bk-carrusel">
+                <button type="button" class="bk-carrusel-flecha bk-carrusel-flecha--izq" aria-label="Anteriores">‹</button>
+                <div id="carrusel" class="bk-carrusel-pista"><div class="bk-cargando">Cargando…</div></div>
+                <button type="button" class="bk-carrusel-flecha bk-carrusel-flecha--der" aria-label="Siguientes">›</button>
+            </div>
+        </section>
+
+        <section class="bk-seccion">
+            <h2 class="bk-h2">No jugadores</h2>
+            <p class="bk-nota" style="margin-bottom: 0.75rem">Miembros que no juegan (o ya no) pero siguen siendo parte del equipo, y ex-miembros.</p>
+            <div id="no-jugadores" class="bk-personas"><div class="bk-cargando">Cargando…</div></div>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+    <script src="/fiesta-config.js"></script>
+    <script src="js/baske.js"></script>
+    <script src="js/miembros.js"></script>
+</body>
+</html>
