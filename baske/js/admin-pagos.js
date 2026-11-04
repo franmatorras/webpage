@@ -66,12 +66,14 @@
                 fecha: r.fecha_inicio, importe: r.precio_unitario * (nPorReserva.get(r.id) || 0), pagado: x.pagado, fechaPago: x.fecha_pago
             });
         });
+        // pagado = null: la cubre la reserva. Si no, se cobra: suelta a su precio, de reserva sin estar apuntado +50 %
         (d.pachanga_jugador || []).forEach(function (x) {
             var p = M.pachanga.get(x.id_pachanga);
-            if (!p || p.precio == null || !x.jugado || x.pagado == null) return;
+            if (!p || !x.jugado || x.pagado == null) return;
             lista.push({
                 tabla: 'pachanga_jugador', claves: { id_pachanga: x.id_pachanga, id_jugador: x.id_jugador }, idJugador: x.id_jugador,
-                texto: 'Pachanga suelta ' + B.fecha(p.fecha), fecha: p.fecha, importe: Number(p.precio), pagado: x.pagado, fechaPago: x.fecha_pago
+                texto: (p.id_reserva ? 'Pachanga de reserva sin estar apuntado (+50 %) ' : 'Pachanga suelta ') + B.fecha(p.fecha),
+                fecha: p.fecha, importe: M.precioPachanga(p), pagado: x.pagado, fechaPago: x.fecha_pago
             });
         });
         (d.entrenamiento_jugador || []).forEach(function (x) {
@@ -98,7 +100,11 @@
         });
 
         var grupos = Array.from(porJugador).map(function (e) {
-            return { idJ: e[0], nombre: M.nombreJugador(e[0]), items: e[1].sort(function (a, b) { return a.fecha < b.fecha ? 1 : -1; }) };
+            var padrino = M.esInvitado(e[0]) ? M.padrinoDeInvitado(e[0]) : null;
+            return {
+                idJ: e[0], nombre: M.nombreJugador(e[0]), invitado: M.esInvitado(e[0]), padrino: padrino,
+                items: e[1].sort(function (a, b) { return a.fecha < b.fecha ? 1 : -1; })
+            };
         }).sort(function (a, b) {
             var da = a.items.filter(function (i) { return !i.pagado; }).length ? 0 : 1;
             var dbb = b.items.filter(function (i) { return !i.pagado; }).length ? 0 : 1;
@@ -118,6 +124,7 @@
                 var pendiente = g.items.filter(function (i) { return !i.pagado; });
                 var deuda = pendiente.reduce(function (s, i) { return s + i.importe; }, 0);
                 return '<section class="bk-card"><div class="bk-cabecera-card"><h2 class="bk-h3">' + esc(g.nombre) +
+                    (g.invitado ? ' <span class="bk-chip bk-chip--gris">invitado' + (g.padrino ? ' de ' + esc(g.padrino) : '') + '</span>' : '') +
                     (deuda ? ' <span class="bk-chip bk-chip--rojo">' + esc(B.euros(deuda)) + '</span>' : '') + '</h2>' +
                     (pendiente.length > 1 ? '<button type="button" class="bk-btn bk-btn--peq" data-todo="' + g.idJ + '">Marcar todo pagado</button>' : '') + '</div>' +
                     '<div class="bk-admin-lista">' + g.items.map(function (i) {
@@ -160,7 +167,7 @@
     // ==================================================================
     // GASTOS
     // ==================================================================
-    var TIPOS_GASTO = { reserva: 'Reserva', pachanga: 'Pachanga suelta', general: 'General' };
+    var TIPOS_GASTO = { reserva: 'Reserva', pachanga: 'Pachanga suelta', entrenamiento: 'Entrenamiento', general: 'General' };
 
     function pintarGastos() {
         var lista = (M.d.gasto || []).filter(function (g) { return !filtroTemp || filtroTemp.has(B.temporadaDe(g.fecha)); })
@@ -195,7 +202,9 @@
             .map(function (r) { return ['r' + r.id, 'Reserva ' + B.fecha(r.fecha_inicio) + ' – ' + B.fecha(r.fecha_fin)]; });
         var sueltas = M.pachangas.filter(function (p) { return !p.id_reserva; })
             .map(function (p) { return ['p' + p.id, 'Pachanga suelta ' + B.fecha(p.fecha)]; });
-        var vinculo = g ? (g.id_reserva ? 'r' + g.id_reserva : g.id_pachanga ? 'p' + g.id_pachanga : '') : '';
+        var entrenos = (M.d.entrenamiento || []).slice().sort(function (a, b) { return a.fecha < b.fecha ? 1 : -1; })
+            .map(function (e) { return ['e' + e.id, 'Entrenamiento ' + B.fecha(e.fecha)]; });
+        var vinculo = g ? (g.id_reserva ? 'r' + g.id_reserva : g.id_pachanga ? 'p' + g.id_pachanga : g.id_entrenamiento ? 'e' + g.id_entrenamiento : '') : '';
 
         A.dialogo(g ? 'Editar gasto' : 'Nuevo gasto',
             '<div class="bk-form-grid">' +
@@ -204,13 +213,14 @@
             A.campo('Cantidad', 'cantidad', g ? g.cantidad : 1, { tipo: 'number', min: 1, requerido: true }) +
             A.campo('Fecha', 'fecha', g ? g.fecha : B.hoy(), { tipo: 'date', requerido: true }) +
             '</div>' +
-            A.campo('Vinculado a', 'vinculo', null, { tipo: 'select', opciones: A.opciones(reservas.concat(sueltas), vinculo, 'Nada (gasto general)') }),
+            A.campo('Vinculado a', 'vinculo', null, { tipo: 'select', opciones: A.opciones(reservas.concat(sueltas, entrenos), vinculo, 'Nada (gasto general)') }),
             async function (form, v) {
                 if (!v.compra || v.precio == null || !v.fecha) throw new Error('Rellena compra, precio y fecha.');
                 var fila = {
                     compra: v.compra, precio: v.precio, cantidad: v.cantidad || 1, fecha: v.fecha,
                     id_reserva: v.vinculo && v.vinculo[0] === 'r' ? Number(v.vinculo.slice(1)) : null,
-                    id_pachanga: v.vinculo && v.vinculo[0] === 'p' ? Number(v.vinculo.slice(1)) : null
+                    id_pachanga: v.vinculo && v.vinculo[0] === 'p' ? Number(v.vinculo.slice(1)) : null,
+                    id_entrenamiento: v.vinculo && v.vinculo[0] === 'e' ? Number(v.vinculo.slice(1)) : null
                 };
                 if (g) A.ok(await db.from('gasto').update(fila).eq('id', g.id));
                 else A.ok(await db.from('gasto').insert(fila));

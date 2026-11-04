@@ -14,13 +14,23 @@
         <h1 class="bk-titulo">Premios</h1>
 
         <div class="bk-tabs" role="tablist">
-            <button type="button" role="tab" aria-selected="true" data-tab="ganados">Premios ganados</button>
-            <button type="button" role="tab" aria-selected="false" data-tab="catalogo">Catálogo de premios</button>
+            <button type="button" role="tab" aria-selected="true" data-tab="ganados">Ganados</button>
+            <button type="button" role="tab" aria-selected="false" data-tab="catalogo">Catálogo</button>
+            <button type="button" role="tab" aria-selected="false" data-tab="votos">Votos</button>
         </div>
 
         <section id="sec-ganados">
             <div class="bk-barra"><button type="button" class="bk-btn bk-btn--azul" id="nuevo-ganador">+ Asignar premio</button></div>
             <div id="ganados"><div class="bk-cargando">Cargando…</div></div>
+        </section>
+
+        <section id="sec-votos" hidden>
+            <p class="bk-nota" style="margin-bottom:0.75rem">Solo totales: no se ve quién ha votado a quién. MVP: 1º = 3 puntos, 2º = 2, 3º = 1. Esta información solo la ven los administradores.</p>
+            <div class="bk-barra">
+                <select id="votos-temporada" aria-label="Temporada"></select>
+                <select id="votos-periodo" aria-label="Periodo"></select>
+            </div>
+            <div id="votos"></div>
         </section>
 
         <section id="sec-catalogo" hidden>

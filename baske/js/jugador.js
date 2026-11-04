@@ -109,6 +109,14 @@
 
     ficha.innerHTML = html;
 
+    // Desde Ajustes → "Proponer más" (jugador.html?id=…#proponer): ir directo al formulario
+    if (location.hash === '#proponer') {
+        var formProp = document.getElementById('form-propuesta');
+        formProp.closest('section').scrollIntoView({ block: 'start' });
+        var primero = formProp.querySelector('input, select');
+        if (primero) primero.focus({ preventScroll: true });
+    }
+
     document.getElementById('form-propuesta').addEventListener('submit', async function (ev) {
         ev.preventDefault();
         var msg = document.getElementById('msg-propuesta');

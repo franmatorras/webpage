@@ -13,6 +13,11 @@ begin
   end if;
 
   delete from equipo.gasto where id in (select id from prueba_baske.filas where tabla = 'gasto');
+  -- Gastos de pista creados solos (por si alguno no quedó apuntado)
+  delete from equipo.gasto
+  where id_reserva in (select id from prueba_baske.filas where tabla = 'reserva_periodica')
+     or id_pachanga in (select id from prueba_baske.filas where tabla = 'pachanga')
+     or id_entrenamiento in (select id from prueba_baske.filas where tabla = 'entrenamiento');
   delete from equipo.entrenamiento where id in (select id from prueba_baske.filas where tabla = 'entrenamiento');
   delete from equipo.premio_miembro where id in (select id from prueba_baske.filas where tabla = 'premio_miembro');
   delete from equipo.premio p

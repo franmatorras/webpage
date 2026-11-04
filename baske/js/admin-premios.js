@@ -16,6 +16,7 @@
         try {
             M = await B.modelo(B.TABLAS_PREMIOS.concat(['v_resultado_top_pachanga']));
             pintarGanados();
+            pintarVotos();
             pintarCatalogo();
         } catch (e) {
             B.falloCarga(contGanados, e);
@@ -25,13 +26,62 @@
     document.querySelectorAll('.bk-tabs button').forEach(function (b) {
         b.addEventListener('click', function () {
             document.querySelectorAll('.bk-tabs button').forEach(function (x) { x.setAttribute('aria-selected', x === b ? 'true' : 'false'); });
-            ['ganados', 'catalogo'].forEach(function (t) {
+            ['ganados', 'catalogo', 'votos'].forEach(function (t) {
                 document.getElementById('sec-' + t).hidden = b.dataset.tab !== t;
             });
         });
     });
     document.getElementById('nuevo-ganador').addEventListener('click', function () { editarGanador(null); });
     document.getElementById('nuevo-premio').addEventListener('click', function () { editarPremio(null); });
+
+    // ==================================================================
+    // Recuento de votos (solo totales por persona; nunca quién votó a quién)
+    // ==================================================================
+    var selVotosTemp = document.getElementById('votos-temporada');
+    var selVotosPeriodo = document.getElementById('votos-periodo');
+    var contVotos = document.getElementById('votos');
+    selVotosTemp.addEventListener('change', function () { pintarVotos(); });
+    selVotosPeriodo.addEventListener('change', function () { pintarVotos(); });
+
+    function pintarVotos() {
+        if (!selVotosTemp.options.length) {
+            selVotosTemp.innerHTML = A.opciones(M.temporadas().map(function (t) { return [t, 'Temporada ' + t]; }), M.temporadaActual);
+            selVotosPeriodo.innerHTML = A.opciones([1, 2, 3, 4, 5, 6].map(function (n) { return [n, B.etiquetaPeriodo(n)]; }), null, 'Temporada completa');
+        }
+        var temporada = selVotosTemp.value;
+        var periodo = selVotosPeriodo.value ? Number(selVotosPeriodo.value) : null;
+
+        var porJugador = new Map();
+        (M.d.v_resultado_top_pachanga || []).forEach(function (v) {
+            var p = M.pachanga.get(v.id_pachanga);
+            if (!p || p.temporada !== temporada || (periodo && p.periodo !== periodo)) return;
+            var x = porJugador.get(v.id_jugador) || { t1: 0, t2: 0, t3: 0, fraude: 0 };
+            x.t1 += Number(v.votos_top_1); x.t2 += Number(v.votos_top_2); x.t3 += Number(v.votos_top_3); x.fraude += Number(v.votos_fraude);
+            porJugador.set(v.id_jugador, x);
+        });
+
+        var filas = [];
+        porJugador.forEach(function (x, idJ) {
+            var m = M.miembroDeJugador(idJ);
+            if (!m) return;
+            x.puntos = 3 * x.t1 + 2 * x.t2 + x.t3;
+            if (!x.puntos && !x.fraude) return;
+            filas.push(Object.assign({ m: m, nombre: M.nombreMiembro(m) }, x));
+        });
+        filas.sort(function (a, b) { return b.puntos - a.puntos || b.fraude - a.fraude || a.nombre.localeCompare(b.nombre, 'es'); });
+
+        if (!filas.length) { contVotos.innerHTML = '<p class="bk-vacio">No hay votos en ese periodo.</p>'; return; }
+        var maxFraude = Math.max.apply(null, filas.map(function (f) { return f.fraude; }));
+        contVotos.innerHTML = '<div class="bk-tabla-envoltorio"><table class="bk-tabla"><thead><tr>' +
+            '<th class="num">#</th><th>Miembro</th><th class="num">Puntos MVP</th>' +
+            '<th class="num bk-ocultar-movil">Votos 1º</th><th class="num bk-ocultar-movil">Votos 2º</th><th class="num bk-ocultar-movil">Votos 3º</th>' +
+            '<th class="num">Votos fraude</th></tr></thead><tbody>' +
+            filas.map(function (f, i) {
+                return '<tr><td class="num">' + (i + 1) + '</td><td>' + esc(f.nombre) + '</td><td class="num"><strong>' + f.puntos + '</strong></td>' +
+                    '<td class="num bk-ocultar-movil">' + f.t1 + '</td><td class="num bk-ocultar-movil">' + f.t2 + '</td><td class="num bk-ocultar-movil">' + f.t3 + '</td>' +
+                    '<td class="num">' + (f.fraude && f.fraude === maxFraude ? '<strong>' + f.fraude + '</strong>' : f.fraude) + '</td></tr>';
+            }).join('') + '</tbody></table></div>';
+    }
 
     // Ejecuta una escritura, recarga y enseña el error si falla
     async function escribir(fn) {

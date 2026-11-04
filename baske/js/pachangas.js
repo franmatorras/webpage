@@ -28,8 +28,24 @@
         temporadas: seleccion === 'todas' ? null : new Set(seleccion),
         orden: { col: 'apellido', dir: 'asc' },
         abiertos: new Set(),
-        proximas: B.param('proximas') === '1'
+        proximas: B.param('proximas') === '1',
+        fecha: /^\d{4}-\d{2}-\d{2}$/.test(B.param('fecha') || '') ? B.param('fecha') : null
     };
+
+    var opcionFecha = document.getElementById('opcion-fecha');
+    var inputFecha = document.getElementById('filtro-fecha');
+    var quitarFecha = document.getElementById('quitar-fecha');
+    inputFecha.value = estado.fecha || '';
+    inputFecha.addEventListener('change', function () {
+        estado.fecha = inputFecha.value || null;
+        estado.abiertos.clear();
+        pintar();
+    });
+    quitarFecha.addEventListener('click', function () {
+        inputFecha.value = '';
+        estado.fecha = null;
+        pintar();
+    });
 
     var opcionProximas = document.getElementById('opcion-proximas');
     var checkProximas = document.getElementById('proximas');
@@ -58,6 +74,7 @@
         q.set('vista', estado.vista);
         q.set('temporadas', selector.todas() ? 'todas' : Array.from(estado.temporadas || []).join(','));
         if (estado.vista === 'pachangas' && estado.proximas) q.set('proximas', '1');
+        if (estado.vista === 'pachangas' && estado.fecha) q.set('fecha', estado.fecha);
         history.replaceState(null, '', location.pathname + '?' + q.toString());
     }
 
@@ -67,6 +84,8 @@
         });
         buscar.placeholder = estado.vista === 'jugadores' ? 'Buscar por nombre o apodo…' : 'Buscar pachangas de un jugador…';
         opcionProximas.hidden = estado.vista !== 'pachangas';
+        opcionFecha.hidden = estado.vista !== 'pachangas';
+        quitarFecha.hidden = estado.vista !== 'pachangas' || !estado.fecha;
         actualizarUrl();
         if (estado.vista === 'jugadores') pintarJugadores(); else pintarPachangas();
     }
@@ -211,8 +230,13 @@
     function pintarPachangas() {
         var q = B.normalizar(buscar.value);
         var lista = M.pachangas.filter(function (p) {
-            if (estado.temporadas && !estado.temporadas.has(p.temporada)) return false;
-            if (!p.jugada && !estado.proximas) return false;
+            // Una fecha concreta manda sobre el filtro de temporadas y el de próximas
+            if (estado.fecha) {
+                if (p.fecha !== estado.fecha) return false;
+            } else {
+                if (estado.temporadas && !estado.temporadas.has(p.temporada)) return false;
+                if (!p.jugada && !estado.proximas) return false;
+            }
             if (!q) return true;
             return p.asistentes.concat(p.cerveceros).some(function (id) {
                 var mi = M.miembroDeJugador(id);
@@ -221,7 +245,7 @@
         });
 
         if (!lista.length) {
-            resultado.innerHTML = '<p class="bk-vacio">No hay pachangas en la selección.</p>';
+            resultado.innerHTML = '<p class="bk-vacio">' + (estado.fecha ? 'No hubo pachanga el ' + esc(B.fecha(estado.fecha)) + '.' : 'No hay pachangas en la selección.') + '</p>';
             return;
         }
 
@@ -245,7 +269,8 @@
                 (fui ? ' <span class="bk-chip bk-chip--negro">Fuiste</span>' : '') + '</td>' +
                 '<td class="num">' + (p.jugada ? p.asistentes.length : '—') + '</td>' +
                 '<td>' + (p.cervezas ? 'Sí' + (p.jugada ? ' · ' + p.cerveceros.length : '') : '<span class="bk-nota">No</span>') + '</td>' +
-                '<td class="bk-ocultar-movil">' + (p.id_reserva ? 'Reserva' : 'Suelta · ' + esc(B.euros(p.precio))) + '</td>' +
+                '<td class="bk-ocultar-movil">' + (p.id_reserva ? 'Reserva' : 'Suelta · ' + esc(B.euros(p.precio))) +
+                '<br><span class="bk-nota">' + esc(B.PISTAS[p.pista] || B.PISTAS.media) + '</span></td>' +
                 '</tr>';
             if (abierto) html += '<tr class="bk-detalle"><td colspan="5">' + detallePachanga(p) + '</td></tr>';
         });

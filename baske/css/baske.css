@@ -103,6 +103,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
     max-width: 45vw;
 }
 .bk-usuario span { overflow: hidden; text-overflow: ellipsis; }
+.bk-usuario-texto { display: flex; flex-direction: column; line-height: 1.15; min-width: 0; }
+.bk-usuario-socio { font-size: 0.72rem; font-weight: 500; color: var(--bk-azul-claro); }
 .bk-usuario svg {
     width: 30px; height: 30px; flex: none;
     background: var(--bk-azul); color: var(--bk-negro);
@@ -446,6 +448,8 @@ textarea { min-height: 5rem; resize: vertical; }
 
 /* ---------- Dorsales ---------- */
 .bk-dorsales { display: grid; gap: 8px; grid-template-columns: repeat(auto-fill, minmax(58px, 1fr)); }
+/* Con sitio suficiente: diez por fila (00-09, 0-9, 10-19…) */
+@media (min-width: 720px) { .bk-dorsales { grid-template-columns: repeat(10, 1fr); } }
 .bk-dorsal {
     aspect-ratio: 1;
     border: 2px solid var(--bk-negro);
@@ -552,3 +556,29 @@ textarea { min-height: 5rem; resize: vertical; }
 
 dialog.bk-dialogo { border: 0; border-radius: var(--bk-radio); padding: 1.25rem; width: min(640px, calc(100vw - 32px)); max-height: calc(100vh - 32px); box-shadow: 0 10px 40px rgba(0,0,0,0.3); margin: auto; }
 dialog.bk-dialogo::backdrop { background: rgba(17, 20, 24, 0.55); }
+
+/* ---------- Ajustes: foto ---------- */
+.bk-foto-ajustes { display: grid; grid-template-columns: 140px 1fr; gap: 1rem; align-items: start; }
+.bk-foto-ajustes .bk-foto { width: 140px; }
+@media (max-width: 480px) { .bk-foto-ajustes { grid-template-columns: 1fr; } .bk-foto-ajustes .bk-foto { width: 160px; margin: 0 auto; } }
+
+/* Número que lleva algún aficionado (no lo ocupa): puntito en la esquina */
+.bk-dorsal--aficionado::after { content: ''; position: absolute; top: 4px; right: 4px; width: 7px; height: 7px; border-radius: 50%; background: #f5b700; }
+.bk-leyenda-afic { position: relative; background: var(--bk-blanco); }
+.bk-leyenda-afic::after { content: ''; position: absolute; top: 2px; right: 2px; width: 6px; height: 6px; border-radius: 50%; background: #f5b700; }
+
+/* ---------- Móvil: listas de admin y pestañas ---------- */
+@media (max-width: 640px) {
+    .bk-admin-item { flex-direction: column; align-items: stretch; gap: 0.5rem; }
+    .bk-admin-item > .bk-chips, .bk-admin-item > button { justify-content: flex-start; }
+    .bk-admin-item > .bk-chips .bk-btn { flex: 1 1 auto; }
+    .bk-tabs { display: flex; flex-wrap: nowrap; overflow-x: auto; max-width: 100%; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+    .bk-tabs::-webkit-scrollbar { display: none; }
+    .bk-tabs button { flex: 0 0 auto; white-space: nowrap; padding: 0.45rem 0.7rem; font-size: 0.9rem; }
+    .bk-cabecera-card .bk-btn { flex: 0 0 auto; }
+}
+
+/* Filtro de fecha en Vista Pachangas */
+.bk-campo-fecha { display: inline-flex; align-items: center; gap: 0.4rem; font-weight: 600; }
+.bk-campo-fecha[hidden] { display: none; }
+.bk-campo-fecha input { width: auto; }

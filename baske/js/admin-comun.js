@@ -111,25 +111,6 @@
         return texto + 'T12:00:00Z';
     }
 
-    // Reduce una imagen a JPEG (lado largo máx.) antes de subirla
-    function reducirImagen(archivo, maxLado, calidad) {
-        return new Promise(function (resolve, reject) {
-            var img = new Image();
-            var url = URL.createObjectURL(archivo);
-            img.onload = function () {
-                var escala = Math.min(1, maxLado / Math.max(img.width, img.height));
-                var c = document.createElement('canvas');
-                c.width = Math.round(img.width * escala);
-                c.height = Math.round(img.height * escala);
-                c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
-                URL.revokeObjectURL(url);
-                c.toBlob(function (blob) { blob ? resolve(blob) : reject(new Error('No se pudo procesar la imagen')); }, 'image/jpeg', calidad);
-            };
-            img.onerror = function () { URL.revokeObjectURL(url); reject(new Error('Ese archivo no es una imagen válida')); };
-            img.src = url;
-        });
-    }
-
     window.Admin = {
         dialogo: dialogo,
         valores: valores,
@@ -138,6 +119,6 @@
         opcionesMiembros: opcionesMiembros,
         ok: ok,
         fechaPago: fechaPago,
-        reducirImagen: reducirImagen
+        reducirImagen: B.reducirImagen
     };
 })();

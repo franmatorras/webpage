@@ -34,8 +34,9 @@
         if (!lista.length) return html + '<p class="bk-vacio">Todavía no hay votos.</p></section>';
 
         html += '<ol class="bk-ranking">';
-        if (lista[0]) html += li(lista[0], '1º', 'oro', true, unidad);
-        if (lista[1]) html += li(lista[1], '2º', 'plata', true, unidad);
+        // Los votos no se enseñan: solo la posición
+        if (lista[0]) html += li(lista[0], '1º', 'oro', false, unidad);
+        if (lista[1]) html += li(lista[1], '2º', 'plata', false, unidad);
         var resto = lista.slice(2, 5).sort(function (a, b) { return a.nombre.localeCompare(b.nombre, 'es'); });
         if (resto.length) {
             html += '<li class="bk-ranking-contenedor"><div class="bk-ranking-grupo">' +
@@ -55,7 +56,7 @@
         var html = '<section class="bk-card"><h3>' + titulo + '<small>' + esc(B.etiquetaPeriodo(periodo) + ' ' + temporada) + '</small></h3>';
         if (!lista.length) return html + '<p class="bk-vacio">Todavía no hay votos en este periodo.</p></section>';
         return html + '<ol class="bk-ranking">' + lista.map(function (x, i) {
-            return li(x, (i + 1) + 'º', i === 0 ? 'oro' : i === 1 ? 'plata' : '', true, unidad);
+            return li(x, (i + 1) + 'º', i === 0 ? 'oro' : i === 1 ? 'plata' : '', false, unidad);
         }).join('') + '</ol></section>';
     }
 

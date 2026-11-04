@@ -18,6 +18,22 @@
             <div class="bk-acciones"><button type="button" class="bk-btn bk-btn--sec" id="salir">Cerrar sesión</button></div>
         </section>
 
+        <section class="bk-card" id="sec-foto" hidden>
+            <h2 class="bk-h3">Mi foto</h2>
+            <div class="bk-foto-ajustes">
+                <img class="bk-foto" id="foto-actual" alt="Tu foto de perfil">
+                <div>
+                    <div class="bk-campo"><label for="foto-archivo">Subir una foto nueva</label><input type="file" id="foto-archivo" accept="image/*"></div>
+                    <div class="bk-acciones">
+                        <button type="button" class="bk-btn bk-btn--azul" id="foto-subir">Subir foto</button>
+                        <button type="button" class="bk-btn bk-btn--sec" id="foto-borrar">Quitar foto</button>
+                    </div>
+                    <p class="bk-nota">Se reduce automáticamente antes de subirla. Solo la ven los miembros del equipo.</p>
+                </div>
+            </div>
+            <div id="msg-foto" class="bk-mensaje" role="status"></div>
+        </section>
+
         <section class="bk-card" id="sec-datos" hidden>
             <h2 class="bk-h3">Mis datos</h2>
             <form id="form-datos" class="bk-form-grid">
@@ -25,7 +41,7 @@
                 <div class="bk-campo"><label for="apellido">Apellido</label><input type="text" id="apellido" maxlength="80"></div>
                 <div class="bk-campo" style="justify-content:flex-end"><button type="submit" class="bk-btn">Guardar</button></div>
             </form>
-            <p class="bk-nota">El resto de tus datos (dorsales, foto, tipo de miembro…) los cambia un administrador.</p>
+            <p class="bk-nota">El resto de tus datos (dorsales, tipo de miembro…) los cambia un administrador.</p>
             <div id="msg-datos" class="bk-mensaje" role="status"></div>
         </section>
 
@@ -44,6 +60,8 @@
             <h2 class="bk-h3">Mis propuestas</h2>
             <p class="bk-nota" style="margin-bottom:0.75rem">Apodos y habilidades que has propuesto desde las fichas de los jugadores.</p>
             <div id="propuestas"><div class="bk-cargando">Cargando…</div></div>
+            <div class="bk-acciones" id="proponer-mas" hidden><a class="bk-btn bk-btn--azul" href="miembros.html">Proponer más</a></div>
+            <p class="bk-nota">También puedes proponer para otros desde la ficha de cada miembro.</p>
         </section>
     </main>
 

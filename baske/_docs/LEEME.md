@@ -63,6 +63,29 @@ imágenes sí son públicas.
 Los premios (catálogo y ganadores) y la validación de apodos y habilidades
 se hacen en la web: Admin → Premios y Admin → Apodos y habilidades.
 
+## Migración 04 (números de socio automáticos)
+
+Ejecutar `migracion_04.sql` (después de la 03).
+- Al crear su contraseña por primera vez, cada miembro recibe el número de socio libre más bajo.
+- Al darse de baja (o borrarse) alguien, su número desaparece y los mayores bajan uno.
+- Al ejecutarla, cierra los huecos que haya ahora (manteniendo el orden) y da número a
+  quien ya había entrado y no tenía.
+- Para miembros sin login (p. ej. aficionados), un admin puede asignar el siguiente número
+  desde Admin → Miembros.
+
+## Migración 03 (fotos propias, pista, gastos automáticos, +50 %)
+
+Ejecutar `migracion_03.sql` (después de la 02). Añade:
+- Cada miembro sube o quita su propia foto desde Ajustes.
+- "Media pista" / "Pista completa" en reservas, pachangas y entrenamientos (por defecto media).
+- Coste total de pista en pachangas sueltas y entrenamientos (5 € por defecto).
+- Al crear una reserva, una pachanga suelta o un entrenamiento se apunta solo un gasto
+  con su coste total; luego se edita como cualquier gasto. Al borrar una pachanga suelta
+  o un entrenamiento se borra su gasto.
+- Quien juega una pachanga de reserva sin estar apuntado (miembro o invitado) la paga
+  aparte: precio por pachanga + 50 %.
+- Los aficionados pueden llevar cualquier dorsal sin ocuparlo.
+
 ## Migración 02 (dorsales "1" y "01" distintos)
 
 Ejecutar `migracion_02.sql` en el editor SQL. Cambia `dorsal_azul` y `dorsal_negro`
@@ -74,5 +97,7 @@ de número a texto (1 o 2 cifras). Los dorsales que ya existían se quedan tal c
 - Temporada: 1 de septiembre – 31 de agosto.
 - MVP: 3 puntos por voto como 1º, 2 como 2º, 1 como 3º. Fraude: 1 por voto.
 - Deuda: reserva sin pagar = precio por pachanga × pachangas de la reserva;
-  pachanga suelta jugada sin pagar = su precio; entrenamiento asistido sin pagar = su precio.
+  pachanga suelta jugada sin pagar = su precio; pachanga de reserva jugada sin estar
+  apuntado y sin pagar = precio por pachanga × 1,5; entrenamiento asistido sin pagar = su precio.
+  Los invitados acumulan deuda igual que los miembros (un invitado que repite es la misma fila).
 - "Retirado": no ha jugado esta temporada o no es de tipo jugador. "Ex-miembro": tiene fecha de baja.

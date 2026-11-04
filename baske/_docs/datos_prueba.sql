@@ -1,7 +1,7 @@
 -- =====================================================================
 -- FRAN-BASKET - datos de prueba
 --
--- Ejecutar en el SQL Editor DESPUES de migracion_01.sql y migracion_02.sql. Crea miembros,
+-- Ejecutar en el SQL Editor DESPUES de las migraciones 01 a 04. Crea miembros,
 -- invitados, reservas, pachangas (temporadas 2025-26 y 2026-27 hasta hoy,
 -- mas una futura), asistencias, votos, equipos, entrenamientos, pagos,
 -- gastos, junta, premios, apodos y habilidades.
@@ -23,10 +23,11 @@ do $$
 declare
   -- 1-14 jugadores activos (13 y 14 novatos 2026), 15 ex-miembro (baja),
   -- 16 y 18 staff (jugaron en 2025-26 y ya no), 17 aficionada (nunca juega)
-  v_nombres   text[] := array['Pablo','Diego','Javier','Álvaro','Sergio','Marcos','Iván','Rubén','Hugo',
-                              'Adrián','Mario','Daniel','Óscar','Lucas','Tomás','Laura','Marta','Elena'];
-  v_apellidos text[] := array['Arroyo','Benítez','Castro','Domínguez','Esteban','Fernández','Gil','Herrera',
-                              'Iglesias','Jiménez','López','Molina','Navarro','Ortega','Sanz','Pérez','Quintana','Ruiz'];
+  -- Todos los nombres son de pájaros
+  v_nombres   text[] := array['Gorrión','Halcón','Águila','Búho','Cigüeña','Flamenco','Golondrina','Jilguero','Lechuza',
+                              'Mirlo','Paloma','Pelícano','Petirrojo','Urraca','Vencejo','Garza','Grulla','Abubilla'];
+  v_apellidos text[] := array['Albatros','Buitre','Canario','Colibrí','Cormorán','Cuco','Estornino','Faisán',
+                              'Gaviota','Herrerillo','Ibis','Martinete','Milano','Mochuelo','Ruiseñor','Tórtola','Verderón','Zorzal'];
   -- Dorsales en texto: '7' y '07' son números distintos
   v_azul      text[] := array['4', '7', '10', '11', '13', '23', '0', '07', '8', '14', '21', '33', '44', '99', '12', null, null, null];
   v_negro     text[] := array['04', '8', '9', null, '13', '23', '1', '6', null, '15', '22', '32', null, '77', '12', null, null, null];
@@ -40,7 +41,8 @@ declare
 
   usados_azul  text[];
   usados_negro text[];
-  v_az text; v_ng text;
+  v_az text; v_ng text;     -- dorsales (texto)
+  v_n1 int; v_n2 int;       -- números auxiliares de los bucles de junta y premios
   v_tipo equipo.tipo_miembro;
   v_id bigint; v_j bigint; v_r1 bigint; v_r2 bigint; v_p bigint; v_e1 bigint; v_e2 bigint;
   v_fecha date; v_cervezas boolean; v_juega boolean; v_cerveza boolean;
@@ -77,13 +79,14 @@ begin
                                 n_socio, tipo_miembro, activo, descripcion, origen)
     values (v_nombres[i], v_apellidos[i], v_az, v_ng, v_ingreso[i],
             case when i = 15 then date '2026-06-30' end,
-            case when i = 15 then null else 900 + i end,
+            null,
             v_tipo, i <> 15,
             format('%s es un miembro de prueba de FRAN-BASKET. Lorem ipsum dolor sit amet, consectetur adipiscing elit.', v_nombres[i]),
             (case when i <= 4 then 'fundador' when i % 2 = 0 then 'traido' else 'aparecido' end)::equipo.origen_miembro)
     returning id into v_id;
     m := m || v_id;
     insert into prueba_baske.filas values ('miembro', v_id);
+    perform equipo.asignar_n_socio(v_id);   -- siguiente número libre (el ex-miembro no recibe)
 
     insert into equipo.jugador (id_miembro) values (v_id) returning id into v_j;
     j := j || v_j;
@@ -107,7 +110,7 @@ begin
   end loop;
 
   -- ----- INVITADOS -----
-  foreach v_txt in array array['Carlos (invitado)', 'Nacho (invitado)', 'Rafa (invitado)'] loop
+  foreach v_txt in array array['Cuervo (invitado)', 'Perdiz (invitado)', 'Avutarda (invitado)'] loop
     insert into equipo.invitado (nombre, id_padrino) values (v_txt, m[1 + coalesce(array_length(inv_j, 1), 0)]) returning id into v_id;
     insert into prueba_baske.filas values ('invitado', v_id);
     insert into equipo.jugador (id_invitado) values (v_id) returning id into v_j;
@@ -119,8 +122,8 @@ begin
   insert into equipo.reserva_periodica (fecha_inicio, fecha_fin, precio_unitario, coste_reserva)
   values ('2025-09-02', '2026-06-30', 4, 1200) returning id into v_r1;
   insert into prueba_baske.filas values ('reserva_periodica', v_r1);
-  insert into equipo.reserva_periodica (fecha_inicio, fecha_fin, precio_unitario, coste_reserva)
-  values ('2026-09-01', '2027-06-29', 4, 1300) returning id into v_r2;
+  insert into equipo.reserva_periodica (fecha_inicio, fecha_fin, precio_unitario, coste_reserva, pista)
+  values ('2026-09-01', '2027-06-29', 4, 1300, 'completa') returning id into v_r2;
   insert into prueba_baske.filas values ('reserva_periodica', v_r2);
 
   for i in 1..18 loop
@@ -151,8 +154,8 @@ begin
   loop
     v_cervezas := extract(week from v_fecha)::int % 3 = 0 or v_fecha = current_date or v_fecha = date '2026-07-21';
 
-    insert into equipo.pachanga (id_reserva, fecha, precio, cervezas)
-    values (v_id, v_fecha, case when v_id is null then 5 end, v_cervezas)
+    insert into equipo.pachanga (id_reserva, fecha, precio, coste, cervezas)
+    values (v_id, v_fecha, case when v_id is null then 5 end, case when v_id is null then 60 end, v_cervezas)
     returning id into v_p;
     insert into prueba_baske.filas values ('pachanga', v_p);
 
@@ -249,15 +252,12 @@ begin
   end loop;
 
   -- ----- GASTOS -----
-  insert into equipo.gasto (compra, precio, cantidad, fecha, id_reserva) values ('Alquiler pista temporada 2025-26', 1200, 1, '2025-09-01', v_r1) returning id into v_id;
-  insert into prueba_baske.filas values ('gasto', v_id);
-  insert into equipo.gasto (compra, precio, cantidad, fecha, id_reserva) values ('Alquiler pista temporada 2026-27', 1300, 1, '2026-09-01', v_r2) returning id into v_id;
-  insert into prueba_baske.filas values ('gasto', v_id);
-  insert into equipo.gasto (compra, precio, cantidad, fecha, id_pachanga)
-  select 'Pista suelta julio', 60, 1, '2026-07-07', p.id from equipo.pachanga p
-  join prueba_baske.filas f on f.tabla = 'pachanga' and f.id = p.id where p.fecha = '2026-07-07'
-  returning id into v_id;
-  insert into prueba_baske.filas values ('gasto', v_id);
+  -- Los de pista (reservas, pachangas sueltas, entrenamientos) los crea la base de datos sola
+  insert into prueba_baske.filas
+  select 'gasto', g.id from equipo.gasto g
+  where g.id_reserva in (select id from prueba_baske.filas where tabla = 'reserva_periodica')
+     or g.id_pachanga in (select id from prueba_baske.filas where tabla = 'pachanga')
+     or g.id_entrenamiento in (select id from prueba_baske.filas where tabla = 'entrenamiento');
   insert into equipo.gasto (compra, precio, cantidad, fecha) values ('Balones', 105, 3, '2025-10-14') returning id into v_id;
   insert into prueba_baske.filas values ('gasto', v_id);
   insert into equipo.gasto (compra, precio, cantidad, fecha) values ('Equipaciones', 450, 20, '2026-09-25') returning id into v_id;
@@ -267,7 +267,7 @@ begin
 
   -- ----- JUNTA (solo si no hay junta real) -----
   if not exists (select 1 from equipo.junta_directiva) then
-    for v_txt, i, v_fecha, v_az in
+    for v_txt, i, v_fecha, v_n1 in
       select * from (values
         ('lider_supremo',    1, date '2025-09-01', 0),
         ('maestro_balon',    2, date '2025-09-01', 1),
@@ -280,7 +280,7 @@ begin
       ) t (cargo, idx, inicio, termina)
     loop
       insert into equipo.junta_directiva (id_miembro, id_cargo, fecha_inicio, fecha_fin)
-      select m[i], c.id, v_fecha, case when v_az = 1 then date '2026-08-31' end
+      select m[i], c.id, v_fecha, case when v_n1 = 1 then date '2026-08-31' end
       from equipo.cargo c where c.nombre = v_txt
       returning id into v_id;
       insert into prueba_baske.filas values ('junta_directiva', v_id);
@@ -297,7 +297,7 @@ begin
     end if;
   end loop;
 
-  for v_txt, i, v_ng, v_az in
+  for v_txt, i, v_n1, v_n2 in
     select * from (values
       ('MVP de temporada',    2, 1, null), ('Fraude de temporada', 9, 1, null), ('Novato del año', 12, 1, null),
       ('MVP mes',  2, 1, 1), ('MVP mes',  6, 1, 2), ('MVP mes',  1, 1, 3), ('MVP mes', 10, 1, 4), ('MVP mes',  2, 1, 5), ('MVP mes',  3, 1, 6),
@@ -308,8 +308,8 @@ begin
     v_id := null;
     insert into equipo.premio_miembro (id_premio, id_miembro, temporada, periodo)
     select p.id,
-           case when v_txt = 'Fraude mes' and v_ng = 2 and v_real_miembro is not null then v_real_miembro else m[i] end,
-           case when v_ng = 1 then '2025-26' else '2026-27' end, v_az
+           case when v_txt = 'Fraude mes' and v_n1 = 2 and v_real_miembro is not null then v_real_miembro else m[i] end,
+           case when v_n1 = 1 then '2025-26' else '2026-27' end, v_n2
     from equipo.premio p where p.nombre_premio = v_txt
     on conflict do nothing
     returning id into v_id;

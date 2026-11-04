@@ -29,14 +29,19 @@
     });
     (d.pachanga_jugador || []).forEach(function (pj) {
         var p = M.pachanga.get(pj.id_pachanga);
-        if (p && p.precio != null && pj.jugado && pj.pagado != null) ingresos.push({ concepto: 'Pachangas sueltas', temporada: p.temporada, importe: Number(p.precio), pagado: pj.pagado });
+        if (p && pj.jugado && pj.pagado != null) {
+            ingresos.push({
+                concepto: p.id_reserva ? 'Pachangas de reserva sin estar apuntado' : 'Pachangas sueltas',
+                temporada: p.temporada, importe: M.precioPachanga(p), pagado: pj.pagado
+            });
+        }
     });
     (d.entrenamiento_jugador || []).forEach(function (ej) {
         var e = entrenos.get(ej.id_entrenamiento);
         if (e && ej.asistido) ingresos.push({ concepto: 'Entrenamientos', temporada: B.temporadaDe(e.fecha), importe: Number(e.precio), pagado: ej.pagado });
     });
 
-    var TIPOS_GASTO = { reserva: 'Reservas de pista', pachanga: 'Pistas sueltas', general: 'General' };
+    var TIPOS_GASTO = { reserva: 'Reservas de pista', pachanga: 'Pistas sueltas', entrenamiento: 'Pistas de entrenamiento', general: 'General' };
     var gastos = (d.gasto || []).map(function (g) {
         return Object.assign({ temporada: B.temporadaDe(g.fecha) }, g);
     }).sort(function (a, b) { return a.fecha < b.fecha ? 1 : -1; });
@@ -92,7 +97,7 @@
             '</tbody><tfoot><tr><td>Total</td><td class="num">' + esc(B.euros(cobrado)) + '</td><td class="num">' + esc(B.euros(pendiente)) + '</td></tr></tfoot></table></div></section>';
 
         html += '<section><h2 class="bk-h2">Gastos por tipo</h2><div class="bk-tabla-envoltorio"><table class="bk-tabla"><thead><tr>' +
-            '<th>Tipo</th><th class="num">Importe</th><th class="num">%</th></tr></thead><tbody>' +
+            '<th>Tipo</th><th class="num">Importe total</th><th class="num">%</th></tr></thead><tbody>' +
             (porTipo.size ? Array.from(porTipo).sort(function (a, b) { return b[1] - a[1]; }).map(function (e) {
                 return '<tr><td>' + esc(TIPOS_GASTO[e[0]] || e[0]) + '</td><td class="num">' + esc(B.euros(e[1])) + '</td>' +
                     '<td class="num">' + (gastado ? Math.round(e[1] * 100 / gastado) : 0) + '%</td></tr>';
@@ -101,7 +106,7 @@
         html += '</div>';
 
         html += '<section class="bk-seccion"><h2 class="bk-h2">Detalle de gastos</h2><div class="bk-tabla-envoltorio"><table class="bk-tabla"><thead><tr>' +
-            '<th>Fecha</th><th>Compra</th><th class="num bk-ocultar-movil">Cantidad</th><th class="bk-ocultar-movil">Tipo</th><th class="num">Importe</th></tr></thead><tbody>' +
+            '<th>Fecha</th><th>Compra</th><th class="num bk-ocultar-movil">Cantidad</th><th class="bk-ocultar-movil">Tipo</th><th class="num">Importe total</th></tr></thead><tbody>' +
             (gas.length ? gas.map(function (g) {
                 return '<tr><td>' + esc(B.fecha(g.fecha)) + '</td><td>' + esc(g.compra) + '</td><td class="num bk-ocultar-movil">' + g.cantidad + '</td>' +
                     '<td class="bk-ocultar-movil">' + esc(TIPOS_GASTO[g.tipo] || g.tipo) + '</td><td class="num">' + esc(B.euros(g.precio)) + '</td></tr>';

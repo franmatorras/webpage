@@ -35,6 +35,8 @@
     };
     var TIPOS = { jugador: 'Jugador', staff: 'Staff', aficionado: 'Aficionado' };
     var ORIGENES = { fundador: 'Fundador', traido: 'Traído', aparecido: 'Aparecido' };
+    var RECARGO_NO_APUNTADO = 1.5; // +50 % por jugar una pachanga de reserva sin estar apuntado
+    var PISTAS = { media: 'Media pista', completa: 'Pista completa' };
     var PERIODOS = ['Sep-Oct', 'Nov-Dic', 'Ene-Feb', 'Mar-Abr', 'May-Jun', 'Jul-Ago'];
 
     function etiquetaCargo(nombre) {
@@ -380,7 +382,7 @@
         });
         (d.pachanga_jugador || []).forEach(function (pj) {
             var p = self.pachanga.get(pj.id_pachanga);
-            if (p && pj.pagado === false && pj.jugado && p.precio != null) sumar(pj.id_jugador, p.precio);
+            if (p && pj.pagado === false && pj.jugado) sumar(pj.id_jugador, self.precioPachanga(p));
         });
         var entrenos = indexar(d.entrenamiento, 'id');
         (d.entrenamiento_jugador || []).forEach(function (ej) {
@@ -391,6 +393,14 @@
         deudas.forEach(function (v, k) { if (v <= 0) deudas.delete(k); });
         this._deudas = deudas;
         return deudas;
+    };
+
+    // Lo que paga por una pachanga quien no la tiene cubierta por la reserva:
+    //   suelta -> su precio; de reserva sin estar apuntado -> precio de la reserva + 50 %
+    Modelo.prototype.precioPachanga = function (p) {
+        if (p.id_reserva == null) return Number(p.precio) || 0;
+        var r = (this.d.reserva_periodica || []).find(function (x) { return x.id === p.id_reserva; });
+        return r ? Math.round(Number(r.precio_unitario) * RECARGO_NO_APUNTADO * 100) / 100 : 0;
     };
 
     Modelo.prototype.deuda = function (idJugador) { return this.deudas().get(idJugador) || 0; };
@@ -538,6 +548,25 @@
 
     function foto(m) { return (m && m.foto_url && firmadas.get(m.foto_url)) || SILUETA; }
 
+    // Reduce una imagen a JPEG (lado largo máx.) antes de subirla
+    function reducirImagen(archivo, maxLado, calidad) {
+        return new Promise(function (resolve, reject) {
+            var img = new Image();
+            var url = URL.createObjectURL(archivo);
+            img.onload = function () {
+                var escala = Math.min(1, maxLado / Math.max(img.width, img.height));
+                var c = document.createElement('canvas');
+                c.width = Math.round(img.width * escala);
+                c.height = Math.round(img.height * escala);
+                c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+                URL.revokeObjectURL(url);
+                c.toBlob(function (blob) { blob ? resolve(blob) : reject(new Error('No se pudo procesar la imagen')); }, 'image/jpeg', calidad);
+            };
+            img.onerror = function () { URL.revokeObjectURL(url); reject(new Error('Ese archivo no es una imagen válida')); };
+            img.src = url;
+        });
+    }
+
     async function urlFirmada(ruta) {
         var r = await cliente.storage.from('equipo').createSignedUrl(ruta, 3600);
         if (r.error) throw r.error;
@@ -578,7 +607,9 @@
             '</ul></nav>' +
             '<button class="bk-menu" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="bk-nav">☰</button>' +
             '<a class="bk-usuario" href="' + url('ajustes.html') + '" title="Ajustes">' + ICONO_USUARIO +
-            '<span>' + esc(yo.apodo || (yo.usuario ? yo.usuario.usuario : '')) + '</span></a>';
+            '<span class="bk-usuario-texto"><span class="bk-usuario-nombre">' + esc(yo.apodo || (yo.usuario ? yo.usuario.usuario : '')) + '</span>' +
+            (yo.miembro && yo.miembro.n_socio != null ? '<span class="bk-usuario-socio">Socio nº ' + esc(yo.miembro.n_socio) + '</span>' : '') +
+            '</span></a>';
         document.body.insertBefore(header, document.body.firstChild);
 
         var boton = header.querySelector('.bk-menu');
@@ -753,6 +784,7 @@
         etiquetaCargo: etiquetaCargo,
         CARGOS: CARGOS,
         TIPOS: TIPOS,
+        PISTAS: PISTAS,
         ORIGENES: ORIGENES,
         cargar: cargar,
         olvidar: olvidar,
@@ -764,6 +796,8 @@
         foto: foto,
         SILUETA: SILUETA,
         urlFirmada: urlFirmada,
+        reducirImagen: reducirImagen,
+        olvidarFoto: function (ruta) { firmadas.delete(ruta); },
         iniciar: iniciar,
         yo: function () { return yoActual; },
         hace: hace,

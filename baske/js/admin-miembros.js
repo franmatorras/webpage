@@ -80,7 +80,10 @@
             A.campo('Origen', 'origen', null, { tipo: 'select', opciones: A.opciones(origenes, m ? m.origen : '', '—') }) +
             A.campo('Fecha de ingreso', 'fecha_ingreso', m ? m.fecha_ingreso : B.hoy(), { tipo: 'date', requerido: true }) +
             A.campo('Fecha de baja', 'fecha_baja', m ? m.fecha_baja : null, { tipo: 'date' }) +
-            A.campo('Nº de socio', 'n_socio', m ? m.n_socio : null, { tipo: 'number', min: 0 }) +
+            '<div class="bk-campo"><label>Nº de socio</label><p style="margin:0.35rem 0"><strong>' + (m && m.n_socio != null ? esc(m.n_socio) : 'Sin número') + '</strong></p>' +
+            (!m || (m.n_socio == null && !m.fecha_baja)
+                ? '<div class="bk-campo--check" style="display:flex;gap:0.4rem;align-items:center"><input type="checkbox" id="asignar-socio" name="asignar_socio"><label for="asignar-socio">Darle el siguiente número libre</label></div>'
+                : '') + '</div>' +
             A.campo('Dorsal azul (1 y 01 son distintos)', 'dorsal_azul', m ? m.dorsal_azul : null, { patron: '[0-9]{1,2}', maxlength: 2, inputmode: 'numeric' }) +
             A.campo('Dorsal negro (1 y 01 son distintos)', 'dorsal_negro', m ? m.dorsal_negro : null, { patron: '[0-9]{1,2}', maxlength: 2, inputmode: 'numeric' }) +
             A.campo('Padrino', 'id_padrino', null, { tipo: 'select', numero: true, opciones: A.opcionesMiembros(M, m ? m.id_padrino : null, 'Sin padrino', function (x) { return !m || x.id !== m.id; }) }) +
@@ -91,7 +94,8 @@
             '<div class="bk-campo"><label for="foto-archivo">Foto</label>' +
             (m && m.foto_url ? '<img class="bk-foto" src="' + esc(B.foto(m)) + '" alt="" style="width:96px;margin-bottom:0.4rem">' : '') +
             '<input type="file" id="foto-archivo" accept="image/*"></div>' +
-            '<p class="bk-nota">Con fecha de baja el miembro pasa a inactivo y pierde el nº de socio.</p>';
+            '<p class="bk-nota">El nº de socio se asigna solo (el libre más bajo) cuando el miembro crea su contraseña. ' +
+            'Con fecha de baja pasa a inactivo y pierde el número; los números mayores bajan uno.</p>';
 
         A.dialogo(m ? 'Editar ' + M.nombreMiembro(m) : 'Nuevo miembro', cuerpo, async function (form, v) {
             if (!v.nombre) throw new Error('El nombre es obligatorio.');
@@ -101,7 +105,7 @@
             var fila = {
                 nombre: v.nombre, apellido: v.apellido, tipo_miembro: v.tipo_miembro, origen: v.origen,
                 fecha_ingreso: v.fecha_ingreso || B.hoy(), fecha_baja: v.fecha_baja,
-                n_socio: v.fecha_baja ? null : v.n_socio, activo: v.fecha_baja ? false : v.activo,
+                activo: v.fecha_baja ? false : v.activo,
                 dorsal_azul: v.dorsal_azul, dorsal_negro: v.dorsal_negro,
                 id_padrino: v.id_padrino, descripcion: v.descripcion
             };
@@ -113,6 +117,8 @@
             } else {
                 id = A.ok(await db.from('miembro').insert(fila).select('id').single()).id;
             }
+
+            if (v.asignar_socio && !v.fecha_baja) A.ok(await db.rpc('asignar_n_socio', { p_miembro: id }));
 
             // Todo miembro tiene su fila en "jugador" (hace falta para asistir y para las cervezas)
             if (!M.jugadorDeMiembro.has(id)) {

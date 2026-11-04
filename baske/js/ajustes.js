@@ -17,6 +17,71 @@
         location.replace(B.url('index.html'));
     });
 
+    // ----- Foto propia (la base de datos solo deja tocar fotos/<mi id>-*) -----
+    if (yo.miembro) {
+        var secFoto = document.getElementById('sec-foto');
+        var imgFoto = document.getElementById('foto-actual');
+        var inputFoto = document.getElementById('foto-archivo');
+        var botonBorrar = document.getElementById('foto-borrar');
+        var msgFoto = document.getElementById('msg-foto');
+        secFoto.hidden = false;
+
+        async function pintarFoto() {
+            await B.prepararFotos([yo.miembro]);
+            imgFoto.src = B.foto(yo.miembro);
+            botonBorrar.hidden = !yo.miembro.foto_url;
+        }
+
+        document.getElementById('foto-subir').addEventListener('click', async function () {
+            var archivo = inputFoto.files[0];
+            if (!archivo) { B.mensaje(msgFoto, 'Elige primero una imagen.'); return; }
+            var boton = this;
+            boton.disabled = true;
+            B.mensaje(msgFoto, 'Subiendo…', 'ok');
+            try {
+                var blob = await B.reducirImagen(archivo, 800, 0.85);
+                var ruta = 'fotos/' + yo.miembro.id + '-' + Date.now() + '.jpg';
+                var anterior = yo.miembro.foto_url;
+                var r = await B.cliente.storage.from('equipo').upload(ruta, blob, { contentType: 'image/jpeg', upsert: true });
+                if (r.error) throw r.error;
+                r = await B.cliente.from('miembro').update({ foto_url: ruta }).eq('id', yo.miembro.id);
+                if (r.error) throw r.error;
+                yo.miembro.foto_url = ruta;
+                if (anterior && anterior !== ruta) {
+                    B.olvidarFoto(anterior);
+                    await B.cliente.storage.from('equipo').remove([anterior]);
+                }
+                inputFoto.value = '';
+                await pintarFoto();
+                B.mensaje(msgFoto, 'Foto actualizada.', 'ok');
+            } catch (e) {
+                B.mensaje(msgFoto, B.traducirError(e));
+            } finally {
+                boton.disabled = false;
+            }
+        });
+
+        botonBorrar.addEventListener('click', async function () {
+            if (!confirm('¿Quitar tu foto de perfil?')) return;
+            try {
+                var anterior = yo.miembro.foto_url;
+                var r = await B.cliente.from('miembro').update({ foto_url: null }).eq('id', yo.miembro.id);
+                if (r.error) throw r.error;
+                yo.miembro.foto_url = null;
+                if (anterior) {
+                    B.olvidarFoto(anterior);
+                    await B.cliente.storage.from('equipo').remove([anterior]);
+                }
+                await pintarFoto();
+                B.mensaje(msgFoto, 'Foto quitada.', 'ok');
+            } catch (e) {
+                B.mensaje(msgFoto, B.traducirError(e));
+            }
+        });
+
+        pintarFoto();
+    }
+
     // ----- Datos (solo nombre y apellido: lo demás lo bloquea la base de datos) -----
     if (yo.miembro) {
         document.getElementById('sec-datos').hidden = false;
@@ -49,6 +114,13 @@
         ev.target.reset();
         B.mensaje(msg, 'Contraseña cambiada.', 'ok');
     });
+
+    // Botón "Proponer más": a tu propia ficha, directo al formulario
+    if (yo.miembro) {
+        var proponerMas = document.getElementById('proponer-mas');
+        proponerMas.querySelector('a').href = 'jugador.html?id=' + yo.miembro.id + '#proponer';
+        proponerMas.hidden = false;
+    }
 
     // ----- Propuestas -----
     var contProp = document.getElementById('propuestas');
