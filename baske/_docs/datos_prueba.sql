@@ -1,7 +1,7 @@
 -- =====================================================================
 -- FRAN-BASKET - datos de prueba
 --
--- Ejecutar en el SQL Editor DESPUES de las migraciones 01 a 04. Crea miembros,
+-- Ejecutar en el SQL Editor DESPUES de las migraciones 01 a 05. Crea miembros,
 -- invitados, reservas, pachangas (temporadas 2025-26 y 2026-27 hasta hoy,
 -- mas una futura), asistencias, votos, equipos, entrenamientos, pagos,
 -- gastos, junta, premios, apodos y habilidades.
@@ -174,8 +174,12 @@ begin
         insert into equipo.pachanga_jugador (id_pachanga, id_jugador, jugado, cerveza, pagado)
         values (v_p, j[i], true, v_cerveza, case when v_id is null then not (i = 5 or random() < 0.1) end);
       elsif v_cerveza and (i = 17 or (i in (16, 18) and v_temporada = 2)) and random() < 0.6 then
-        insert into equipo.pachanga_jugador (id_pachanga, id_jugador, jugado, cerveza, pagado)
-        values (v_p, j[i], false, true, case when v_id is null then true end);
+        insert into equipo.pachanga_jugador (id_pachanga, id_jugador, jugado, cerveza, vio, pagado)
+        values (v_p, j[i], false, true, random() < 0.5, case when v_id is null then true end);
+      elsif i in (16, 17) and random() < 0.25 then
+        -- Vino a ver sin jugar ni ir a las cervezas
+        insert into equipo.pachanga_jugador (id_pachanga, id_jugador, jugado, cerveza, vio, pagado)
+        values (v_p, j[i], false, false, true, case when v_id is null then true end);
       end if;
     end loop;
 
@@ -262,6 +266,17 @@ begin
   insert into prueba_baske.filas values ('gasto', v_id);
   insert into equipo.gasto (compra, precio, cantidad, fecha) values ('Equipaciones', 450, 20, '2026-09-25') returning id into v_id;
   insert into prueba_baske.filas values ('gasto', v_id);
+
+  -- ----- COBROS (la equipación se cobra a quien la pidió; la mitad ya ha pagado) -----
+  for i in 1..6 loop
+    insert into equipo.cobro (id_jugador, concepto, importe, fecha, pagado, id_gasto)
+    values (j[i], 'Compra equipación', 25, '2026-09-25', i % 2 = 0, v_id)
+    returning id into v_e1;
+    insert into prueba_baske.filas values ('cobro', v_e1);
+  end loop;
+  insert into equipo.cobro (id_jugador, concepto, importe, fecha)
+  values (j[17], 'Sudadera del equipo', 30, '2026-10-15') returning id into v_e1;   -- una aficionada también puede deber
+  insert into prueba_baske.filas values ('cobro', v_e1);
   insert into equipo.gasto (compra, precio, cantidad, fecha) values ('Botiquín', 35, 1, '2026-10-02') returning id into v_id;
   insert into prueba_baske.filas values ('gasto', v_id);
 

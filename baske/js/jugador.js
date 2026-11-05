@@ -69,19 +69,21 @@
             var a = M.asistencia(idJ, set);
             var tot = M.totales(set);
             return { t: t, a: a, tot: tot };
-        }).filter(function (f) { return f.a.jugadas || f.a.cervezas || f.t === M.temporadaActual; });
+        }).filter(function (f) { return f.a.jugadas || f.a.cervezas || f.a.vistas || f.t === M.temporadaActual; });
 
         var total = M.asistencia(idJ, null);
         html += '<h2 class="bk-h2">Estadísticas</h2><div class="bk-tabla-envoltorio"><table class="bk-tabla"><thead><tr>' +
-            '<th>Temporada</th><th class="num">Pachangas</th><th class="num">Cervezas</th>' +
+            '<th>Temporada</th><th class="num">Pachangas</th><th class="num">Cervezas</th><th class="num" title="Vino a ver sin jugar">Vistas</th>' +
             '</tr></thead><tbody>' +
             filas.map(function (f) {
                 return '<tr><td>' + esc(f.t) + '</td><td class="num">' + f.a.jugadas + ' <span class="bk-nota">/ ' + f.tot.pachangas + '</span></td>' +
-                    '<td class="num">' + f.a.cervezas + ' <span class="bk-nota">/ ' + f.tot.conCervezas + '</span></td></tr>';
+                    '<td class="num">' + f.a.cervezas + ' <span class="bk-nota">/ ' + f.tot.conCervezas + '</span></td>' +
+                    '<td class="num">' + f.a.vistas + '</td></tr>';
             }).join('') +
-            '</tbody><tfoot><tr><td>Total</td><td class="num">' + total.jugadas + '</td><td class="num">' + total.cervezas + '</td></tr></tfoot></table></div>' +
+            '</tbody><tfoot><tr><td>Total</td><td class="num">' + total.jugadas + '</td><td class="num">' + total.cervezas + '</td><td class="num">' + total.vistas + '</td></tr></tfoot></table></div>' +
             '<p class="bk-nota" style="margin-top:0.4rem">Última pachanga: ' + esc(total.ultimaPachanga ? B.fecha(total.ultimaPachanga) : '—') +
-            ' · Última cerveza: ' + esc(total.ultimaCerveza ? B.fecha(total.ultimaCerveza) : '—') + '</p>';
+            ' · Última cerveza: ' + esc(total.ultimaCerveza ? B.fecha(total.ultimaCerveza) : '—') +
+            (total.ultimaVista ? ' · Última vez que vino a ver: ' + esc(B.fecha(total.ultimaVista)) : '') + '</p>';
     }
 
     // ----- Premios y cargos -----

@@ -578,7 +578,17 @@ dialog.bk-dialogo::backdrop { background: rgba(17, 20, 24, 0.55); }
     .bk-cabecera-card .bk-btn { flex: 0 0 auto; }
 }
 
-/* Filtro de fecha en Vista Pachangas */
-.bk-campo-fecha { display: inline-flex; align-items: center; gap: 0.4rem; font-weight: 600; }
-.bk-campo-fecha[hidden] { display: none; }
-.bk-campo-fecha input { width: auto; }
+/* Filtro por meses en Vista Pachangas */
+.bk-meses { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+.bk-meses[hidden] { display: none; }
+.bk-meses label { display: inline-flex; align-items: center; gap: 0.4rem; font-weight: 600; }
+.bk-meses select { width: auto; }
+
+/* Elegir personas para un cobro */
+.bk-personas-lista { max-height: 40vh; overflow: auto; border: 1px solid var(--bk-borde); border-radius: 8px; padding: 0.4rem 0.6rem;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 0.15rem 0.75rem; }
+.bk-personas-lista label { display: flex; align-items: center; gap: 0.4rem; padding: 0.2rem 0; font-weight: 500; cursor: pointer; }
+.bk-personas-lista label[hidden] { display: none; }
+.bk-personas-lista input { width: 18px; height: 18px; margin: 0; flex: none; }
+.bk-cobrar { margin-top: 0.75rem; border-top: 1px solid var(--bk-borde); padding-top: 0.6rem; }
+.bk-cobrar summary { cursor: pointer; font-weight: 700; margin-bottom: 0.5rem; }

@@ -63,6 +63,15 @@ imágenes sí son públicas.
 Los premios (catálogo y ganadores) y la validación de apodos y habilidades
 se hacen en la web: Admin → Premios y Admin → Apodos y habilidades.
 
+## Migración 05 (espectadores y cobros a personas)
+
+Ejecutar `migracion_05.sql` (después de la 04).
+- En la asistencia de cada pachanga hay una columna "Vio": quien vino a ver sin jugar
+  (aficionados, otros miembros, invitados). No cuenta como jugada ni genera deuda.
+- Cobros a personas concretas (p. ej. "Compra equipación"): Admin → Pagos y gastos →
+  "+ Cobro a miembros", o al crear/editar un gasto en "Cobrar a miembros". Cada cobro aparece
+  en Pagos y suma a la deuda de esa persona hasta que se marca pagado.
+
 ## Migración 04 (números de socio automáticos)
 
 Ejecutar `migracion_04.sql` (después de la 03).
@@ -100,4 +109,5 @@ de número a texto (1 o 2 cifras). Los dorsales que ya existían se quedan tal c
   pachanga suelta jugada sin pagar = su precio; pachanga de reserva jugada sin estar
   apuntado y sin pagar = precio por pachanga × 1,5; entrenamiento asistido sin pagar = su precio.
   Los invitados acumulan deuda igual que los miembros (un invitado que repite es la misma fila).
+  Los cobros a personas (equipación, etc.) sin pagar también suman.
 - "Retirado": no ha jugado esta temporada o no es de tipo jugador. "Ex-miembro": tiene fecha de baja.

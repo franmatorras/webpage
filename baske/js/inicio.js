@@ -40,7 +40,8 @@
 
         var esJugador = yo.miembro.tipo_miembro === 'jugador' && !yo.miembro.fecha_baja;
         var tot = M.totales(temporada);
-        var mia = yo.idJugador ? M.asistencia(yo.idJugador, temporada) : { jugadas: 0, cervezas: 0 };
+        var mia = yo.idJugador ? M.asistencia(yo.idJugador, temporada) : { jugadas: 0, cervezas: 0, vistas: 0 };
+        var deuda = yo.idJugador ? M.deuda(yo.idJugador) : 0;
         var historica = yo.idJugador ? M.asistencia(yo.idJugador, null) : {};
 
         html += '<div class="bk-stats">';
@@ -49,12 +50,15 @@
             html += stat('Fecha de la última pachanga', historica.ultimaPachanga
                 ? '<span style="font-size:1.15rem">' + esc(B.fecha(historica.ultimaPachanga)) + '</span>'
                 : '<span style="font-size:1.1rem">Aún ninguna</span>');
-            var deuda = yo.idJugador ? M.deuda(yo.idJugador) : 0;
+        }
+        // La deuda se enseña a los jugadores y a cualquiera que deba algo (p. ej. un cobro de equipación)
+        if (esJugador || deuda > 0) {
             html += deuda > 0
                 ? stat('Pagos', 'Debes ' + esc(B.euros(deuda)), 'bk-stat--deuda')
                 : stat('Pagos', 'No tienes deudas pendientes', 'bk-stat--ok');
         }
         html += stat('Cervezas', mia.cervezas + ' <small>/ ' + tot.conCervezas + '</small>');
+        if (!esJugador || mia.vistas) html += stat('Pachangas vistas', String(mia.vistas || 0));
         html += '</div>';
 
         // Votación de la última pachanga

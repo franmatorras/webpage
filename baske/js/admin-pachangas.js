@@ -211,6 +211,7 @@
                 (j.invitado ? ' <span class="bk-chip bk-chip--gris">invitado' + (j.padrino ? ' de ' + esc(j.padrino) : '') + (veces ? ' · ' + veces + (veces === 1 ? ' vez' : ' veces') : '') + '</span>' : '') + '</td>' +
                 '<td><input type="checkbox" class="c-jugado" aria-label="Jugó"' + (a && a.jugado ? ' checked' : '') + '></td>' +
                 '<td><input type="checkbox" class="c-cerveza" aria-label="Cerveza"' + (a && a.cerveza ? ' checked' : '') + (p.cervezas ? '' : ' disabled') + '></td>' +
+                '<td><input type="checkbox" class="c-vio" aria-label="Vino a ver"' + (a && a.vio && !a.jugado ? ' checked' : '') + '></td>' +
                 (cobrable(j.id)
                     ? '<td><input type="checkbox" class="c-pagado" aria-label="Pagado"' + (a && a.pagado ? ' checked' : '') + '></td>'
                     : '<td><span class="bk-nota">Reserva</span></td>') +
@@ -234,7 +235,7 @@
                     '<div class="bk-campo"><label>Partidos ganados</label><input type="number" class="eq-ganados" min="0" value="' + (e.partidos_ganados == null ? '' : e.partidos_ganados) + '"></div></div>';
             }).join('') + '</div>' +
             '<div class="bk-tabla-envoltorio" style="max-height:50vh;overflow:auto"><table class="bk-tabla bk-tabla--compacta bk-asistencia-tabla"><thead><tr>' +
-            '<th>Jugador</th><th>Jugó</th><th>Cerveza</th><th>Pagado</th><th>Equipo</th></tr></thead><tbody>' +
+            '<th>Jugador</th><th>Jugó</th><th>Cerveza</th><th title="Vino a ver sin jugar">Vio</th><th>Pagado</th><th>Equipo</th></tr></thead><tbody>' +
             jugadoresParaLista(Array.from(actuales.keys())).map(filaJugador).join('') +
             '</tbody></table></div>';
 
@@ -246,12 +247,13 @@
                 var idJ = Number(tr.dataset.jugador);
                 var jugado = tr.querySelector('.c-jugado').checked;
                 var cerveza = p.cervezas && tr.querySelector('.c-cerveza').checked;
+                var vio = !jugado && tr.querySelector('.c-vio').checked;
                 var casilla = tr.querySelector('.c-pagado');
                 var pagado = casilla ? casilla.checked : null;
                 var a = actuales.get(idJ);
-                if (jugado || cerveza) {
-                    if (!a || a.jugado !== jugado || a.cerveza !== cerveza || (casilla && !!a.pagado !== pagado)) {
-                        var fila = { id_pachanga: id, id_jugador: idJ, jugado: jugado, cerveza: cerveza };
+                if (jugado || cerveza || vio) {
+                    if (!a || a.jugado !== jugado || a.cerveza !== cerveza || !!a.vio !== vio || (casilla && !!a.pagado !== pagado)) {
+                        var fila = { id_pachanga: id, id_jugador: idJ, jugado: jugado, cerveza: cerveza, vio: vio };
                         if (casilla) fila.pagado = pagado;
                         filas.push(fila);
                     }
@@ -289,7 +291,12 @@
                 });
                 // Marcar cerveza o equipo implica estar en la lista
                 d.querySelectorAll('tr[data-jugador]').forEach(function (tr) {
-                    tr.querySelector('.c-equipo').addEventListener('change', function () { if (this.value) tr.querySelector('.c-jugado').checked = true; });
+                    tr.querySelector('.c-equipo').addEventListener('change', function () {
+                        if (this.value) { tr.querySelector('.c-jugado').checked = true; tr.querySelector('.c-vio').checked = false; }
+                    });
+                    // Jugar ya es estar allí: "Vio" es solo para quien vino sin jugar
+                    tr.querySelector('.c-jugado').addEventListener('change', function () { if (this.checked) tr.querySelector('.c-vio').checked = false; });
+                    tr.querySelector('.c-vio').addEventListener('change', function () { if (this.checked) tr.querySelector('.c-jugado').checked = false; });
                 });
 
                 var panelInv = d.querySelector('.nuevo-invitado');

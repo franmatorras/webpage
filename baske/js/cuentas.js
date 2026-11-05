@@ -40,6 +40,9 @@
         var e = entrenos.get(ej.id_entrenamiento);
         if (e && ej.asistido) ingresos.push({ concepto: 'Entrenamientos', temporada: B.temporadaDe(e.fecha), importe: Number(e.precio), pagado: ej.pagado });
     });
+    (d.cobro || []).forEach(function (c) {
+        ingresos.push({ concepto: 'Cobros a miembros (equipación, etc.)', temporada: B.temporadaDe(c.fecha), importe: Number(c.importe), pagado: c.pagado });
+    });
 
     var TIPOS_GASTO = { reserva: 'Reservas de pista', pachanga: 'Pistas sueltas', entrenamiento: 'Pistas de entrenamiento', general: 'General' };
     var gastos = (d.gasto || []).map(function (g) {

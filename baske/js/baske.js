@@ -187,7 +187,7 @@
 
     // Tablas que necesita el Modelo completo
     var TABLAS_BASE = ['miembro', 'jugador', 'invitado', 'pachanga', 'pachanga_jugador', 'apodo', 'habilidad_especial'];
-    var TABLAS_DEUDA = ['reserva_periodica', 'reserva_jugador', 'entrenamiento', 'entrenamiento_jugador'];
+    var TABLAS_DEUDA = ['reserva_periodica', 'reserva_jugador', 'entrenamiento', 'entrenamiento_jugador', 'cobro'];
     var TABLAS_PREMIOS = ['premio', 'premio_miembro'];
     var TABLAS_JUNTA = ['cargo', 'junta_directiva'];
 
@@ -227,7 +227,8 @@
                 periodo: periodoDe(p.fecha),
                 jugada: p.fecha <= self.hoy,
                 asistentes: [],
-                cerveceros: []
+                cerveceros: [],
+                espectadores: []   // vinieron a ver sin jugar
             });
         }).sort(function (a, b) { return a.fecha === b.fecha ? b.id - a.id : (a.fecha < b.fecha ? 1 : -1); });
         this.pachanga = indexar(this.pachangas, 'id');
@@ -238,6 +239,7 @@
             if (!p) return;
             if (pj.jugado) p.asistentes.push(pj.id_jugador);
             if (pj.cerveza) p.cerveceros.push(pj.id_jugador);
+            if (pj.vio && !pj.jugado) p.espectadores.push(pj.id_jugador);
             if (!self.pjDeJugador.has(pj.id_jugador)) self.pjDeJugador.set(pj.id_jugador, []);
             self.pjDeJugador.get(pj.id_jugador).push(pj);
         });
@@ -302,7 +304,7 @@
     // temporadas: Set de temporadas o null = todas
     Modelo.prototype.asistencia = function (idJugador, temporadas) {
         var self = this;
-        var r = { jugadas: 0, cervezas: 0, ultimaPachanga: null, ultimaCerveza: null };
+        var r = { jugadas: 0, cervezas: 0, vistas: 0, ultimaPachanga: null, ultimaCerveza: null, ultimaVista: null };
         (this.pjDeJugador.get(idJugador) || []).forEach(function (pj) {
             var p = self.pachanga.get(pj.id_pachanga);
             if (!p.jugada || (temporadas && !temporadas.has(p.temporada))) return;
@@ -313,6 +315,10 @@
             if (pj.cerveza) {
                 r.cervezas++;
                 if (!r.ultimaCerveza || p.fecha > r.ultimaCerveza) r.ultimaCerveza = p.fecha;
+            }
+            if (pj.vio && !pj.jugado) {
+                r.vistas++;
+                if (!r.ultimaVista || p.fecha > r.ultimaVista) r.ultimaVista = p.fecha;
             }
         });
         return r;
@@ -388,6 +394,10 @@
         (d.entrenamiento_jugador || []).forEach(function (ej) {
             var e = entrenos.get(ej.id_entrenamiento);
             if (e && !ej.pagado && ej.asistido) sumar(ej.id_jugador, e.precio);
+        });
+        // Cobros a personas concretas (p. ej. "Compra equipación")
+        (d.cobro || []).forEach(function (c) {
+            if (!c.pagado) sumar(c.id_jugador, c.importe);
         });
 
         deudas.forEach(function (v, k) { if (v <= 0) deudas.delete(k); });

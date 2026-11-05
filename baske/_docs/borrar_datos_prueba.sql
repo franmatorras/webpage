@@ -12,6 +12,10 @@ begin
     return;
   end if;
 
+  -- Cobros de la gente de prueba (antes que sus jugadores)
+  delete from equipo.cobro
+  where id in (select id from prueba_baske.filas where tabla = 'cobro')
+     or id_jugador in (select id from prueba_baske.filas where tabla = 'jugador');
   delete from equipo.gasto where id in (select id from prueba_baske.filas where tabla = 'gasto');
   -- Gastos de pista creados solos (por si alguno no quedó apuntado)
   delete from equipo.gasto

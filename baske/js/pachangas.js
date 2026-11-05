@@ -29,23 +29,43 @@
         orden: { col: 'apellido', dir: 'asc' },
         abiertos: new Set(),
         proximas: B.param('proximas') === '1',
-        fecha: /^\d{4}-\d{2}-\d{2}$/.test(B.param('fecha') || '') ? B.param('fecha') : null
+        desde: mesValido(B.param('desde')),
+        hasta: mesValido(B.param('hasta'))
     };
+    function mesValido(t) { return /^\d{4}-\d{2}$/.test(t || '') ? t : null; }
 
-    var opcionFecha = document.getElementById('opcion-fecha');
-    var inputFecha = document.getElementById('filtro-fecha');
-    var quitarFecha = document.getElementById('quitar-fecha');
-    inputFecha.value = estado.fecha || '';
-    inputFecha.addEventListener('change', function () {
-        estado.fecha = inputFecha.value || null;
+    // ----- Filtro por meses (Desde / Hasta): manda sobre temporadas y próximas -----
+    var opcionMeses = document.getElementById('opcion-meses');
+    var selDesde = document.getElementById('mes-desde');
+    var selHasta = document.getElementById('mes-hasta');
+    var quitarMeses = document.getElementById('quitar-meses');
+    var meses = Array.from(new Set(M.pachangas.map(function (p) { return p.fecha.slice(0, 7); }))).sort().reverse();
+    var opcionesMes = '<option value="">Cualquier mes</option>' + meses.map(function (m) {
+        return '<option value="' + m + '">' + esc(B.mesAnio(m + '-01')) + '</option>';
+    }).join('');
+    selDesde.innerHTML = opcionesMes;
+    selHasta.innerHTML = opcionesMes;
+    selDesde.value = estado.desde || '';
+    selHasta.value = estado.hasta || '';
+
+    function cambiarMeses() {
+        estado.desde = selDesde.value || null;
+        estado.hasta = selHasta.value || null;
+        // Si están al revés, se dan la vuelta
+        if (estado.desde && estado.hasta && estado.desde > estado.hasta) {
+            var t = estado.desde; estado.desde = estado.hasta; estado.hasta = t;
+            selDesde.value = estado.desde; selHasta.value = estado.hasta;
+        }
         estado.abiertos.clear();
         pintar();
+    }
+    selDesde.addEventListener('change', cambiarMeses);
+    selHasta.addEventListener('change', cambiarMeses);
+    quitarMeses.addEventListener('click', function () {
+        selDesde.value = ''; selHasta.value = '';
+        cambiarMeses();
     });
-    quitarFecha.addEventListener('click', function () {
-        inputFecha.value = '';
-        estado.fecha = null;
-        pintar();
-    });
+    function hayMeses() { return !!(estado.desde || estado.hasta); }
 
     var opcionProximas = document.getElementById('opcion-proximas');
     var checkProximas = document.getElementById('proximas');
@@ -74,7 +94,8 @@
         q.set('vista', estado.vista);
         q.set('temporadas', selector.todas() ? 'todas' : Array.from(estado.temporadas || []).join(','));
         if (estado.vista === 'pachangas' && estado.proximas) q.set('proximas', '1');
-        if (estado.vista === 'pachangas' && estado.fecha) q.set('fecha', estado.fecha);
+        if (estado.vista === 'pachangas' && estado.desde) q.set('desde', estado.desde);
+        if (estado.vista === 'pachangas' && estado.hasta) q.set('hasta', estado.hasta);
         history.replaceState(null, '', location.pathname + '?' + q.toString());
     }
 
@@ -84,8 +105,8 @@
         });
         buscar.placeholder = estado.vista === 'jugadores' ? 'Buscar por nombre o apodo…' : 'Buscar pachangas de un jugador…';
         opcionProximas.hidden = estado.vista !== 'pachangas';
-        opcionFecha.hidden = estado.vista !== 'pachangas';
-        quitarFecha.hidden = estado.vista !== 'pachangas' || !estado.fecha;
+        opcionMeses.hidden = estado.vista !== 'pachangas';
+        quitarMeses.hidden = !hayMeses();
         actualizarUrl();
         if (estado.vista === 'jugadores') pintarJugadores(); else pintarPachangas();
     }
@@ -212,6 +233,7 @@
             (M.textoDejo(m, f.tray) ? dato('Estado', esc(M.textoDejo(m, f.tray))) : '') +
             dato('Cervezas', f.a.cervezas) +
             dato('Última cerveza', f.a.ultimaCerveza ? esc(B.fecha(f.a.ultimaCerveza)) : null) +
+            (f.a.vistas ? dato('Pachangas vistas (sin jugar)', f.a.vistas + ' <span class="bk-nota">· última ' + esc(B.fecha(f.a.ultimaVista)) + '</span>') : '') +
             dato('Carrera ' + esc(M.temporadaActual), M.chipsTop5(m.id)) +
             dato('Miembro desde', esc(B.fecha(m.fecha_ingreso))) +
             (m.fecha_baja ? dato('Baja', esc(B.fecha(m.fecha_baja))) : '') +
@@ -231,8 +253,9 @@
         var q = B.normalizar(buscar.value);
         var lista = M.pachangas.filter(function (p) {
             // Una fecha concreta manda sobre el filtro de temporadas y el de próximas
-            if (estado.fecha) {
-                if (p.fecha !== estado.fecha) return false;
+            if (hayMeses()) {
+                var mes = p.fecha.slice(0, 7);
+                if ((estado.desde && mes < estado.desde) || (estado.hasta && mes > estado.hasta)) return false;
             } else {
                 if (estado.temporadas && !estado.temporadas.has(p.temporada)) return false;
                 if (!p.jugada && !estado.proximas) return false;
@@ -245,7 +268,7 @@
         });
 
         if (!lista.length) {
-            resultado.innerHTML = '<p class="bk-vacio">' + (estado.fecha ? 'No hubo pachanga el ' + esc(B.fecha(estado.fecha)) + '.' : 'No hay pachangas en la selección.') + '</p>';
+            resultado.innerHTML = '<p class="bk-vacio">' + (hayMeses() ? 'No hay pachangas entre esos meses.' : 'No hay pachangas en la selección.') + '</p>';
             return;
         }
 
@@ -301,7 +324,8 @@
 
         var html = '<div class="bk-columnas">' +
             '<div><h3 class="bk-h3">Jugaron (' + p.asistentes.length + ')</h3>' + listaNombres(p.asistentes) + '</div>' +
-            (p.cervezas ? '<div><h3 class="bk-h3">Cervezas (' + p.cerveceros.length + ')</h3>' + listaNombres(p.cerveceros) + '</div>' : '');
+            (p.cervezas ? '<div><h3 class="bk-h3">Cervezas (' + p.cerveceros.length + ')</h3>' + listaNombres(p.cerveceros) + '</div>' : '') +
+            (p.espectadores.length ? '<div><h3 class="bk-h3">Vinieron a ver (' + p.espectadores.length + ')</h3>' + listaNombres(p.espectadores) + '</div>' : '');
 
         var equipos = (M.d.equipo || []).filter(function (e) { return e.id_pachanga === p.id; });
         equipos.forEach(function (e) {
