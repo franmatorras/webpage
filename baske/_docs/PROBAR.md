@@ -1,5 +1,18 @@
 # Probar FRAN-BASKET en local (beta testers)
 
+## Inicio rápido
+
+1. `git clone https://github.com/franmatorras/webpage.git`
+2. `cd webpage` y `git checkout franbasket`
+3. `python -m http.server 8000` (desde la raíz del repo, no desde `baske/`)
+4. Abre <http://localhost:8000/baske/>
+5. Entra con el usuario que te ha dado Fran y crea tu contraseña (mínimo 8 caracteres)
+
+No hace falta ninguna clave ni instalar nada más. Para traer cambios: `git pull`.
+Más abajo tienes los detalles, qué probar y cómo avisar de fallos.
+
+---
+
 Gracias por probar. La web es estática (HTML/CSS/JS, sin compilar): solo hace falta
 servir los archivos. Los datos están en Supabase, así que tu copia local usa la misma
 base de datos que el resto de testers.

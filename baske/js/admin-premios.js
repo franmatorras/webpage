@@ -42,6 +42,15 @@
     var contVotos = document.getElementById('votos');
     selVotosTemp.addEventListener('change', function () { pintarVotos(); });
     selVotosPeriodo.addEventListener('change', function () { pintarVotos(); });
+    var buscarVotos = document.getElementById('votos-buscar');
+    buscarVotos.addEventListener('input', function () { pintarVotos(); });
+    // Orden de la tabla: cualquier columna, asc/desc
+    var ordenVotos = { col: 'puntos', dir: 'desc' };
+    var COLUMNAS_VOTOS = [
+        ['rango', '#', 'num'], ['nombre', 'Miembro', ''], ['puntos', 'Puntos MVP', 'num'],
+        ['t1', 'Votos 1º', 'num bk-ocultar-movil'], ['t2', 'Votos 2º', 'num bk-ocultar-movil'], ['t3', 'Votos 3º', 'num bk-ocultar-movil'],
+        ['fraude', 'Votos fraude', 'num']
+    ];
 
     function pintarVotos() {
         if (!selVotosTemp.options.length) {
@@ -68,19 +77,50 @@
             if (!x.puntos && !x.fraude) return;
             filas.push(Object.assign({ m: m, nombre: M.nombreMiembro(m) }, x));
         });
+        // Posición real en el MVP (no cambia al ordenar ni al filtrar)
         filas.sort(function (a, b) { return b.puntos - a.puntos || b.fraude - a.fraude || a.nombre.localeCompare(b.nombre, 'es'); });
+        filas.forEach(function (f, i) { f.rango = i + 1; });
 
         if (!filas.length) { contVotos.innerHTML = '<p class="bk-vacio">No hay votos en ese periodo.</p>'; return; }
         var maxFraude = Math.max.apply(null, filas.map(function (f) { return f.fraude; }));
-        contVotos.innerHTML = '<div class="bk-tabla-envoltorio"><table class="bk-tabla"><thead><tr>' +
-            '<th class="num">#</th><th>Miembro</th><th class="num">Puntos MVP</th>' +
-            '<th class="num bk-ocultar-movil">Votos 1º</th><th class="num bk-ocultar-movil">Votos 2º</th><th class="num bk-ocultar-movil">Votos 3º</th>' +
-            '<th class="num">Votos fraude</th></tr></thead><tbody>' +
-            filas.map(function (f, i) {
-                return '<tr><td class="num">' + (i + 1) + '</td><td>' + esc(f.nombre) + '</td><td class="num"><strong>' + f.puntos + '</strong></td>' +
+
+        // Filtro: uno o varios nombres separados por comas
+        var trozos = buscarVotos.value.split(',').map(function (t) { return B.normalizar(t.trim()); }).filter(Boolean);
+        var visibles = filas.filter(function (f) {
+            if (!trozos.length) return true;
+            var n = B.normalizar(f.nombre + ' ' + M.apodo(f.m.id));
+            return trozos.some(function (t) { return n.indexOf(t) >= 0; });
+        });
+
+        var o = ordenVotos;
+        var signo = o.dir === 'asc' ? 1 : -1;
+        visibles.sort(function (a, b) {
+            var r = o.col === 'nombre' ? a.nombre.localeCompare(b.nombre, 'es') : a[o.col] - b[o.col];
+            return r * signo || b.puntos - a.puntos || a.nombre.localeCompare(b.nombre, 'es');
+        });
+
+        var cabecera = COLUMNAS_VOTOS.map(function (c) {
+            return '<th' + (c[2] ? ' class="' + c[2] + '"' : '') + '><button type="button" data-col="' + c[0] + '"' +
+                (o.col === c[0] ? ' data-orden="' + o.dir + '"' : '') + '>' + c[1] + '</button></th>';
+        }).join('');
+
+        contVotos.innerHTML = '<div class="bk-tabla-envoltorio"><table class="bk-tabla"><thead><tr>' + cabecera + '</tr></thead><tbody>' +
+            (visibles.length ? '' : '<tr><td colspan="7" class="bk-vacio">Ningún nombre coincide.</td></tr>') +
+            visibles.map(function (f) {
+                return '<tr><td class="num">' + f.rango + '</td><td>' + esc(f.nombre) + '</td><td class="num"><strong>' + f.puntos + '</strong></td>' +
                     '<td class="num bk-ocultar-movil">' + f.t1 + '</td><td class="num bk-ocultar-movil">' + f.t2 + '</td><td class="num bk-ocultar-movil">' + f.t3 + '</td>' +
                     '<td class="num">' + (f.fraude && f.fraude === maxFraude ? '<strong>' + f.fraude + '</strong>' : f.fraude) + '</td></tr>';
-            }).join('') + '</tbody></table></div>';
+            }).join('') + '</tbody></table></div>' +
+            (trozos.length ? '<p class="bk-nota" style="margin-top:0.4rem">' + visibles.length + ' de ' + filas.length + ' miembros. "#" es la posición real en el MVP.</p>' : '');
+
+        contVotos.querySelectorAll('thead button').forEach(function (b) {
+            b.addEventListener('click', function () {
+                var col = b.dataset.col;
+                if (o.col === col) o.dir = o.dir === 'asc' ? 'desc' : 'asc';
+                else { o.col = col; o.dir = col === 'nombre' || col === 'rango' ? 'asc' : 'desc'; }
+                pintarVotos();
+            });
+        });
     }
 
     // Ejecuta una escritura, recarga y enseña el error si falla

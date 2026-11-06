@@ -63,6 +63,12 @@ imágenes sí son públicas.
 Los premios (catálogo y ganadores) y la validación de apodos y habilidades
 se hacen en la web: Admin → Premios y Admin → Apodos y habilidades.
 
+## Migración 06 (nº de socio al entrar)
+
+Ejecutar `migracion_06.sql` (después de la 05). A partir de ahí, cada vez que un miembro
+activo sin número abre la web con su sesión, recibe el número libre más bajo (antes solo
+pasaba al crear la primera contraseña).
+
 ## Migración 05 (espectadores y cobros a personas)
 
 Ejecutar `migracion_05.sql` (después de la 04).

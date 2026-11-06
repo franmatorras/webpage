@@ -1,7 +1,7 @@
 -- =====================================================================
 -- FRAN-BASKET - datos de prueba
 --
--- Ejecutar en el SQL Editor DESPUES de las migraciones 01 a 05. Crea miembros,
+-- Ejecutar en el SQL Editor DESPUES de las migraciones 01 a 06. Crea miembros,
 -- invitados, reservas, pachangas (temporadas 2025-26 y 2026-27 hasta hoy,
 -- mas una futura), asistencias, votos, equipos, entrenamientos, pagos,
 -- gastos, junta, premios, apodos y habilidades.

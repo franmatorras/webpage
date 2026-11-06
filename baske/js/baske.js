@@ -123,11 +123,38 @@
         if (/Invalid login credentials/i.test(msg)) return 'Contraseña incorrecta.';
         if (/JWT expired/i.test(msg)) return 'La sesión ha caducado: vuelve a entrar.';
         if (/row-level security|permission denied/i.test(msg)) return 'No tienes permiso para hacer esto.';
-        if (/uq_premio_miembro_periodo/i.test(msg)) return 'Ese premio ya está asignado en ese periodo.';
-        if (/duplicate key/i.test(msg)) return 'Ya existe un registro igual.';
-        if (/ux_miembro_dorsal/i.test(msg)) return 'Ese dorsal ya lo tiene otro miembro activo.';
-        if (/uq_miembro_n_socio/i.test(msg)) return 'Ese número de socio ya está asignado.';
+        if (/duplicate key/i.test(msg)) return traducirDuplicado(msg, (e && e.details) || '');
         return msg;
+    }
+
+    // "duplicate key value violates unique constraint X" + details "Key (campo)=(valor) already exists."
+    // -> dice qué campo y qué valor chocan
+    var DUPLICADOS = {
+        ux_miembro_dorsal_azul: 'El dorsal azul {v} ya lo tiene otro miembro activo.',
+        ux_miembro_dorsal_negro: 'El dorsal negro {v} ya lo tiene otro miembro activo.',
+        uq_miembro_n_socio: 'El número de socio {v} ya está asignado.',
+        miembro_id_usuario_key: 'Ese login ya está vinculado a otro miembro.',
+        usuario_usuario_key: 'Ese nombre de usuario ya existe.',
+        jugador_id_miembro_key: 'Ese miembro ya tiene su ficha de jugador.',
+        jugador_id_invitado_key: 'Ese invitado ya está vinculado a otro jugador.',
+        uq_premio_miembro_periodo: 'Ese premio ya está asignado en ese periodo.',
+        premio_nombre_premio_key: 'Ya existe un premio llamado {v}.',
+        cargo_nombre_key: 'Ya existe un cargo llamado {v}.'
+    };
+    var CAMPOS = {
+        dorsal_azul: 'dorsal azul', dorsal_negro: 'dorsal negro', n_socio: 'número de socio', id_usuario: 'login',
+        usuario: 'nombre de usuario', nombre_premio: 'nombre del premio', nombre: 'nombre'
+    };
+    function traducirDuplicado(msg, details) {
+        var restriccion = (/unique constraint "([^"]+)"/i.exec(msg) || [])[1] || '';
+        var clave = /Key \(([^)]+)\)=\((.*)\) already exists/i.exec(details);
+        var valor = clave ? '"' + clave[2] + '"' : '';
+        if (DUPLICADOS[restriccion]) return DUPLICADOS[restriccion].replace('{v}', valor).replace('  ', ' ');
+        if (clave) {
+            var campos = clave[1].split(',').map(function (c) { c = c.trim(); return CAMPOS[c] || c; }).join(' + ');
+            return 'Ya existe un registro con el mismo ' + campos + ' (' + clave[2] + ').';
+        }
+        return 'Ya existe un registro igual' + (restriccion ? ' (' + restriccion + ').' : '.');
     }
 
     function mensaje(el, texto, tipo) {
@@ -685,6 +712,20 @@
             ]);
             idJugador = extra[0].data ? extra[0].data.id : null;
             apodo = elegirApodo(miembro.id, (extra[1].data || []).map(function (a) { return a.apodo; }));
+
+            // Nº de socio: todo miembro activo que entra y no tiene número recibe el libre más bajo
+            if (miembro.n_socio == null && !miembro.fecha_baja) {
+                try {
+                    var socio = await cliente.rpc('asegurar_mi_n_socio');
+                    if (socio.error) throw socio.error;
+                    if (socio.data != null) {
+                        miembro.n_socio = socio.data;
+                        olvidar('miembro');   // que las listas de esta página ya lo vean
+                    }
+                } catch (e) {
+                    console.warn('No se pudo asignar el número de socio (¿falta migracion_06.sql?)', e);
+                }
+            }
         }
 
         if (opciones.admin && !usuario.admin) {

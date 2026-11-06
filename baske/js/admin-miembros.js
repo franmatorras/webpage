@@ -101,6 +101,12 @@
             if (!v.nombre) throw new Error('El nombre es obligatorio.');
             [['dorsal_azul', 'azul'], ['dorsal_negro', 'negro']].forEach(function (d) {
                 if (v[d[0]] != null && !/^[0-9]{1,2}$/.test(v[d[0]])) throw new Error('El dorsal ' + d[1] + ' tiene que ser un número de 1 o 2 cifras (0-9 o 00-99).');
+                // Antes de guardar: ¿lo lleva otro miembro activo? (los aficionados no ocupan número)
+                var ocupaNumero = !v.fecha_baja && v.activo && v.tipo_miembro !== 'aficionado';
+                var otro = ocupaNumero && v[d[0]] != null && M.miembros.find(function (x) {
+                    return (!m || x.id !== m.id) && x.activo && x.tipo_miembro !== 'aficionado' && String(x[d[0]]) === v[d[0]];
+                });
+                if (otro) throw new Error('El dorsal ' + d[1] + ' "' + v[d[0]] + '" ya lo tiene ' + M.nombreMiembro(otro) + '.');
             });
             var fila = {
                 nombre: v.nombre, apellido: v.apellido, tipo_miembro: v.tipo_miembro, origen: v.origen,
