@@ -7,6 +7,7 @@
     var top5 = document.getElementById('top5');
     var carrusel = document.getElementById('carrusel');
     var noJugadores = document.getElementById('no-jugadores');
+    var difuntos = document.getElementById('difuntos');
     var buscar = document.getElementById('buscar');
 
     var M;
@@ -15,7 +16,7 @@
         await B.prepararFotos(M.miembros);
     } catch (e) {
         B.falloCarga(top5, e);
-        carrusel.innerHTML = noJugadores.innerHTML = '';
+        carrusel.innerHTML = noJugadores.innerHTML = difuntos.innerHTML = '';
         return;
     }
 
@@ -63,16 +64,27 @@
         carrusel.scrollBy({ left: carrusel.clientWidth * 0.8, behavior: 'smooth' });
     });
 
-    // ----- No jugadores (y ex-miembros) -----
-    var otros = M.miembros.filter(function (m) { return m.tipo_miembro !== 'jugador' || m.fecha_baja; }).sort(cmp);
+    function temporadasJugadas(t, sigue) {
+        return '<span class="bk-nota">' + esc(t.n + (t.n === 1 ? ' temporada' : ' temporadas')) + '</span>' +
+            '<span class="bk-nota">' + esc(sigue ? 'Juega esta temporada' : 'Dejó de jugar ' + t.hace) + '</span>';
+    }
+
+    // ----- No jugadores (siguen en el equipo) -----
+    var otros = M.miembros.filter(function (m) { return m.tipo_miembro !== 'jugador' && !m.fecha_baja; }).sort(cmp);
     noJugadores.innerHTML = otros.length ? otros.map(function (m) {
         var t = M.trayectoria(m.id);
-        var extra = '<span class="bk-nota">' + (m.fecha_baja ? 'Ex-miembro' : esc(B.TIPOS[m.tipo_miembro])) + '</span>';
-        // Aficionados: solo el tipo. Staff y ex-miembros que jugaron: temporadas y cuándo lo dejaron
-        if (t.n && (m.tipo_miembro !== 'aficionado' || m.fecha_baja)) {
-            extra += '<span class="bk-nota">' + esc(t.n + (t.n === 1 ? ' temporada' : ' temporadas')) + '</span>';
-            extra += '<span class="bk-nota">' + esc(t.sigue && !m.fecha_baja ? 'Juega esta temporada' : 'Dejó de jugar ' + t.hace) + '</span>';
-        }
+        var extra = '<span class="bk-nota">' + esc(B.TIPOS[m.tipo_miembro]) + '</span>';
+        // Aficionados: solo el tipo. Staff que jugó: temporadas y cuándo lo dejó
+        if (t.n && m.tipo_miembro !== 'aficionado') extra += temporadasJugadas(t, t.sigue);
         return persona(m, extra);
     }).join('') : '<p class="bk-vacio">Todos los miembros son jugadores.</p>';
+
+    // ----- Difuntos (ex-miembros) -----
+    var ex = M.miembros.filter(function (m) { return m.fecha_baja; }).sort(cmp);
+    difuntos.innerHTML = ex.length ? ex.map(function (m) {
+        var t = M.trayectoria(m.id);
+        var extra = '<span class="bk-nota">Baja ' + esc(B.fecha(m.fecha_baja)) + '</span>';
+        if (t.n) extra += temporadasJugadas(t, false);
+        return persona(m, extra);
+    }).join('') : '<p class="bk-vacio">Ningún ex-miembro… de momento.</p>';
 })();

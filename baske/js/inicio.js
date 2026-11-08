@@ -115,9 +115,10 @@
         var jugadores = M.miembros.filter(function (m) { return m.tipo_miembro === 'jugador' && !m.fecha_baja; }).sort(cmp);
         pintarLista('cuadros-jugadores', jugadores.map(function (m) { return cuadro(m, M.apodo(m.id)); }).join(''), 'Todavía no hay jugadores.');
 
-        var otros = M.miembros.filter(function (m) { return m.tipo_miembro !== 'jugador' || m.fecha_baja; }).sort(cmp);
+        // Sin ex-miembros: esos salen en "Difuntos" (miembros.html)
+        var otros = M.miembros.filter(function (m) { return m.tipo_miembro !== 'jugador' && !m.fecha_baja; }).sort(cmp);
         pintarLista('cuadros-miembros', otros.map(function (m) {
-            return cuadro(m, m.fecha_baja ? 'Ex-miembro' : B.TIPOS[m.tipo_miembro]);
+            return cuadro(m, B.TIPOS[m.tipo_miembro]);
         }).join(''), 'Nadie por aquí todavía.');
 
         var junta = M.juntaActual().filter(function (j) { return j.miembro; });

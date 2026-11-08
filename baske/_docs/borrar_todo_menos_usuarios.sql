@@ -1,0 +1,144 @@
+-- =====================================================================
+-- FRAN-BASKET - vaciar la base de datos menos unos usuarios
+--
+-- Deja SOLO a los usuarios de v_conservar (abajo) con su login, su ficha de
+-- miembro (nombre, dorsales, foto, nº de socio...), su fila de jugador, sus
+-- apodos, habilidades y cargos de la junta.
+--
+-- Borra TODO lo demás:
+--   * pachangas (asistencias, equipos y votos), reservas, entrenamientos
+--   * gastos y cobros
+--   * ganadores de premios (el catálogo de premios y los cargos se quedan)
+--   * el resto de miembros, invitados y jugadores
+--   * el resto de usuarios (también su login en Authentication)
+--   * los esquemas de datos de prueba y de la importación del Excel
+--
+-- No se puede deshacer. Si falta alguno de los usuarios a conservar, se para
+-- sin borrar nada.
+--
+-- Al final se vuelve a numerar todo: los miembros que quedan pasan a id 1, 2, 3
+-- y nº de socio 0, 1, 2, en el orden de v_conservar (fran = socio 0,
+-- raul.santos = 1, millagi.do = 2), y los contadores de id de todas las tablas
+-- vuelven a empezar. El siguiente socio que entre recibirá el 3.
+--
+-- Las fotos de los miembros borrados se quedan en Storage → equipo → fotos;
+-- se pueden borrar a mano desde el panel. Las fotos de los que quedan siguen
+-- viéndose; si alguno sube una nueva, la antigua solo la puede borrar un admin.
+--
+-- Después: importacion_excel.sql para cargar el histórico del Excel.
+-- =====================================================================
+
+do $$
+declare
+  -- Usuarios de la web que se conservan, EN ORDEN: el primero será el miembro 1 y el
+  -- socio nº 0, el segundo el miembro 2 y el socio nº 1, etc.
+  v_conservar text[] := array['fran', 'raul.santos', 'millagi.do'];
+  v_usuarios  uuid[];
+  v_miembros  bigint[];
+  v_jugadores bigint[];
+  v_falta     text;
+  r           record;
+  v_siguiente bigint;
+begin
+  select string_agg(x, ', ') into v_falta
+  from unnest(v_conservar) x
+  where not exists (select 1 from equipo.usuario u where lower(u.usuario) = lower(x));
+  if v_falta is not null then
+    raise exception 'No existen estos usuarios: %. No se ha borrado nada', v_falta;
+  end if;
+
+  select array_agg(id) into v_usuarios
+  from equipo.usuario where lower(usuario) in (select lower(x) from unnest(v_conservar) x);
+
+  select string_agg(u.usuario, ', ') into v_falta
+  from equipo.usuario u
+  where u.id = any (v_usuarios) and not exists (select 1 from equipo.miembro m where m.id_usuario = u.id);
+  if v_falta is not null then
+    raise exception 'Estos usuarios no tienen ficha de miembro: %. No se ha borrado nada', v_falta;
+  end if;
+
+  select array_agg(id) into v_miembros from equipo.miembro where id_usuario = any (v_usuarios);
+  select coalesce(array_agg(id), '{}') into v_jugadores from equipo.jugador where id_miembro = any (v_miembros);
+
+  -- Actividad (todo)
+  delete from equipo.top_pachanga;
+  delete from equipo.cobro;
+  delete from equipo.gasto;
+  delete from equipo.pachanga;            -- y en cascada asistencias y equipos
+  delete from equipo.entrenamiento;       -- y sus asistencias
+  delete from equipo.reserva_periodica;   -- y los apuntados
+  delete from equipo.premio_miembro;
+
+  -- Personas que no se conservan
+  delete from equipo.junta_directiva    where not (id_miembro = any (v_miembros));
+  delete from equipo.apodo              where not (id_miembro = any (v_miembros));
+  delete from equipo.habilidad_especial where not (id_miembro = any (v_miembros));
+  delete from equipo.jugador            where not (id = any (v_jugadores));
+  delete from equipo.invitado;
+  delete from equipo.miembro            where not (id = any (v_miembros));
+  delete from auth.users                where not (id = any (v_usuarios));   -- borra también su fila de usuario
+
+  -- ----- Volver a numerar desde 1 -----
+  -- Los miembros que quedan pasan a id 1, 2, 3... y nº de socio 0, 1, 2..., en el
+  -- orden de v_conservar. Su jugador lleva el mismo número que el miembro.
+  -- Se copian aparte, se borran y se vuelven a meter con los números nuevos.
+  create temp table t_miembro on commit drop as select * from equipo.miembro;
+  create temp table t_nuevo (viejo bigint, nuevo bigint) on commit drop;
+  insert into t_nuevo
+  select m.id, row_number() over (order by array_position(
+           (select array_agg(lower(x)) from unnest(v_conservar) x), lower(u.usuario)))
+  from equipo.miembro m join equipo.usuario u on u.id = m.id_usuario;
+  create temp table t_jugador  on commit drop as select * from equipo.jugador;
+  create temp table t_junta    on commit drop as select * from equipo.junta_directiva;
+  create temp table t_apodo    on commit drop as select * from equipo.apodo;
+  create temp table t_habilidad on commit drop as select * from equipo.habilidad_especial;
+
+  update t_jugador   x set id_miembro = n.nuevo, id = n.nuevo from t_nuevo n where n.viejo = x.id_miembro;
+  update t_junta     x set id_miembro = n.nuevo from t_nuevo n where n.viejo = x.id_miembro;
+  update t_apodo     x set id_miembro = n.nuevo from t_nuevo n where n.viejo = x.id_miembro;
+  update t_habilidad x set id_miembro = n.nuevo from t_nuevo n where n.viejo = x.id_miembro;
+  update t_junta     x set id = s.n from (select id, row_number() over (order by id) n from t_junta) s where s.id = x.id;
+  update t_apodo     x set id = s.n from (select id, row_number() over (order by id) n from t_apodo) s where s.id = x.id;
+  update t_habilidad x set id = s.n from (select id, row_number() over (order by id) n from t_habilidad) s where s.id = x.id;
+  update t_miembro x
+  set id_padrino = (select p.nuevo from t_nuevo p where p.viejo = x.id_padrino),
+      n_socio    = case when x.fecha_baja is null then n.nuevo - 1 end,
+      id         = n.nuevo
+  from t_nuevo n where n.viejo = x.id;
+
+  delete from equipo.junta_directiva;
+  delete from equipo.apodo;
+  delete from equipo.habilidad_especial;
+  delete from equipo.jugador;
+  delete from equipo.miembro;
+
+  insert into equipo.miembro overriding system value select * from t_miembro;
+  insert into equipo.jugador overriding system value select * from t_jugador;
+  insert into equipo.junta_directiva overriding system value select * from t_junta;
+  -- Sin el trigger de validación, para no perder quién validó cada apodo y habilidad
+  alter table equipo.apodo disable trigger trg_apodo_validacion;
+  alter table equipo.habilidad_especial disable trigger trg_habilidad_validacion;
+  insert into equipo.apodo overriding system value select * from t_apodo;
+  insert into equipo.habilidad_especial overriding system value select * from t_habilidad;
+  alter table equipo.apodo enable trigger trg_apodo_validacion;
+  alter table equipo.habilidad_especial enable trigger trg_habilidad_validacion;
+
+  -- Todos los contadores de id siguen desde lo que haya (1 en las tablas vacías)
+  for r in
+    select c.table_name, c.column_name from information_schema.columns c
+    where c.table_schema = 'equipo' and c.is_identity = 'YES'
+  loop
+    execute format('select coalesce(max(%I), 0) + 1 from equipo.%I', r.column_name, r.table_name) into v_siguiente;
+    perform setval(pg_get_serial_sequence(format('equipo.%I', r.table_name), r.column_name), v_siguiente, false);
+  end loop;
+end $$;
+
+drop schema if exists prueba_baske cascade;
+drop schema if exists importacion_baske cascade;
+
+-- Lo que queda
+select u.usuario, m.id as id_miembro, m.nombre, m.apellido, m.n_socio, j.id as id_jugador
+from equipo.usuario u
+left join equipo.miembro m on m.id_usuario = u.id
+left join equipo.jugador j on j.id_miembro = m.id
+order by m.n_socio;

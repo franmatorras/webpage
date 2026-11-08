@@ -56,6 +56,32 @@ imágenes sí son públicas.
   para poder probar la votación.
 - `borrar_datos_prueba.sql`: borra exactamente lo que creó el anterior.
 
+## 7. Importar el histórico del Excel (Pachangas.xlsx)
+
+Carga las pachangas de 24/25, 25/26 y 26/27 (asistencia, cervezas, pagos y las dos
+reservas de 26/27). De 24/25 y 25/26 solo entra asistencia y cervezas, a 0 €: sin pagos,
+deudas ni gastos.
+
+1. Revisar la configuración al principio de `importar_excel.py`: costes de las reservas
+   (`COSTE_RESERVA_1/2`) y `PERSONAS` (cómo se llama cada uno en la base de datos y
+   qué nombres del Excel son la misma persona).
+2. `python -I importar_excel.py Pachangas.xlsx` → imprime un informe (fechas, deudas
+   que quedarán, personas, avisos "REVISAR") y genera `importacion_excel.sql` e
+   `importacion_excel_comprobar.sql`. Si cambias algo, vuelve a generarlo.
+3. (Opcional) Ejecutar `importacion_excel_comprobar.sql` en el SQL Editor: no cambia
+   nada, dice qué miembro de la base de datos encaja con cada persona ("crear" = se
+   creará uno nuevo). Si sale más de uno, pon `apellido` o `id_miembro` en `PERSONAS`.
+4. Para empezar de cero: `borrar_todo_menos_usuarios.sql` vacía la base de datos y deja
+   solo a los usuarios fran, millagi.do y raul.santos (con su ficha, apodos y cargos,
+   renumerados desde 1). Fran, Antonio IH
+   y Raúl del Excel se enganchan a esos miembros por su usuario. No se puede deshacer.
+   (Si solo hay que quitar los datos de prueba, basta con `borrar_datos_prueba.sql`.)
+5. Ejecutar `importacion_excel.sql`. Se para sin tocar nada si ya hay pachangas,
+   entrenamientos o reservas en esas fechas.
+
+Para deshacerlo: `borrar_importacion_excel.sql` (borra también lo que se haya añadido
+desde la web a lo importado).
+
 ## Lo que se gestiona desde el panel de Supabase
 
 - Subir los PDF al bucket `equipo` (`docs/estatutos.pdf`, `docs/junta.pdf`).
