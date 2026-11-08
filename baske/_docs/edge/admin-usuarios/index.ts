@@ -31,6 +31,20 @@ function passwordAleatoria(): string {
   return btoa(String.fromCharCode(...bytes));
 }
 
+// auth.admin no tiene "buscar por email": se recorren las paginas
+// deno-lint-ignore no-explicit-any
+async function buscarPorEmail(admin: any, email: string) {
+  const porPagina = 1000;
+  for (let page = 1; ; page++) {
+    const { data, error } = await admin.auth.admin.listUsers({ page, perPage: porPagina });
+    if (error) return null;
+    // deno-lint-ignore no-explicit-any
+    const encontrado = data.users.find((u: any) => (u.email ?? '').toLowerCase() === email);
+    if (encontrado) return encontrado;
+    if (data.users.length < porPagina) return null;
+  }
+}
+
 Deno.serve(async (req) => {
   const origen = req.headers.get('Origin') ?? '';
   const cors = {
@@ -75,23 +89,61 @@ Deno.serve(async (req) => {
       const { data: existe } = await admin.from('usuario').select('id').ilike('usuario', usuario).maybeSingle();
       if (existe) return responder({ error: 'Ese nombre de usuario ya existe' }, 409);
 
+      const email = `${usuario.toLowerCase()}@${DOMINIO}`;
+      let id: string;
+      let creadoAhora = false;
+
       const { data: creado, error } = await admin.auth.admin.createUser({
-        email: `${usuario.toLowerCase()}@${DOMINIO}`,
+        email,
         password: passwordAleatoria(),
         email_confirm: true,
         user_metadata: { usuario },
       });
-      if (error) return responder({ error: error.message }, 400);
-
-      // El trigger handle_new_user ya creo la fila en equipo.usuario
-      if (cuerpo.id_miembro) {
-        const { error: errMiembro } = await admin.from('miembro')
-          .update({ id_usuario: creado.user.id })
-          .eq('id', cuerpo.id_miembro);
-        if (errMiembro) return responder({ error: 'Usuario creado, pero no se pudo vincular al miembro: ' + errMiembro.message }, 400);
+      if (error) {
+        // Puede quedar un usuario de auth sin fila en equipo.usuario (p. ej. si
+        // faltaba el trigger): se reaprovecha en vez de fallar.
+        const huerfano = await buscarPorEmail(admin, email);
+        if (!huerfano) return responder({ error: error.message }, 400);
+        const { data: tieneFila } = await admin.from('usuario').select('id').eq('id', huerfano.id).maybeSingle();
+        if (tieneFila) return responder({ error: error.message }, 400);
+        const { error: errReparar } = await admin.auth.admin.updateUserById(huerfano.id, {
+          password: passwordAleatoria(),
+          user_metadata: { usuario },
+        });
+        if (errReparar) return responder({ error: errReparar.message }, 400);
+        id = huerfano.id;
+      } else {
+        id = creado.user.id;
+        creadoAhora = true;
       }
 
-      return responder({ ok: true, id_usuario: creado.user.id });
+      // Si algo falla a partir de aqui, no dejar un login a medias
+      const fallar = async (mensaje: string) => {
+        if (creadoAhora) await admin.auth.admin.deleteUser(id);
+        return responder({ error: mensaje }, 400);
+      };
+
+      // Normalmente el trigger handle_new_user ya creo la fila; si no, se crea aqui
+      const { data: fila } = await admin.from('usuario').select('id').eq('id', id).maybeSingle();
+      if (!fila) {
+        const { error: errFila } = await admin.from('usuario').insert({ id, usuario, debe_cambiar_password: true });
+        if (errFila) return await fallar('No se pudo crear el usuario: ' + errFila.message);
+      }
+
+      if (cuerpo.id_miembro) {
+        const { data: vinculado, error: errMiembro } = await admin.from('miembro')
+          .update({ id_usuario: id })
+          .eq('id', cuerpo.id_miembro)
+          .select('id');
+        if (errMiembro) return await fallar('No se pudo vincular al miembro: ' + errMiembro.message);
+        if (!vinculado?.length) return await fallar('No se pudo vincular: ese miembro no existe');
+      }
+
+      // Comprobacion final: el login tiene que encontrarlo
+      const { data: final } = await admin.from('usuario').select('id').eq('id', id).maybeSingle();
+      if (!final) return await fallar('El usuario no quedó guardado en la base de datos');
+
+      return responder({ ok: true, id_usuario: id });
     }
 
     if (cuerpo.accion === 'resetear') {

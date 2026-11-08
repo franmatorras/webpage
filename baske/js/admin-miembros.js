@@ -164,6 +164,10 @@
             try { texto = (await r.error.context.json()).error; } catch (e) { /* sin cuerpo */ }
             throw new Error(texto || r.error.message || 'La función admin-usuarios falló (¿está desplegada?)');
         }
+        // Una función mal desplegada (p. ej. la plantilla "Hello world") responde 200 sin hacer nada
+        if (!r.data || r.data.ok !== true) {
+            throw new Error('La función admin-usuarios respondió algo inesperado: revisa que el código desplegado sea baske/_docs/edge/admin-usuarios/index.ts');
+        }
         return r.data;
     }
 
