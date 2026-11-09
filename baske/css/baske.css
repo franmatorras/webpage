@@ -36,6 +36,17 @@ body.bk {
     flex-direction: column;
 }
 
+/* Escudo de fondo: fijo, entero dentro de la ventana y muy transparente */
+body.bk::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;                      /* detrás de todo el contenido */
+    background: url("../img/badge/logo_garza_sin_fondo.png") center / contain no-repeat;
+    opacity: 0.15;
+    pointer-events: none;             /* no interfiere con clics ni scroll */
+}
+
 img { max-width: 100%; display: block; }
 a { color: var(--bk-azul-fuerte); }
 button, input, select, textarea { font: inherit; color: inherit; }

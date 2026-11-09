@@ -168,8 +168,8 @@
         }
 
         var html = '<p class="bk-nota" style="margin-bottom:0.5rem">' + tot.pachangas + ' pachangas jugadas en la selección. ' +
-            'Toca una fila para ver más. En gris: retirados (no han jugado esta temporada), staff y ex-miembros; ' +
-            'staff y ex-miembros solo salen si jugaron en las temporadas elegidas.</p>' +
+            'Toca una fila para ver más. En gris: retirados (no han jugado esta temporada), staff y difuntos; ' +
+            'staff y difuntos solo salen si jugaron en las temporadas elegidas.</p>' +
             '<div class="bk-tabla-envoltorio"><table class="bk-tabla"><thead><tr><th aria-label="Desplegar"></th>' +
             cabecera('asistencia', 'Asistencia', 'num') +
             cabecera('nombre', 'Nombre') +

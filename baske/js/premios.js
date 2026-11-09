@@ -61,8 +61,8 @@
     }
 
     carrera.innerHTML =
-        bloqueTemporada('MVP de temporada', 'mvp') +
-        bloqueTemporada('Fraude de temporada', 'fraude') +
+        bloqueTemporada('MVP', 'mvp') +
+        bloqueTemporada('Fraude', 'fraude') +
         bloquePeriodo('MVP mes', 'mvp') +
         bloquePeriodo('Fraude mes', 'fraude');
 

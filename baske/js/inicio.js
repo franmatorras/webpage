@@ -112,8 +112,21 @@
     function pintarCuadros() {
         var cmp = M.compararMiembros.bind(M);
 
-        var jugadores = M.miembros.filter(function (m) { return m.tipo_miembro === 'jugador' && !m.fecha_baja; }).sort(cmp);
+        // Jugadores: carrusel en orden aleatorio (cambia en cada visita)
+        var jugadores = M.miembros.filter(function (m) { return m.tipo_miembro === 'jugador' && !m.fecha_baja; });
+        for (var i = jugadores.length - 1; i > 0; i--) {
+            var k = Math.floor(Math.random() * (i + 1));
+            var tmp = jugadores[i]; jugadores[i] = jugadores[k]; jugadores[k] = tmp;
+        }
         pintarLista('cuadros-jugadores', jugadores.map(function (m) { return cuadro(m, M.apodo(m.id)); }).join(''), 'Todavía no hay jugadores.');
+        var pista = document.getElementById('cuadros-jugadores');
+        var envoltorio = document.getElementById('carrusel-jugadores');
+        envoltorio.querySelector('.bk-carrusel-flecha--izq').addEventListener('click', function () {
+            pista.scrollBy({ left: -pista.clientWidth * 0.8, behavior: 'smooth' });
+        });
+        envoltorio.querySelector('.bk-carrusel-flecha--der').addEventListener('click', function () {
+            pista.scrollBy({ left: pista.clientWidth * 0.8, behavior: 'smooth' });
+        });
 
         // Sin ex-miembros: esos salen en "Difuntos" (miembros.html)
         var otros = M.miembros.filter(function (m) { return m.tipo_miembro !== 'jugador' && !m.fecha_baja; }).sort(cmp);

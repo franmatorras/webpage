@@ -25,23 +25,26 @@
                 <h2 class="bk-h2" style="margin:0">Ficha de jugadores</h2>
                 <input type="search" id="buscar" placeholder="Buscar jugador…" aria-label="Buscar jugador" style="max-width: 260px">
             </div>
-            <div class="bk-carrusel">
-                <button type="button" class="bk-carrusel-flecha bk-carrusel-flecha--izq" aria-label="Anteriores">‹</button>
-                <div id="carrusel" class="bk-carrusel-pista"><div class="bk-cargando">Cargando…</div></div>
-                <button type="button" class="bk-carrusel-flecha bk-carrusel-flecha--der" aria-label="Siguientes">›</button>
+            <div id="carrusel"><div class="bk-cargando">Cargando…</div></div>
+        </section>
+
+        <!-- Con más de 4 personas pasan a carrusel con buscador (miembros.js) -->
+        <section class="bk-seccion">
+            <div class="bk-cabecera-card" style="margin-bottom: 0.35rem">
+                <h2 class="bk-h2" style="margin:0">No jugadores</h2>
+                <input type="search" id="buscar-no-jugadores" placeholder="Buscar por nombre o apodo…" aria-label="Buscar no jugador" style="max-width: 260px" hidden>
             </div>
-        </section>
-
-        <section class="bk-seccion">
-            <h2 class="bk-h2">No jugadores</h2>
             <p class="bk-nota" style="margin-bottom: 0.75rem">Miembros que no juegan (o ya no) pero siguen siendo parte del equipo.</p>
-            <div id="no-jugadores" class="bk-personas"><div class="bk-cargando">Cargando…</div></div>
+            <div id="no-jugadores"><div class="bk-cargando">Cargando…</div></div>
         </section>
 
         <section class="bk-seccion">
-            <h2 class="bk-h2">Difuntos</h2>
-            <p class="bk-nota" style="margin-bottom: 0.75rem">Ex-miembros: ya no forman parte del equipo.</p>
-            <div id="difuntos" class="bk-personas"><div class="bk-cargando">Cargando…</div></div>
+            <div class="bk-cabecera-card" style="margin-bottom: 0.35rem">
+                <h2 class="bk-h2" style="margin:0">Difuntos</h2>
+                <input type="search" id="buscar-difuntos" placeholder="Buscar por nombre o apodo…" aria-label="Buscar difunto" style="max-width: 260px" hidden>
+            </div>
+            <p class="bk-nota" style="margin-bottom: 0.75rem">Los que ya no forman parte del equipo.</p>
+            <div id="difuntos"><div class="bk-cargando">Cargando…</div></div>
         </section>
     </main>
 

@@ -453,7 +453,7 @@
 
     Modelo.prototype.chipEstado = function (m) {
         var e = this.estado(m);
-        if (e === 'ex') return '<span class="bk-chip bk-chip--gris">Ex-miembro</span>';
+        if (e === 'ex') return '<span class="bk-chip bk-chip--gris">Difunto</span>';
         if (m.tipo_miembro === 'staff') return '<span class="bk-chip bk-chip--gris">Staff</span>';
         if (e === 'retirado') return '<span class="bk-chip bk-chip--gris">Retirado</span>';
         return '';

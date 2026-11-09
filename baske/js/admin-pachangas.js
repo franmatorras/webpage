@@ -13,6 +13,7 @@
     var M;
     var pestana = 'pachangas';
     var filtroTemp = new Set([B.temporadaActual()]);
+    var ocultarProximas = false;
     var DIAS = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
 
     async function recargar() {
@@ -53,6 +54,14 @@
         if (pestana === 'pachangas') {
             nuevo.textContent = '+ Nueva pachanga';
             nuevo.onclick = function () { editarPachanga(null); };
+            var check = document.createElement('label');
+            check.className = 'bk-check';
+            check.innerHTML = '<input type="checkbox"' + (ocultarProximas ? ' checked' : '') + '> Ocultar próximas';
+            check.querySelector('input').addEventListener('change', function () {
+                ocultarProximas = this.checked;
+                pintarPachangas();
+            });
+            barra.appendChild(check);
             pintarPachangas();
         } else if (pestana === 'reservas') {
             nuevo.textContent = '+ Nueva reserva';
@@ -108,7 +117,9 @@
     // PACHANGAS
     // ==================================================================
     function pintarPachangas() {
-        var lista = M.pachangas.filter(function (p) { return !filtroTemp || filtroTemp.has(p.temporada); });
+        var lista = M.pachangas.filter(function (p) {
+            return (!filtroTemp || filtroTemp.has(p.temporada)) && (!ocultarProximas || p.jugada);
+        });
         if (!lista.length) { contenido.innerHTML = '<p class="bk-vacio">No hay pachangas en la selección.</p>'; return; }
         contenido.innerHTML = '<div class="bk-admin-lista">' + lista.map(function (p) {
             return '<div class="bk-admin-item" data-id="' + p.id + '"><div><strong>' + esc(B.fecha(p.fecha)) + '</strong> ' +

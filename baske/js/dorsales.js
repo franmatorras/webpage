@@ -52,7 +52,7 @@
 
     function describir(x) {
         var afic = x.aficionados.length
-            ? '<br><span class="bk-nota">También lo llevan (aficionados, no lo ocupan): ' +
+            ? '<br><span class="bk-nota">Aficionados con el número: ' +
               x.aficionados.map(function (a) { return enlace(a.m) + ' (' + a.color + ')'; }).join(', ') + '</span>'
             : '';
         if (!ocupacion(x)) return '<strong>Nº ' + dos(x.n) + '</strong> — libre en los dos colores.' + afic;
