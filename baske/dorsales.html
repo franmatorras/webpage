@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Dorsales · FRAN-BASKET</title>
+    <link rel="stylesheet" href="css/baske.css">
+    <script src="/global.js"></script>
+</head>
+<body class="bk">
+    <main class="bk-main">
+        <a class="bk-volver" href="equipacion.html">Equipación</a>
+        <h1 class="bk-titulo">Dorsales</h1>
+        <p class="bk-nota" style="margin-bottom:1rem">Revisa aquí los números disponibles y apunta cuál quieres para cuando se haga un pedido. Toca un número ocupado para ver quién lo tiene.</p>
+
+        <div class="bk-barra">
+            <input type="search" id="buscar-nombre" placeholder="Buscar por nombre…" aria-label="Buscar dorsal por nombre">
+            <input type="text" id="buscar-numero" placeholder="Nº" maxlength="2" inputmode="numeric" pattern="[0-9]{1,2}" autocomplete="off" aria-label="Buscar número (1 y 01 son distintos)" style="flex: 0 1 110px">
+            <select id="orden" aria-label="Ordenar" style="flex: 0 1 200px">
+                <option value="asc">Ascendente</option>
+                <option value="desc">Descendente</option>
+                <option value="ocupados">Ocupados primero</option>
+                <option value="libres">Libres primero</option>
+            </select>
+        </div>
+
+        <div class="bk-leyenda" aria-hidden="true">
+            <span><i></i> Libre</span>
+            <span><i style="background: var(--bk-azul)"></i> Azul ocupado</span>
+            <span><i style="background: var(--bk-negro)"></i> Negro ocupado</span>
+            <span><i style="background: linear-gradient(135deg, var(--bk-azul) 50%, var(--bk-negro) 50%)"></i> Ambos ocupados</span>
+            <span><i class="bk-leyenda-afic"></i> Lo lleva un aficionado (no lo ocupa)</span>
+        </div>
+
+        <div id="info" class="bk-card bk-info-dorsal" aria-live="polite" style="margin-bottom: 1rem">
+            <span class="bk-nota">Toca un número para ver quién lo tiene.</span>
+        </div>
+
+        <div id="dorsales" class="bk-dorsales"><div class="bk-cargando">Cargando…</div></div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+    <script src="/fiesta-config.js"></script>
+    <script src="js/baske.js"></script>
+    <script src="js/dorsales.js"></script>
+</body>
+</html>

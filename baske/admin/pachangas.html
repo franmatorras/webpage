@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Admin pachangas · FRAN-BASKET</title>
+    <link rel="stylesheet" href="../css/baske.css">
+    <script src="/global.js"></script>
+</head>
+<body class="bk">
+    <main class="bk-main">
+        <a class="bk-volver" href="index.html">Administración</a>
+        <h1 class="bk-titulo">Pachangas y asistencia</h1>
+
+        <div class="bk-tabs" role="tablist">
+            <button type="button" role="tab" aria-selected="true" data-tab="pachangas">Pachangas</button>
+            <button type="button" role="tab" aria-selected="false" data-tab="reservas">Reservas</button>
+            <button type="button" role="tab" aria-selected="false" data-tab="entrenamientos">Entrenamientos</button>
+        </div>
+
+        <div class="bk-barra" id="barra"></div>
+        <div id="contenido"><div class="bk-cargando">Cargando…</div></div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+    <script src="/fiesta-config.js"></script>
+    <script src="../js/baske.js"></script>
+    <script src="../js/admin-comun.js"></script>
+    <script src="../js/admin-pachangas.js"></script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Admin apodos · FRAN-BASKET</title>
+    <link rel="stylesheet" href="../css/baske.css">
+    <script src="/global.js"></script>
+</head>
+<body class="bk">
+    <main class="bk-main">
+        <a class="bk-volver" href="index.html">Administración</a>
+        <h1 class="bk-titulo">Apodos y habilidades</h1>
+
+        <section>
+            <div class="bk-barra"><button type="button" class="bk-btn bk-btn--azul" id="nueva-propuesta">+ Añadir apodo o habilidad</button></div>
+            <h2 class="bk-h2">Pendientes de validar</h2>
+            <div id="pendientes"></div>
+            <h2 class="bk-h2 bk-seccion">Validados</h2>
+            <input type="search" id="buscar" placeholder="Buscar miembro…" aria-label="Buscar miembro" style="margin-bottom:0.75rem">
+            <div id="validados"></div>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+    <script src="/fiesta-config.js"></script>
+    <script src="../js/baske.js"></script>
+    <script src="../js/admin-comun.js"></script>
+    <script src="../js/admin-apodos.js"></script>
+</body>
+</html>

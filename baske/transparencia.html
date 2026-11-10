@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Transparencia · FRAN-BASKET</title>
+    <link rel="stylesheet" href="css/baske.css">
+    <script src="/global.js"></script>
+</head>
+<body class="bk">
+    <main class="bk-main">
+        <h1 class="bk-titulo bk-titulo--enorme">TRANSPARENCIA</h1>
+        <div>
+                    <p class="bk-nota">Tanto los estatutos como las funciones de la Junta Directiva requieren aún de una ratificación y firma formal, de manera que son temporalmente solo orientativas y de carácter informativo para los miembros del club.</p>
+                </div>
+
+        <div class="bk-grid bk-grid--2">
+            <section class="bk-card">
+                <div class="bk-cabecera-card">
+                    <h2 class="bk-h3">Estatutos</h2>
+                    <a class="bk-btn bk-btn--peq bk-btn--sec" id="abrir-estatutos" target="_blank" rel="noopener" hidden>Abrir PDF</a>
+                </div>
+                <div id="doc-estatutos"><div class="bk-cargando">Cargando documento…</div></div>
+            </section>
+
+            <section class="bk-card">
+                <div class="bk-cabecera-card">
+                    <h2 class="bk-h3">Junta directiva</h2>
+                    <a class="bk-btn bk-btn--peq bk-btn--sec" id="abrir-junta" target="_blank" rel="noopener" hidden>Abrir PDF</a>
+                </div>
+                <div id="doc-junta"><div class="bk-cargando">Cargando documento…</div></div>
+                <div class="bk-acciones"><a class="bk-btn" href="junta.html">Ver miembros de la junta</a></div>
+            </section>
+        </div>
+
+        <section class="bk-card bk-card--negra bk-seccion">
+            <div class="bk-cabecera-card" style="margin:0">
+                <div>
+                    <h2 class="bk-h3">Cuentas</h2>
+                    <p class="bk-nota">Para ver el desglose de las cuentas del club.</p>
+                </div>
+                <a class="bk-btn bk-btn--azul" href="cuentas.html">Cuentas</a>
+            </div>
+        </section>
+
+        <section class="bk-seccion">
+            <h2 class="bk-h2">Patrocinadores</h2>
+            <div class="bk-card bk-texto">
+                <p>El principal patrocinador durante la temporada 26/27 es la app de móvil «Ya lo pisé», utilizada para descubrir Cantabria (no apta para papardos). También nos patrocina la Cafetería Boulevard.</p>
+                <div class="bk-acciones"><a class="bk-btn bk-btn--sec" href="patrocinadores.html">Leer más</a></div>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+    <script src="/fiesta-config.js"></script>
+    <script src="js/baske.js"></script>
+    <script src="js/transparencia.js"></script>
+</body>
+</html>

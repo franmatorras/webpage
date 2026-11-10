@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Pachangas · FRAN-BASKET</title>
+    <link rel="stylesheet" href="css/baske.css">
+    <script src="/global.js"></script>
+</head>
+<body class="bk">
+    <main class="bk-main">
+        <h1 class="bk-titulo">Pachangas</h1>
+
+        <div class="bk-tabs" role="tablist">
+            <button type="button" role="tab" id="tab-jugadores" aria-selected="true" data-vista="jugadores">Vista Jugadores</button>
+            <button type="button" role="tab" id="tab-pachangas" aria-selected="false" data-vista="pachangas">Vista Pachangas</button>
+        </div>
+
+        <div class="bk-barra">
+            <div id="filtro-temporadas"></div>
+            <input type="search" id="buscar" placeholder="Buscar por nombre o apodo…" aria-label="Buscar jugador">
+            <div class="bk-meses" id="opcion-meses" hidden>
+                <label>Desde <select id="mes-desde" aria-label="Desde el mes"></select></label>
+                <label>Hasta <select id="mes-hasta" aria-label="Hasta el mes"></select></label>
+                <button type="button" class="bk-btn bk-btn--peq bk-btn--sec" id="quitar-meses" hidden>Quitar meses</button>
+            </div>
+            <label class="bk-check" id="opcion-proximas" hidden><input type="checkbox" id="proximas"> Mostrar pachangas próximas</label>
+        </div>
+
+        <div id="resultado"><div class="bk-cargando">Cargando…</div></div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+    <script src="/fiesta-config.js"></script>
+    <script src="js/baske.js"></script>
+    <script src="js/pachangas.js"></script>
+</body>
+</html>

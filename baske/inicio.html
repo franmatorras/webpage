@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Inicio · FRAN-BASKET</title>
+    <link rel="stylesheet" href="css/baske.css">
+    <script src="/global.js"></script>
+</head>
+<body class="bk">
+    <main class="bk-main">
+        <section id="mi-temporada" class="bk-card">
+            <div class="bk-cargando">Cargando tu temporada…</div>
+        </section>
+
+        <section class="bk-seccion">
+            <h2 class="bk-h2">¿Qué somos?</h2>
+            <div class="bk-card bk-texto">
+                <p>Nuestro «club» son las personas que lo forman: sus miembros, sus jugadores y su líder supremo. Sobre todo sus jugadores.</p>
+                <p>Por el momento y hasta nuevo aviso nos juntamos para echar unas pachangas de basketcesto de manera semanal, así como para recordar con cariño a La Garza.</p>
+            </div>
+        </section>
+
+        <section class="bk-seccion">
+            <h2 class="bk-h2">Jugadores</h2>
+            <div class="bk-carrusel" id="carrusel-jugadores">
+                <button type="button" class="bk-carrusel-flecha bk-carrusel-flecha--izq" aria-label="Anteriores">‹</button>
+                <div id="cuadros-jugadores" class="bk-carrusel-pista"><div class="bk-cargando">Cargando…</div></div>
+                <button type="button" class="bk-carrusel-flecha bk-carrusel-flecha--der" aria-label="Siguientes">›</button>
+            </div>
+        </section>
+
+        <section class="bk-seccion">
+            <h2 class="bk-h2">Miembros</h2>
+            <p class="bk-nota" style="margin-bottom: 0.75rem">Los que no juegan pero están apuntados.</p>
+            <div id="cuadros-miembros" class="bk-cuadros"><div class="bk-cargando">Cargando…</div></div>
+        </section>
+
+        <section class="bk-seccion">
+            <h2 class="bk-h2">Junta Directiva</h2>
+            <p class="bk-nota" style="margin-bottom: 0.75rem">Los que mandan. <a href="junta.html">Ver cargos e histórico →</a></p>
+            <div id="cuadros-junta" class="bk-cuadros"><div class="bk-cargando">Cargando…</div></div>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+    <script src="/fiesta-config.js"></script>
+    <script src="js/baske.js"></script>
+    <script src="js/inicio.js"></script>
+</body>
+</html>

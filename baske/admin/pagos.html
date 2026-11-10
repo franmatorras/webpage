@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Admin pagos · FRAN-BASKET</title>
+    <link rel="stylesheet" href="../css/baske.css">
+    <script src="/global.js"></script>
+</head>
+<body class="bk">
+    <main class="bk-main">
+        <a class="bk-volver" href="index.html">Administración</a>
+        <h1 class="bk-titulo">Pagos y gastos</h1>
+
+        <div class="bk-tabs" role="tablist">
+            <button type="button" role="tab" aria-selected="true" data-tab="pagos">Pagos</button>
+            <button type="button" role="tab" aria-selected="false" data-tab="gastos">Gastos</button>
+        </div>
+
+        <section id="sec-pagos">
+            <div class="bk-barra">
+                <button type="button" class="bk-btn bk-btn--azul" id="nuevo-cobro">+ Cobro a miembros</button>
+                <input type="search" id="buscar" placeholder="Buscar jugador…" aria-label="Buscar jugador">
+                <label class="bk-campo--check" style="display:flex;gap:0.4rem;align-items:center"><input type="checkbox" id="ver-pagados"> Ver también lo pagado</label>
+                <label style="display:flex;gap:0.4rem;align-items:center;white-space:nowrap">Fecha de pago <input type="date" id="fecha-pago" style="width:auto"></label>
+            </div>
+            <div id="pagos"><div class="bk-cargando">Cargando…</div></div>
+        </section>
+
+        <section id="sec-gastos" hidden>
+            <div class="bk-barra">
+                <button type="button" class="bk-btn bk-btn--azul" id="nuevo-gasto">+ Nuevo gasto</button>
+                <div id="filtro-temporadas"></div>
+            </div>
+            <div id="gastos"></div>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+    <script src="/fiesta-config.js"></script>
+    <script src="../js/baske.js"></script>
+    <script src="../js/admin-comun.js"></script>
+    <script src="../js/admin-pagos.js"></script>
+</body>
+</html>
