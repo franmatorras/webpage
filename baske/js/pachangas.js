@@ -261,7 +261,7 @@
                 if (!p.jugada && !estado.proximas) return false;
             }
             if (!q) return true;
-            return p.asistentes.concat(p.cerveceros).some(function (id) {
+            return p.asistentes.concat(p.cerveceros, p.espectadores).some(function (id) {
                 var mi = M.miembroDeJugador(id);
                 return B.normalizar(M.nombreJugador(id) + ' ' + (mi ? M.apodo(mi.id) : '')).indexOf(q) >= 0;
             });

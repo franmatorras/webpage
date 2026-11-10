@@ -10,12 +10,12 @@
 
     // Qué hace cada cargo (texto provisional)
     var FUNCIONES = {
-        lider_supremo: 'Lorem ipsum dolor sit amet: decide, representa al equipo y tiene la última palabra.',
-        maestro_balon: 'Lorem ipsum: se encarga del material, los balones y la pista.',
-        maestro_gritos: 'Lorem ipsum: anima, convoca y mantiene la moral (a gritos).',
-        mano_lider: 'Lorem ipsum: mano derecha del líder supremo; le sustituye cuando falta.',
-        maestro_maestros: 'Lorem ipsum: coordina al resto de maestros y vela por las normas.',
-        tesorero: 'Lorem ipsum: lleva las cuentas, cobra las cuotas y paga las reservas.'
+        lider_supremo: 'Encargado de la comunicación y las decisiones generales, su voto vale por cuatro y, en caso de empate, tiene voto de calidad.',
+        mano_lider: 'Encargado de organizar los ritos funerarios en caso de muerte del líder Supremo. Capacidad para añadir miembros al grupo de Whatsapp, pero no para eliminarlos (salvo en caso de enfermedad u otra situación inhabilitante por parte del Líder Supremo).',
+        maestro_balon: 'Encargado de asegurar que se respeta el deporte de balón y cesto, proponiendo y ayudando a definir las normas concretas del club.',
+        maestro_gritos: 'Encargado de ayudar a desarrollar las distintas narrativas del club, promoviendo o no una agenda concreta a favor o en contra de alguna persona o miembro, encargándose de la realización de ediciones y montajes que puedan ser utilizados en la cuenta oficial de instagram.',
+        maestro_maestros: 'Encargado de asegurarse del correcto funcionamiento del club en general, demostrando el señorío y la entereza de la que tienen que ser adalid sus miembros. También encargado de proponer (aunque no desarrollar por sí solo) eventos ajenos a las changas oficiales, tales como «pre-Potis de velocidad», «cervezas» u otros.',
+        tesorero: 'Es una función, no un puesto. Requisito: ha de estar adscrito a UNICAN y ser miembro de la Junta directiva. Encargado de gestionar la tesorería y los pagos.'
     };
 
     var M;
@@ -28,14 +28,33 @@
     }
 
     var vigentes = M.juntaActual().filter(function (j) { return j.miembro; });
-    actual.innerHTML = vigentes.length ? vigentes.map(function (j) {
+
+    function tarjetaOcupada(j) {
         return '<section class="bk-card" style="display:flex;gap:1rem;align-items:flex-start">' +
             '<img class="bk-foto bk-foto--redonda" src="' + esc(B.foto(j.miembro)) + '" alt="" style="width:72px;flex:none">' +
-            '<div><span class="bk-chip bk-chip--negro">' + esc(B.etiquetaCargo(j.cargo)) + '</span>' +
+            '<div class="bk-junta-texto"><span class="bk-chip bk-chip--negro bk-chip--ajustable">' + esc(B.etiquetaCargo(j.cargo)) + '</span>' +
             '<h2 class="bk-h3" style="margin:0.35rem 0 0.2rem"><a href="jugador.html?id=' + j.miembro.id + '">' + esc(M.nombreMiembro(j.miembro)) + '</a></h2>' +
             '<p class="bk-nota">Desde el ' + esc(B.fecha(j.fila.fecha_inicio)) + '</p>' +
             '<p style="margin-top:0.4rem;font-size:0.92rem">' + esc(FUNCIONES[j.cargo] || '') + '</p></div></section>';
-    }).join('') : '<p class="bk-vacio">No hay junta directiva registrada.</p>';
+    }
+
+    // Cargo sin nadie ahora mismo: tarjeta vacía, sin foto
+    function tarjetaVacia(c) {
+        return '<section class="bk-card bk-card--vacia">' +
+            '<span class="bk-chip bk-chip--gris bk-chip--ajustable">' + esc(B.etiquetaCargo(c.nombre)) + '</span>' +
+            '<h2 class="bk-h3" style="margin:0.35rem 0 0.2rem;color:var(--bk-gris)">Pendiente de asignar</h2>' +
+            '<p style="margin-top:0.4rem;font-size:0.92rem;color:var(--bk-gris)">' + esc(FUNCIONES[c.nombre] || '') + '</p></section>';
+    }
+
+    // Todos los cargos en su orden (id); cada uno con sus titulares actuales o vacío
+    var cargos = (M.d.cargo || []).slice().sort(function (a, b) { return a.id - b.id; });
+    var tarjetas = [];
+    cargos.forEach(function (c) {
+        var titulares = vigentes.filter(function (j) { return j.fila.id_cargo === c.id; });
+        if (titulares.length) titulares.forEach(function (j) { tarjetas.push(tarjetaOcupada(j)); });
+        else tarjetas.push(tarjetaVacia(c));
+    });
+    actual.innerHTML = tarjetas.length ? tarjetas.join('') : '<p class="bk-vacio">No hay cargos registrados.</p>';
 
     (M.d.cargo || []).forEach(function (c) {
         var o = document.createElement('option');

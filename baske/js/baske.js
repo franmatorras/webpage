@@ -31,7 +31,7 @@
         maestro_gritos: 'Maestro de los Gritos',
         mano_lider: 'Mano del Líder',
         maestro_maestros: 'Maestro de Maestros',
-        tesorero: 'Tesorero'
+        tesorero: 'Maestro de la Moneda'
     };
     var TIPOS = { jugador: 'Jugador', staff: 'Staff', aficionado: 'Aficionado' };
     var ORIGENES = { fundador: 'Fundador', traido: 'Traído', aparecido: 'Aparecido' };
@@ -124,7 +124,8 @@
         if (/JWT expired/i.test(msg)) return 'La sesión ha caducado: vuelve a entrar.';
         if (/row-level security|permission denied/i.test(msg)) return 'No tienes permiso para hacer esto.';
         if (/duplicate key/i.test(msg)) return traducirDuplicado(msg, (e && e.details) || '');
-        return msg;
+        // Los avisos de la base de datos dicen "tesorero"; en la web el cargo se llama Maestro de la Moneda
+        return msg.replace(/\btesorero\b/gi, 'Maestro de la Moneda');
     }
 
     // "duplicate key value violates unique constraint X" + details "Key (campo)=(valor) already exists."
@@ -794,9 +795,12 @@
             alCambiar(valor(), elegidas.size === temporadas.length);
         });
 
-        document.addEventListener('click', function (ev) {
+        // Cerrar al tocar fuera. Si el selector ya no está en la página (se ha vuelto a pintar), se quita.
+        function cerrar(ev) {
+            if (!detalles.isConnected) { document.removeEventListener('click', cerrar); return; }
             if (detalles.open && !detalles.contains(ev.target)) detalles.open = false;
-        });
+        }
+        document.addEventListener('click', cerrar);
 
         pintar();
         return { valor: valor, todas: function () { return elegidas.size === temporadas.length; } };

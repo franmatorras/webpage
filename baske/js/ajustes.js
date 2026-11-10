@@ -6,10 +6,13 @@
     var yo = await B.iniciar({ activa: null });
 
     // ----- Cuenta -----
-    document.getElementById('cuenta').innerHTML =
-        '<div><dt>Usuario</dt><dd>' + esc(yo.usuario.usuario) + (yo.admin ? ' <span class="bk-chip bk-chip--negro">Admin</span>' : '') + '</dd></div>' +
-        '<div><dt>Miembro</dt><dd>' + (yo.miembro ? '<a href="jugador.html?id=' + yo.miembro.id + '">' + esc(yo.miembro.nombre + ' ' + (yo.miembro.apellido || '')) + '</a>' : 'Sin vincular') + '</dd></div>' +
-        '<div><dt>Registrado</dt><dd>' + esc(B.fecha(yo.usuario.fecha_registro)) + '</dd></div>';
+    function pintarCuenta() {
+        document.getElementById('cuenta').innerHTML =
+            '<div><dt>Usuario</dt><dd>' + esc(yo.usuario.usuario) + (yo.admin ? ' <span class="bk-chip bk-chip--negro">Admin</span>' : '') + '</dd></div>' +
+            '<div><dt>Miembro</dt><dd>' + (yo.miembro ? '<a href="jugador.html?id=' + yo.miembro.id + '">' + esc(yo.miembro.nombre + ' ' + (yo.miembro.apellido || '')) + '</a>' : 'Sin vincular') + '</dd></div>' +
+            '<div><dt>Registrado</dt><dd>' + esc(B.fecha(yo.usuario.fecha_registro)) + '</dd></div>';
+    }
+    pintarCuenta();
     document.getElementById('usuario-oculto').value = yo.usuario.usuario;
 
     document.getElementById('salir').addEventListener('click', async function () {
@@ -95,9 +98,16 @@
             var msg = document.getElementById('msg-datos');
             var nombre = inputNombre.value.trim();
             if (!nombre) { B.mensaje(msg, 'El nombre no puede estar vacío.'); return; }
+            var apellido = inputApellido.value.trim() || null;
             var r = await B.cliente.from('miembro')
-                .update({ nombre: nombre, apellido: inputApellido.value.trim() || null })
+                .update({ nombre: nombre, apellido: apellido })
                 .eq('id', yo.miembro.id);
+            if (!r.error) {
+                // Que el bloque "Cuenta" enseñe ya el nombre nuevo
+                yo.miembro.nombre = nombre;
+                yo.miembro.apellido = apellido;
+                pintarCuenta();
+            }
             B.mensaje(msg, r.error ? B.traducirError(r.error) : 'Datos guardados.', r.error ? 'error' : 'ok');
         });
     }

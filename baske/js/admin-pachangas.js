@@ -204,7 +204,9 @@
         }
     }
 
-    function asistenciaPachanga(id) {
+    // previo (opcional): Map idJugador -> { jugado, cerveza, vio, pagado, equipo } con lo marcado
+    // en pantalla antes de reabrir el diálogo (al crear un equipo), para no perderlo.
+    function asistenciaPachanga(id, previo) {
         var p = M.pachanga.get(id);
         var actuales = new Map((M.d.pachanga_jugador || []).filter(function (x) { return x.id_pachanga === id; }).map(function (x) { return [x.id_jugador, x]; }));
         var equipos = (M.d.equipo || []).filter(function (e) { return e.id_pachanga === id; });
@@ -216,7 +218,9 @@
         var precio = M.precioPachanga(p);
 
         function filaJugador(j) {
-            var a = actuales.get(j.id);
+            var pr = previo && previo.get(j.id);
+            var a = pr || actuales.get(j.id);
+            var equipoActual = pr ? pr.equipo : equipoDe.get(j.id);
             var veces = j.invitado ? (M.pjDeJugador.get(j.id) || []).filter(function (x) { return x.jugado; }).length : 0;
             return '<tr data-jugador="' + j.id + '" data-nombre="' + esc(B.normalizar(j.nombre)) + '"><td>' + esc(j.nombre) +
                 (j.invitado ? ' <span class="bk-chip bk-chip--gris">invitado' + (j.padrino ? ' de ' + esc(j.padrino) : '') + (veces ? ' · ' + veces + (veces === 1 ? ' vez' : ' veces') : '') + '</span>' : '') + '</td>' +
@@ -227,7 +231,7 @@
                     ? '<td><input type="checkbox" class="c-pagado" aria-label="Pagado"' + (a && a.pagado ? ' checked' : '') + '></td>'
                     : '<td><span class="bk-nota">Reserva</span></td>') +
                 '<td><select class="c-equipo" aria-label="Equipo"' + (equipos.length ? '' : ' disabled') + '>' +
-                A.opciones(equipos.map(function (e) { return [e.id, e.nombre || 'Equipo ' + e.id]; }), equipoDe.get(j.id), '—') + '</select></td></tr>';
+                A.opciones(equipos.map(function (e) { return [e.id, e.nombre || 'Equipo ' + e.id]; }), equipoActual, '—') + '</select></td></tr>';
         }
 
         var cuerpo =
@@ -247,7 +251,7 @@
             }).join('') + '</div>' +
             '<div class="bk-tabla-envoltorio" style="max-height:50vh;overflow:auto"><table class="bk-tabla bk-tabla--compacta bk-asistencia-tabla"><thead><tr>' +
             '<th>Jugador</th><th>Jugó</th><th>Cerveza</th><th title="Vino a ver sin jugar">Vio</th><th>Pagado</th><th>Equipo</th></tr></thead><tbody>' +
-            jugadoresParaLista(Array.from(actuales.keys())).map(filaJugador).join('') +
+            jugadoresParaLista(Array.from(actuales.keys()).concat(previo ? Array.from(previo.keys()) : [])).map(filaJugador).join('') +
             '</tbody></table></div>';
 
         A.dialogo('Asistencia', cuerpo, async function (form) {
@@ -349,9 +353,22 @@
                     if (nombre === null) return;
                     try {
                         A.ok(await db.from('equipo').insert({ id_pachanga: id, nombre: nombre.trim() || null }));
+                        // Guardar lo marcado (aún sin guardar) para recuperarlo al reabrir
+                        var marcado = new Map();
+                        d.querySelectorAll('tr[data-jugador]').forEach(function (tr) {
+                            var casilla = tr.querySelector('.c-pagado');
+                            var eq = tr.querySelector('.c-equipo').value;
+                            marcado.set(Number(tr.dataset.jugador), {
+                                jugado: tr.querySelector('.c-jugado').checked,
+                                cerveza: tr.querySelector('.c-cerveza').checked,
+                                vio: tr.querySelector('.c-vio').checked,
+                                pagado: casilla ? casilla.checked : null,
+                                equipo: eq ? Number(eq) : null
+                            });
+                        });
                         d.close();
                         await recargar();
-                        asistenciaPachanga(id);
+                        asistenciaPachanga(id, marcado);
                     } catch (e) {
                         alert(B.traducirError(e));
                     }

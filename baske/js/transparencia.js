@@ -9,7 +9,8 @@
         var cont = document.getElementById(idCont);
         try {
             var enlace = await B.urlFirmada(ruta);
-            cont.innerHTML = '<iframe class="bk-pdf" title="' + B.esc(titulo) + '"></iframe>';
+            cont.innerHTML = '<iframe class="bk-pdf" title="' + B.esc(titulo) + '"></iframe>' +
+                '<p class="bk-nota bk-solo-movil">Toca «Abrir PDF» para verlo.</p>';
             cont.querySelector('iframe').src = enlace;
             var boton = document.getElementById(idBoton);
             boton.href = enlace;

@@ -33,7 +33,9 @@
             document.getElementById('sec-junta').hidden = b.dataset.tab !== 'junta';
         });
     });
+    var ocultarDifuntos = document.getElementById('ocultar-difuntos');
     buscar.addEventListener('input', function () { pintarMiembros(); });
+    ocultarDifuntos.addEventListener('change', function () { pintarMiembros(); });
     document.getElementById('nuevo-miembro').addEventListener('click', function () { editarMiembro(null); });
     document.getElementById('nuevo-cargo').addEventListener('click', function () { editarCargo(null); });
 
@@ -42,9 +44,11 @@
     // ==================================================================
     function pintarMiembros() {
         var q = B.normalizar(buscar.value);
-        var lista = M.miembros.filter(function (m) { return !q || B.normalizar(M.nombreMiembro(m)).indexOf(q) >= 0; })
-            .sort(M.compararMiembros.bind(M));
-        if (!lista.length) { contMiembros.innerHTML = '<p class="bk-vacio">No hay miembros.</p>'; return; }
+        var lista = M.miembros.filter(function (m) {
+            if (ocultarDifuntos.checked && m.fecha_baja) return false;
+            return !q || B.normalizar(M.nombreMiembro(m)).indexOf(q) >= 0;
+        }).sort(M.compararMiembros.bind(M));
+        if (!lista.length) { contMiembros.innerHTML = '<p class="bk-vacio">No hay miembros que coincidan.</p>'; return; }
 
         contMiembros.innerHTML = '<div class="bk-admin-lista">' + lista.map(function (m) {
             var u = m.id_usuario ? usuarios.get(m.id_usuario) : null;
@@ -149,7 +153,9 @@
                 baja.addEventListener('change', function () {
                     if (baja.value) {
                         d.querySelector('[name="activo"]').checked = false;
-                        d.querySelector('[name="n_socio"]').value = '';
+                        // Con baja no se le da número de socio
+                        var socio = d.querySelector('[name="asignar_socio"]');
+                        if (socio) socio.checked = false;
                     }
                 });
             }

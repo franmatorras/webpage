@@ -40,7 +40,7 @@
         ? (tray.n && !tray.sigue ? '<span class="bk-chip bk-chip--gris">Dejó de jugar ' + esc(tray.hace) + '</span>' : '')
         : M.chipEstado(m);
     var chips = '<span class="bk-chip bk-chip--negro">' + esc(B.TIPOS[m.tipo_miembro]) + '</span> ' + chipEstado + ' ' +
-        cargosActuales.map(function (j) { return '<span class="bk-chip">' + esc(B.etiquetaCargo(j.cargo)) + '</span>'; }).join(' ');
+        cargosActuales.map(function (j) { return '<span class="bk-chip bk-chip--ajustable">' + esc(B.etiquetaCargo(j.cargo)) + '</span>'; }).join(' ');
 
     var html = '<div class="bk-perfil"><img class="bk-foto' + (m.fecha_baja ? ' bk-foto--ex' : '') + '" src="' + esc(B.foto(m)) + '" alt="Foto de ' + esc(M.nombreMiembro(m)) + '">' +
         '<div><h1 class="bk-titulo" style="margin-bottom:0.4rem">' + esc(M.nombreMiembro(m)) + '</h1>' +
@@ -129,12 +129,21 @@
 
         var fila = { id_miembro: m.id, validado: false, creado_por: yo.uid };
         var r;
-        if (tipo === 'apodo') {
-            fila.apodo = texto;
-            r = await B.cliente.from('apodo').insert(fila);
-        } else {
-            fila.habilidad = texto;
-            r = await B.cliente.from('habilidad_especial').insert(fila);
+        // Sin doble envío (doble toque en el móvil = propuesta repetida)
+        var boton = ev.target.querySelector('button[type="submit"]');
+        boton.disabled = true;
+        try {
+            if (tipo === 'apodo') {
+                fila.apodo = texto;
+                r = await B.cliente.from('apodo').insert(fila);
+            } else {
+                fila.habilidad = texto;
+                r = await B.cliente.from('habilidad_especial').insert(fila);
+            }
+        } catch (e) {
+            r = { error: e };
+        } finally {
+            boton.disabled = false;
         }
         if (r.error) { B.mensaje(msg, B.traducirError(r.error)); return; }
         input.value = '';

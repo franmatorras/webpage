@@ -95,7 +95,7 @@
 
     function opcionesMiembros(M, seleccionado, vacio, filtro) {
         var lista = M.miembros.filter(filtro || function () { return true; }).sort(M.compararMiembros.bind(M))
-            .map(function (m) { return [m.id, M.nombreMiembro(m) + (m.fecha_baja ? ' (ex)' : '')]; });
+            .map(function (m) { return [m.id, M.nombreMiembro(m) + (m.fecha_baja ? ' (difunto)' : '')]; });
         return opciones(lista, seleccionado, vacio);
     }
 
