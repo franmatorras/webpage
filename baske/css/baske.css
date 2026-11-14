@@ -91,6 +91,20 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .bk-nav a:hover { background: var(--bk-negro-suave); color: var(--bk-blanco); }
 .bk-nav a.activo { background: var(--bk-azul); color: var(--bk-negro); }
 
+/* Puntito rojo de "tienes cosas pendientes" (pestaña Admin y botón ☰ en móvil) */
+.bk-nav a, .bk-menu { position: relative; }
+.bk-aviso::after {
+    content: '';
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--bk-rojo);
+    border: 2px solid var(--bk-negro);
+}
+
 .bk-menu {
     display: none;
     background: none;

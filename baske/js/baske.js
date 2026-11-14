@@ -640,7 +640,7 @@
             '<a class="bk-marca" href="' + url('inicio.html') + '">FRAN-<span>BASKET</span></a>' +
             '<nav class="bk-nav" id="bk-nav" aria-label="Secciones"><ul>' +
             secciones.map(function (s) {
-                return '<li><a href="' + url(s.ruta) + '"' + (s.id === activa ? ' class="activo" aria-current="page"' : '') + '>' + s.texto + '</a></li>';
+                return '<li><a href="' + url(s.ruta) + '" data-seccion="' + s.id + '"' + (s.id === activa ? ' class="activo" aria-current="page"' : '') + '>' + s.texto + '</a></li>';
             }).join('') +
             '</ul></nav>' +
             '<button class="bk-menu" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="bk-nav">☰</button>' +
@@ -656,6 +656,33 @@
             var abierto = nav.classList.toggle('abierto');
             boton.setAttribute('aria-expanded', abierto ? 'true' : 'false');
         });
+    }
+
+    // Puntito en la pestaña Admin (y en ☰) si hay apodos o habilidades sin validar
+    async function avisoAdmin() {
+        if (!yoActual || !yoActual.admin) return;
+        var enlace = document.querySelector('.bk-nav a[data-seccion="admin"]');
+        var menu = document.querySelector('.bk-cabecera .bk-menu');
+        if (!enlace) return;
+        try {
+            var res = await Promise.all([
+                cliente.from('apodo').select('id', { count: 'exact', head: true }).eq('validado', false),
+                cliente.from('habilidad_especial').select('id', { count: 'exact', head: true }).eq('validado', false)
+            ]);
+            if (res[0].error) throw res[0].error;
+            if (res[1].error) throw res[1].error;
+            var n = (res[0].count || 0) + (res[1].count || 0);
+            var texto = n ? n + (n === 1 ? ' validación pendiente' : ' validaciones pendientes') : '';
+            enlace.classList.toggle('bk-aviso', n > 0);
+            if (n) { enlace.title = texto; enlace.setAttribute('aria-label', 'Admin (' + texto + ')'); }
+            else { enlace.removeAttribute('title'); enlace.removeAttribute('aria-label'); }
+            if (menu) {
+                menu.classList.toggle('bk-aviso', n > 0);
+                menu.setAttribute('aria-label', n ? 'Abrir menú (' + texto + ')' : 'Abrir menú');
+            }
+        } catch (e) {
+            console.warn('No se pudieron contar las validaciones pendientes', e);
+        }
     }
 
     function pintarPie() {
@@ -737,6 +764,7 @@
         yoActual = { uid: uid, usuario: usuario, miembro: miembro, idJugador: idJugador, admin: !!usuario.admin, apodo: apodo };
         pintarCabecera(yoActual, opciones.activa);
         pintarPie();
+        avisoAdmin();
 
         cliente.auth.onAuthStateChange(function (evento) {
             if (evento === 'SIGNED_OUT') irALogin();
@@ -854,6 +882,7 @@
         reducirImagen: reducirImagen,
         olvidarFoto: function (ruta) { firmadas.delete(ruta); },
         iniciar: iniciar,
+        avisoAdmin: avisoAdmin,
         yo: function () { return yoActual; },
         hace: hace,
         selectorTemporadas: selectorTemporadas

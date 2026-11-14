@@ -18,6 +18,21 @@
         return;
     }
 
+    // ¿Ya ha votado la última pachanga? (si falla la consulta, se enseña el botón normal)
+    var yaVotado = false;
+    var ultimaJugada = M.pachangas.find(function (p) { return p.jugada; });
+    if (ultimaJugada && yo.idJugador && ultimaJugada.asistentes.indexOf(yo.idJugador) >= 0 &&
+        B.ventanaVoto(ultimaJugada.fecha).estado === 'abierta') {
+        try {
+            var rv = await B.cliente.from('top_pachanga').select('id_pachanga')
+                .eq('id_pachanga', ultimaJugada.id).eq('id_jugador', yo.idJugador).maybeSingle();
+            if (rv.error) throw rv.error;
+            yaVotado = !!rv.data;
+        } catch (e) {
+            console.warn('No se pudo comprobar el voto', e);
+        }
+    }
+
     pintarTemporada();
     pintarCuadros();
 
@@ -66,8 +81,12 @@
         if (ultima && yo.idJugador && ultima.asistentes.indexOf(yo.idJugador) >= 0) {
             var v = B.ventanaVoto(ultima.fecha);
             if (v.estado === 'abierta') {
-                html += '<div class="bk-acciones"><a class="bk-btn bk-btn--azul bk-btn--grande" href="votar.html">Vota la última changa</a>' +
-                    '<span class="bk-nota" style="align-self:center">Hasta el ' + esc(B.fecha(v.termina.slice(0, 10))) + ' a las 23:59</span></div>';
+                var limite = esc(B.fecha(v.termina.slice(0, 10))) + ' a las 23:59';
+                html += yaVotado
+                    ? '<div class="bk-acciones"><a class="bk-btn bk-btn--sec bk-btn--grande" href="votar.html">Ya has votado</a>' +
+                      '<span class="bk-nota" style="align-self:center">Puedes ver o cambiar tu voto hasta el ' + limite + '</span></div>'
+                    : '<div class="bk-acciones"><a class="bk-btn bk-btn--azul bk-btn--grande" href="votar.html">Vota la última changa</a>' +
+                      '<span class="bk-nota" style="align-self:center">Hasta el ' + limite + '</span></div>';
             } else if (v.estado === 'pronto') {
                 html += '<p class="bk-nota" style="margin-top:1rem">La votación de la pachanga de hoy abre a las 19:30.</p>';
             }
