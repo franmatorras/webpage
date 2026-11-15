@@ -25,6 +25,7 @@
             M = await B.modelo(['usuario']);
             usuarios = new Map((M.d.usuario || []).map(function (u) { return [u.id, u]; }));
             pintarPropuestas();
+            B.avisoAdmin();
         } catch (e) {
             B.falloCarga(contPendientes, e);
         }
