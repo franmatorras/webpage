@@ -2614,3 +2614,715 @@ img.bn-portada-imagen {
         justify-content: flex-start;
     }
 }
+
+/* ==========================================================================
+   Boletín BOF (bf-) — Boletín Oficial de Fran
+   Plantilla: projects/boletines/_plantilla-boletin.html (la anterior, bn-, es
+   _plantilla-boletin-clasica.html). Para cambiar fuentes o paleta de un número,
+   redefine las variables en .bf-boletin (las fuentes se cargan en el <head>).
+   ========================================================================== */
+.bf-boletin {
+    --bf-titulos: 'Rubik', 'Segoe UI', system-ui, sans-serif;
+    --bf-texto: 'Space Mono', 'Courier Prime', ui-monospace, Consolas, monospace;
+    --bf-papel: #fffdf9;
+    --bf-papel-oscuro: #f1ece4;
+    --bf-tinta: #26231f;
+    --bf-tinta-suave: #6b6257;
+    --bf-logo-azul: #0b3f73;
+    --bf-azul: #1a58d8;
+    --bf-azul-velo: rgba(26, 88, 216, 0.72);
+    --bf-marron: #896200;
+    --bf-marron-velo: rgba(110, 78, 0, 0.74);
+    --bf-claro-velo: rgba(255, 253, 249, 0.84);
+    /* Fondo de los textos sobre foto (volumen, créditos, títulos de categoría) */
+    --bf-velo: rgba(255, 253, 249, 0.82);
+    --bf-slide-alto: min(62vh, 460px);
+    --bf-slide-titulo-alto: 1.9rem;
+
+    flex: 1;
+    width: 100%;
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2.25rem;
+    font-family: var(--bf-texto);
+    color: var(--bf-tinta);
+    line-height: 1.65;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    html:has(.bf-boletin) {
+        scroll-behavior: smooth;
+    }
+}
+
+/* Tarjetas: esquinas ligeramente desiguales para que no parezcan de molde */
+.bf-pagina {
+    background: var(--bf-papel);
+    border-radius: 26px 18px 28px 16px;
+    box-shadow: 0 1px 2px rgba(40, 30, 20, 0.05), 0 10px 30px rgba(40, 30, 20, 0.10);
+    padding: 3rem 3.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    scroll-margin-top: 6rem; /* la cabecera del sitio es sticky */
+}
+
+.bf-pagina:nth-child(even) {
+    border-radius: 18px 28px 16px 26px;
+}
+
+.bf-boletin p {
+    margin: 0;
+}
+
+/* Títulos con la letra del logo */
+.bf-boletin .bf-h2 {
+    font-family: var(--bf-titulos);
+    font-weight: 800;
+    font-size: clamp(1.5rem, 3.6vw, 2.15rem);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    color: var(--bf-logo-azul);
+    margin: 0;
+}
+
+/* Fondo semitransparente detrás de textos sobre foto */
+.bf-velo {
+    background: var(--bf-velo);
+    color: var(--bf-logo-azul);
+    padding: 0.45rem 0.85rem;
+    border-radius: 14px 10px 14px 10px;
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+}
+
+/* ----- Tarjetas con foto de fondo (portada y categorías) ----- */
+.bf-foto {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    padding: 1.5rem;
+    background: #2b2b2b;
+}
+
+.bf-boletin .bf-fondo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -2;
+}
+
+/* Sombra suave arriba y abajo para que se lean los textos */
+.bf-foto::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0) 30%, rgba(0, 0, 0, 0) 55%, rgba(0, 0, 0, 0.3));
+    pointer-events: none;
+}
+
+.bf-portada {
+    min-height: min(88vh, 780px);
+    display: grid;
+    grid-template-rows: auto 1fr auto auto;
+    gap: 1rem;
+}
+
+.bf-portada-arriba {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+/* Logo (PNG sin fondo) sobre un marco blanquecino translúcido, como las bandas */
+.bf-boletin .bf-logo {
+    width: clamp(110px, 24%, 200px);
+    height: auto;
+    background: var(--bf-claro-velo);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    padding: 0.5rem 0.6rem;
+    border-radius: 16px 12px 18px 10px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+}
+
+.bf-volumen {
+    font-family: var(--bf-titulos);
+    font-weight: 800;
+    font-size: 1.05rem;
+    line-height: 1.25;
+    text-align: right;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.bf-creditos {
+    grid-row: 3;
+    justify-self: end;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.4rem;
+}
+
+.bf-pill {
+    display: inline-block;
+    background: var(--bf-velo);
+    color: var(--bf-logo-azul);
+    font-family: var(--bf-titulos);
+    font-weight: 600;
+    font-size: 0.75rem;
+    line-height: 1.3;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 0.3rem 0.9rem;
+    border-radius: 999px;
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+}
+
+/* Bandas translúcidas a todo el ancho, pegadas al borde inferior */
+.bf-bandas {
+    grid-row: 4;
+    display: flex;
+    flex-direction: column;
+    margin: 0 -1.5rem -1.5rem;
+}
+
+.bf-banda {
+    margin: 0;
+    padding: 0.9rem 1.75rem;
+    color: #fff;
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+}
+
+.bf-banda--info {
+    background: var(--bf-azul-velo);
+}
+
+.bf-banda--cita {
+    background: var(--bf-marron-velo);
+}
+
+.bf-banda--patrocinio {
+    background: var(--bf-claro-velo);
+    color: var(--bf-marron);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.bf-banda-titulo {
+    display: block;
+    font-family: var(--bf-titulos);
+    font-weight: 800;
+    font-size: 1.15rem;
+    line-height: 1.3;
+}
+
+.bf-banda--cita .bf-banda-titulo {
+    font-family: var(--bf-texto);
+    font-weight: 400;
+    font-style: italic;
+    font-size: 1rem;
+}
+
+.bf-banda-sub {
+    display: block;
+    margin-top: 0.2rem !important;
+    font-size: 0.8rem;
+    opacity: 0.9;
+}
+
+.bf-banda--patrocinio .bf-banda-sub {
+    margin: 0 0 0 auto !important;
+    font-style: italic;
+}
+
+.bf-boletin .bf-banda--patrocinio img {
+    width: 2.5rem;
+    height: 2.5rem;
+    object-fit: contain;
+}
+
+.bf-categoria {
+    min-height: clamp(220px, 38vw, 340px);
+    justify-content: flex-end; /* título abajo a la izquierda */
+    align-items: flex-start;
+}
+
+.bf-boletin .bf-categoria .bf-h2 {
+    padding: 0.5rem 1rem;
+}
+
+/* ----- Textos ----- */
+.bf-texto h3 {
+    font-family: var(--bf-titulos);
+    font-weight: 600;
+    font-size: 1.2rem;
+    line-height: 1.25;
+    color: var(--bf-logo-azul);
+    margin: 0 0 0.25rem;
+}
+
+.bf-texto p + p {
+    margin-top: 0.9rem;
+}
+
+/* Tarjeta que es solo texto (intro): el espacio lo dan los párrafos */
+.bf-pagina.bf-texto {
+    gap: 0;
+}
+
+/* Capitular en la intro */
+#intro > p:first-child::first-letter {
+    float: left;
+    font-family: var(--bf-titulos);
+    font-weight: 800;
+    font-size: 3.4rem;
+    line-height: 0.9;
+    margin: 0.2rem 0.5rem 0 0;
+    color: var(--bf-logo-azul);
+}
+
+.bf-articulo-cabecera::after {
+    content: "";
+    display: block;
+    width: 4.5rem;
+    height: 5px;
+    margin-top: 0.85rem;
+    border-radius: 6px 3px 6px 3px;
+    background: var(--bf-marron);
+    opacity: 0.8;
+}
+
+.bf-autor {
+    margin-top: 0.35rem !important;
+    font-family: var(--bf-titulos);
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--bf-marron);
+}
+
+.bf-nota-ref a {
+    color: var(--bf-marron);
+    font-weight: 700;
+    text-decoration: none;
+    padding: 0 0.1em;
+}
+
+.bf-notas {
+    margin: 1.5rem 0 0;
+    padding: 0.85rem 0 0 1.25rem;
+    border-top: 1px dashed rgba(107, 98, 87, 0.45);
+    font-size: 0.8rem;
+    color: var(--bf-tinta-suave);
+}
+
+.bf-notas a {
+    color: var(--bf-marron);
+    text-decoration: none;
+}
+
+.bf-volver {
+    align-self: flex-end;
+    font-family: var(--bf-titulos);
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--bf-logo-azul);
+    text-decoration: none;
+}
+
+.bf-volver:hover {
+    text-decoration: underline;
+}
+
+/* ----- Índice (sin números) ----- */
+.bf-indice-grupo {
+    margin: 1.1rem 0 0.3rem;
+}
+
+.bf-indice-grupo:first-child {
+    margin-top: 0;
+}
+
+.bf-indice-grupo a {
+    padding: 0 0.5rem; /* anula el "nav a" general */
+    font-family: var(--bf-titulos);
+    font-weight: 800;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--bf-marron);
+    text-decoration: none;
+}
+
+/* El índice es un <nav>: anular los estilos generales de "nav ul/li/a" */
+.bf-indice ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+}
+
+.bf-indice li {
+    white-space: normal;
+}
+
+.bf-indice li a {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    padding: 0.45rem 0.5rem;
+    border-radius: 10px;
+    color: inherit;
+    text-decoration: none;
+    transition: background 0.2s ease;
+}
+
+.bf-indice li a:hover {
+    background: rgba(11, 63, 115, 0.06);
+}
+
+.bf-indice-guia {
+    flex: 1;
+    min-width: 1rem;
+    border-bottom: 2px dotted rgba(107, 98, 87, 0.4);
+}
+
+.bf-indice-autor {
+    font-size: 0.85rem;
+    font-style: italic;
+    color: var(--bf-tinta-suave);
+}
+
+/* ----- Carrusel: foto entera, con título arriba y pie abajo ----- */
+.bf-boletin .carrusel {
+    margin: 0.5rem 0 0;
+    border: none;
+    border-radius: 0;
+    overflow: visible;
+    background: transparent;
+}
+
+.bf-slide {
+    flex: 0 0 100%;
+    width: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    scroll-snap-align: center;
+}
+
+.bf-slide-titulo {
+    min-height: var(--bf-slide-titulo-alto);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    text-align: center;
+    font-family: var(--bf-titulos);
+    font-weight: 600;
+    font-size: 1rem;
+    line-height: 1.25;
+    color: var(--bf-logo-azul);
+}
+
+/* Sin título: el hueco se mantiene para que las flechas no salten */
+.bf-slide:not(:has(.bf-slide-titulo))::before {
+    content: "";
+    min-height: var(--bf-slide-titulo-alto);
+}
+
+.bf-boletin .carrusel-track .bf-slide img {
+    flex: none;
+    width: 100%;
+    height: var(--bf-slide-alto);
+    aspect-ratio: auto;
+    object-fit: contain;
+    background: var(--bf-papel-oscuro);
+    border-radius: 16px 12px 18px 10px;
+}
+
+.bf-slide figcaption {
+    min-height: 1.4em;
+    text-align: center;
+    font-size: 0.8rem;
+    font-style: italic;
+    color: var(--bf-tinta-suave);
+}
+
+/* Flechas centradas en la foto, no en toda la figura */
+.bf-boletin .carrusel-btn {
+    top: calc(var(--bf-slide-titulo-alto) + 0.45rem + var(--bf-slide-alto) / 2);
+    color: var(--bf-logo-azul);
+}
+
+.bf-boletin .carrusel-dots {
+    position: static;
+    margin-top: 0.6rem;
+}
+
+.bf-boletin .carrusel-dot {
+    background: rgba(107, 98, 87, 0.35);
+    box-shadow: none;
+}
+
+.bf-boletin .carrusel-dot[aria-current="true"] {
+    background: var(--bf-logo-azul);
+}
+
+/* ----- Municipio patrocinado ----- */
+.bf-patrocinado-cabecera {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.bf-boletin .bf-patrocinado-cabecera img {
+    width: 4.5rem;
+    height: auto;
+}
+
+/* ----- Agradecimientos ----- */
+.bf-despedida {
+    margin-top: 0.5rem !important;
+    padding-top: 1.25rem;
+    border-top: 1px dashed rgba(107, 98, 87, 0.45);
+    text-align: center;
+    font-style: italic;
+    color: var(--bf-marron);
+}
+
+/* ----- Trivia ----- */
+.bf-trivia-logo {
+    align-self: flex-start;
+    font-family: var(--bf-titulos);
+    font-weight: 800;
+    font-size: clamp(2rem, 6vw, 2.8rem);
+    line-height: 1;
+    color: var(--bf-logo-azul);
+    transform: rotate(-3deg);
+}
+
+.bf-trivia-logo::first-letter {
+    color: var(--bf-marron);
+}
+
+.bf-trivia-etiqueta {
+    font-family: var(--bf-titulos);
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--bf-marron);
+}
+
+.bf-trivia-respuesta,
+.bf-trivia-pregunta {
+    margin-top: 0.25rem !important;
+    font-size: 1.05rem;
+}
+
+.bf-trivia-pregunta {
+    font-weight: 700;
+    color: var(--bf-logo-azul);
+}
+
+.bf-trivia-anterior {
+    margin-top: 0.25rem !important;
+    font-style: italic;
+    color: var(--bf-tinta-suave);
+}
+
+/* ----- (?) con información extra: aparece al pasar el ratón o al tocar (foco) ----- */
+.bf-info {
+    position: relative;
+    display: inline-block;
+    vertical-align: 0.1em;
+    margin-left: 0.25rem;
+}
+
+.bf-info-boton {
+    width: 1.35em;
+    height: 1.35em;
+    padding: 0;
+    border: 1.5px solid currentColor;
+    border-radius: 50%;
+    background: var(--bf-papel);
+    color: var(--bf-logo-azul);
+    font-family: var(--bf-titulos);
+    font-weight: 800;
+    font-size: 0.8rem;
+    line-height: 1;
+    cursor: help;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.bf-info:hover .bf-info-boton,
+.bf-info-boton:focus-visible {
+    background: var(--bf-logo-azul);
+    color: #fff;
+    border-color: var(--bf-logo-azul);
+}
+
+.bf-info-tarjeta {
+    position: absolute;
+    bottom: calc(100% + 0.6rem);
+    left: 50%;
+    z-index: 10;
+    width: min(18rem, 80vw);
+    padding: 0.75rem 0.95rem;
+    background: var(--bf-papel);
+    color: var(--bf-tinta);
+    border-radius: 14px 10px 16px 8px;
+    box-shadow: 0 0 0 1px rgba(40, 30, 20, 0.06), 0 10px 28px rgba(40, 30, 20, 0.22);
+    font-family: var(--bf-texto);
+    font-size: 0.8rem;
+    font-weight: 400;
+    font-style: normal;
+    line-height: 1.5;
+    text-align: left;
+    opacity: 0;
+    visibility: hidden;
+    transform: translate(-50%, 4px);
+    transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
+    pointer-events: none;
+}
+
+/* Flechita hacia el botón */
+.bf-info-tarjeta::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -6px;
+    border: 6px solid transparent;
+    border-top-color: var(--bf-papel);
+}
+
+.bf-info:hover .bf-info-tarjeta,
+.bf-info:focus-within .bf-info-tarjeta {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, 0);
+    pointer-events: auto;
+}
+
+/* ----- Pie de página del boletín (sobre el footer general) ----- */
+.bf-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 2rem;
+}
+
+.bf-footer-contacto {
+    font-size: 0.95rem;
+}
+
+.bf-footer-datos {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.25rem 1.25rem;
+    font-size: 0.85rem;
+    opacity: 0.9;
+}
+
+.bf-footer-datos a {
+    color: inherit;
+}
+
+@media (max-width: 700px) {
+    .bf-boletin {
+        --bf-slide-alto: min(50vh, 320px);
+        padding: 1rem 0.5rem;
+        gap: 1.25rem;
+    }
+
+    .bf-pagina {
+        padding: 1.75rem 1.25rem;
+    }
+
+    .bf-foto {
+        padding: 1rem;
+    }
+
+    .bf-portada {
+        min-height: min(85vh, 640px);
+    }
+
+    .bf-bandas {
+        margin: 0 -1rem -1rem;
+    }
+
+    .bf-banda {
+        padding: 0.75rem 1rem;
+    }
+
+    .bf-banda-titulo {
+        font-size: 1rem;
+    }
+
+    .bf-banda--cita .bf-banda-titulo {
+        font-size: 0.9rem;
+    }
+
+    .bf-volumen {
+        font-size: 0.85rem;
+    }
+
+    .bf-pill {
+        font-size: 0.65rem;
+    }
+
+    .bf-indice li a {
+        flex-wrap: wrap;
+        gap: 0 0.6rem;
+    }
+
+    .bf-indice-guia {
+        display: none;
+    }
+
+    /* En móvil la tarjeta del (?) ocupa el ancho del párrafo que la contiene,
+       esté donde esté el botón, para no salirse de la pantalla */
+    .bf-info {
+        position: static;
+    }
+
+    .bf-boletin :has(> .bf-info) {
+        position: relative;
+    }
+
+    .bf-info-tarjeta,
+    .bf-info:hover .bf-info-tarjeta,
+    .bf-info:focus-within .bf-info-tarjeta {
+        left: 0;
+        right: 0;
+        width: auto;
+        bottom: calc(100% + 0.4rem);
+        transform: none;
+    }
+
+    .bf-info-tarjeta::after {
+        display: none;
+    }
+}

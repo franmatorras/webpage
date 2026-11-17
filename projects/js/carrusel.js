@@ -239,11 +239,14 @@
     }
 
     // Los carruseles antiguos no llevan data-* y no muestran pie ninguno; las
-    // fotos de la fiesta traen título, autor y nota en el dataset.
+    // fotos de la fiesta traen título, autor y nota en el dataset. En los
+    // boletines BOF cada foto va en un <figure class="bf-slide"> con su título
+    // (.bf-slide-titulo) y su pie (figcaption), que se usan si no hay data-*.
     function showCaption(source) {
         var caption = lightbox.querySelector('.lightbox-caption');
-        var titulo = source.dataset.titulo || '';
-        var nota = source.dataset.nota || '';
+        var figure = source.closest ? source.closest('.bf-slide') : null;
+        var titulo = source.dataset.titulo || figureText(figure, '.bf-slide-titulo');
+        var nota = source.dataset.nota || figureText(figure, 'figcaption');
         var autor = source.dataset.autor || '';
 
         fillPart(caption.querySelector('.lightbox-caption-titulo'), titulo);
@@ -251,6 +254,11 @@
         fillPart(caption.querySelector('.lightbox-caption-autor'), autor ? '— ' + autor : '');
 
         caption.hidden = !titulo && !nota && !autor;
+    }
+
+    function figureText(figure, selector) {
+        var element = figure ? figure.querySelector(selector) : null;
+        return element ? element.textContent.trim() : '';
     }
 
     // textContent, nunca innerHTML: estos textos los escribe cualquiera.
